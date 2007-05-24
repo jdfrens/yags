@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class VialTest < Test::Unit::TestCase
   fixtures :vials, :flies
-
+  
   def test_label
     assert_equal "First vial", vials(:vial_one).label
   end
@@ -15,11 +15,8 @@ class VialTest < Test::Unit::TestCase
   
   def test_vial_has_many_flies
     assert_equal 0, vials(:vial_empty).flies.size, "should be no flies"
-
-    assert_equal 1, vials(:vial_with_a_fly).flies.size
-
-    flies = vials(:vial_with_many_flies).flies
-    assert_equal 3, flies.size
-    assert flies.include?(flies(:fly_11))
+    assert_equal [flies(:fly_01)].to_set, vials(:vial_with_a_fly).flies.to_set
+    assert_equal [flies(:fly_00), flies(:fly_10), flies(:fly_11)].to_set,
+        vials(:vial_with_many_flies).flies.to_set 
   end
 end

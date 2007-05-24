@@ -2,3 +2,15 @@
 vial_one:
   id: 1
   label: First vial
+  
+vial_empty:
+  id: 2
+  label: Empty vial
+  
+vial_with_a_fly:
+  id: 3
+  label: Single fly vial
+  
+vial_with_many_flies:
+  id: 4
+  label: Multiple fly vial

@@ -22,6 +22,7 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :id,          :integer
         t.column :locus_mom,   :integer
         t.column :locus_dad,   :integer
+        t.column :vial_id,     :integer
       end
       
       s.table :vials do |t|

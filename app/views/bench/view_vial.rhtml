@@ -1,2 +1,24 @@
-<h1>Bench#view_vial</h1>
-<p>Find me in app/views/bench/view_vial.rhtml</p>
+<div class="vial-title"><%= @vial.label %></div>
+<br />
+<table>   
+    <tr>
+        <th>Phenotype</th>
+        <th>Count</th>
+    </tr>
+    <tr>
+        <td>Recessive</td>
+        <td class="count"><%= @vial.number_of_recessive_flies %></td>
+    </tr>
+    <tr>
+        <td>Het</td>
+        <td class="count"><%= @vial.number_of_heterozygote_flies %></td> 
+    </tr>
+    <tr>
+        <td>Hom dom</td>
+        <td class="count"><%= @vial.number_of_homozygote_flies %></td>
+    </tr>
+</table>
+
+<br />
+
+<%= button_to "Collect Field Vial", :action => :collect_field_vial %>

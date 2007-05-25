@@ -29,7 +29,42 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
   
-  def test_view_vial
+  def test_view_vial_with_a_fly
+    get :view_vial, :id => vials(:vial_with_a_fly).id 
+    assert_response :success
+    assert_select "div.vial-title", vials(:vial_with_a_fly).label
     
+    assert_select "table" do
+      assert_select "tr:nth-child(2) td.count", "0"
+      assert_select "tr:nth-child(3) td.count", "1"
+      assert_select "tr:nth-child(4) td.count", "0"
+    end
   end
+  
+  def test_view_vial_with_many_flies
+    get :view_vial, :id => vials(:vial_with_many_flies).id
+    assert_response :success
+    assert_select "div.vial-title", vials(:vial_with_many_flies).label
+    
+    assert_select "table" do
+      #3.times do |i| assert_select "tr:nth-child(i) td.count", [1,1,1][i] end
+      
+      assert_select "tr:nth-child(2) td.count", "1"
+      assert_select "tr:nth-child(3) td.count", "1"
+      assert_select "tr:nth-child(4) td.count", "1"
+    end
+  end
+  
+  def test_view_vial_one
+    get :view_vial, :id => vials(:vial_one).id
+    assert_response :success
+    assert_select "div.vial-title", vials(:vial_one).label
+    
+    assert_select "table" do
+      assert_select "tr:nth-child(2) td.count", "0"
+      assert_select "tr:nth-child(3) td.count", "0"
+      assert_select "tr:nth-child(4) td.count", "0"
+    end
+  end
+  
 end

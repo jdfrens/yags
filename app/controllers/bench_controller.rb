@@ -13,5 +13,6 @@ class BenchController < ApplicationController
   end
   
   def view_vial
+    @vial = Vial.find(params[:id])    
   end
 end

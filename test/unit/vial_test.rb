@@ -21,8 +21,14 @@ class VialTest < Test::Unit::TestCase
   end
   
   def test_count_of_flies
-    assert_equal 0, vials(:vial_empty).number_of_recessive_flies
-    assert_equal 0, vials(:vial_with_a_fly).number_of_recessive_flies
-    assert_equal 1, vials(:vial_with_many_flies).number_of_recessive_flies
+    assert_equal 0, vials(:vial_empty).number_of_flies(:recessive)
+    assert_equal 0, vials(:vial_empty).number_of_flies(:het)
+    assert_equal 0, vials(:vial_empty).number_of_flies(:homdom)
+    assert_equal 0, vials(:vial_with_a_fly).number_of_flies(:recessive)
+    assert_equal 1, vials(:vial_with_a_fly).number_of_flies(:het)
+    assert_equal 0, vials(:vial_with_a_fly).number_of_flies(:homdom)
+    assert_equal 1, vials(:vial_with_many_flies).number_of_flies(:recessive)
+    assert_equal 1, vials(:vial_with_many_flies).number_of_flies(:het)
+    assert_equal 1, vials(:vial_with_many_flies).number_of_flies(:homdom)
   end
 end

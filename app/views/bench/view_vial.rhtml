@@ -7,15 +7,15 @@
     </tr>
     <tr>
         <td>Recessive</td>
-        <td class="count"><%= @vial.number_of_recessive_flies %></td>
+        <td class="count"><%= @vial.number_of_flies(:recessive)%></td>
     </tr>
     <tr>
         <td>Het</td>
-        <td class="count"><%= @vial.number_of_heterozygote_flies %></td> 
+        <td class="count"><%= @vial.number_of_flies(:het) %></td> 
     </tr>
     <tr>
         <td>Hom dom</td>
-        <td class="count"><%= @vial.number_of_homozygote_flies %></td>
+        <td class="count"><%= @vial.number_of_flies(:homdom) %></td>
     </tr>
 </table>
 

@@ -1,2 +1,12 @@
-<h1>Bench#collect_field_vial</h1>
-<p>Find me in app/views/bench/collect_field_vial.rhtml</p>
+<% form_for :vial do |form| %>
+    <p>
+        <label for="label">Label:</label>
+        <%= form.text_field :label, :size => 40 %>
+    </p>
+    <p>
+        <label for="number_of_flies">Number of Flies:</label>
+        <!-- <%= form.text_field :number, :size => 40 %> -->
+    </p>
+    
+    <%= submit_tag "Collect field vial", :class => "submit" %>
+<% end %>

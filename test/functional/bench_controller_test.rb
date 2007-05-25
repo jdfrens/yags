@@ -13,11 +13,10 @@ class BenchControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
   end
   
-  def test_collect_field_vial
+  def test_actually_collect_field_vial
     number_of_old_vials =  Vial.find(:all).size
-    post :collect_field_vial
-    
-    new_vial = Vial.find_by_label("field vial")
+    post :collect_field_vial, { :vial => { :label => "something interesting"} }
+    new_vial = Vial.find_by_label("something interesting")
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
@@ -27,6 +26,28 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
+  end
+  
+#  def test_choosing_the_size_of_a_vile
+#    post :collect_field_vial, { :vial => { :label => "test vile with four flies", :number => "5" } }
+#    new_vial = Vial.find_by_label("test vile with four flies")
+#    assert_not_nil new_vial
+#    assert_equal new_vile.flies.size, params[:vial][:number]
+#    
+#  end
+
+  def test_collect_field_vial_data
+    number_of_old_vials =  Vial.find(:all).size
+    post :collect_field_vial
+    
+    assert_response :success
+    
+    assert_select "form" do
+      assert_select "p", "Label:"
+      assert_select "label"
+      #assert_select "p", "Number of Flies:"
+      #assert_select "input"
+    end
   end
   
   def test_view_vial_with_a_fly

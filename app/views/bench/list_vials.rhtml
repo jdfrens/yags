@@ -1,0 +1,9 @@
+<h1>List Vials</h1>
+
+<div id="list-vials">
+    <ul>
+        <% for vial in @vials %>
+            <li id=<%= vial.id %> ><%= link_to vial.label, :action => :view_vial, :id => vial %></li>
+        <% end %>
+    </ul>
+</div>

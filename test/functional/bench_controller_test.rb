@@ -46,8 +46,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "form" do
       assert_select "p", "Label:"
       assert_select "label"
-      #assert_select "p", "Number of Flies:"
-      #assert_select "input"
+      assert_select "p", "Number of Flies:"
+      assert_select "input"
     end
   end
   
@@ -71,8 +71,6 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div.vial-title", vials(:vial_with_many_flies).label
     
     assert_select "table" do
-      #3.times do |i| assert_select "tr:nth-child(i) td.count", [1,1,1][i] end
-      
       assert_select "tr:nth-child(2) td.count", "1"
       assert_select "tr:nth-child(3) td.count", "1"
       assert_select "tr:nth-child(4) td.count", "1"
@@ -89,6 +87,19 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "tr:nth-child(2) td.count", "0"
       assert_select "tr:nth-child(3) td.count", "0"
       assert_select "tr:nth-child(4) td.count", "0"
+    end
+  end
+  
+  def test_list_vials
+    get :list_vials
+    assert_response :success
+    assert_standard_layout
+    assert_select "div#list-vials"
+    
+    assert_select "ul" do
+      assert_select "li#1", "First vial"
+      assert_select "li#4", "Multiple fly vial"
+      assert_select "li#2", "Empty vial"
     end
   end
   

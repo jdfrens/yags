@@ -41,6 +41,7 @@ class BenchControllerTest < Test::Unit::TestCase
     post :collect_field_vial
     
     assert_response :success
+    assert_standard_layout
     
     assert_select "form" do
       assert_select "p", "Label:"
@@ -53,6 +54,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_view_vial_with_a_fly
     get :view_vial, :id => vials(:vial_with_a_fly).id 
     assert_response :success
+    assert_standard_layout
     assert_select "div.vial-title", vials(:vial_with_a_fly).label
     
     assert_select "table" do
@@ -65,6 +67,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_view_vial_with_many_flies
     get :view_vial, :id => vials(:vial_with_many_flies).id
     assert_response :success
+    assert_standard_layout
     assert_select "div.vial-title", vials(:vial_with_many_flies).label
     
     assert_select "table" do
@@ -79,6 +82,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_view_vial_one
     get :view_vial, :id => vials(:vial_one).id
     assert_response :success
+    assert_standard_layout
     assert_select "div.vial-title", vials(:vial_one).label
     
     assert_select "table" do

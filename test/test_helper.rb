@@ -25,4 +25,8 @@ class Test::Unit::TestCase
   self.use_instantiated_fixtures  = false
 
   # Add more helper methods to be used by all tests here...
+  def assert_standard_layout
+    assert_select "h1", "YAGS"
+    assert_select "a[href=/]", /home page/i
+  end
 end

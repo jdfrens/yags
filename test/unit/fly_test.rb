@@ -4,9 +4,9 @@ class FlyTest < Test::Unit::TestCase
   fixtures :flies
 
   def test_phenotype
-    assert_equal :recessive, flies(:fly_00).phenotype
-    assert_equal :het, flies(:fly_01).phenotype
-    assert_equal :het, flies(:fly_10).phenotype
-    assert_equal :homdom, flies(:fly_11).phenotype
+    assert_equal :white, flies(:fly_00).phenotype
+    assert_equal :red, flies(:fly_01).phenotype
+    assert_equal :red, flies(:fly_10).phenotype
+    assert_equal :red, flies(:fly_11).phenotype
   end
 end

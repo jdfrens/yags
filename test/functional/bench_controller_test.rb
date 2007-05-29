@@ -21,7 +21,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
     3.downto(0) do |i|
-      assert_equal  new_vial.flies[i].phenotype, [:recessive, :het, :het, :homdom][i]
+      assert_equal  new_vial.flies[i].phenotype, [:white, :red, :red, :red][i]
     end
     
     assert_response :redirect
@@ -60,7 +60,6 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "0"
       assert_select "tr:nth-child(3) td.count", "1"
-      assert_select "tr:nth-child(4) td.count", "0"
     end
   end
   
@@ -72,8 +71,7 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "1"
-      assert_select "tr:nth-child(3) td.count", "1"
-      assert_select "tr:nth-child(4) td.count", "1"
+      assert_select "tr:nth-child(3) td.count", "2"
     end
   end
   
@@ -86,7 +84,6 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "0"
       assert_select "tr:nth-child(3) td.count", "0"
-      assert_select "tr:nth-child(4) td.count", "0"
     end
   end
   

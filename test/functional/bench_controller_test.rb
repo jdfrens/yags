@@ -13,27 +13,28 @@ class BenchControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
   end
   
-  def test_actually_collect_field_vial
+  def test_collect_field_vial_of_four_flies
     number_of_old_vials =  Vial.find(:all).size
-    post :collect_field_vial, { :vial => { :label => "something interesting"} }
-    new_vial = Vial.find_by_label("something interesting")
+    post :collect_field_vial, { :vial => { :label => "four fly vial"}, :number => "4" }
+    new_vial = Vial.find_by_label("four fly vial")
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
-    3.downto(0) do |i|
-      assert_equal  new_vial.flies[i].phenotype, [:white, :red, :red, :red][i]
-    end
+    assert_equal new_vial.flies.map {|fly| fly.phenotype}.to_set, [:red ,:white, :red, :red].to_set
     
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
   
-  def test_choosing_the_size_of_a_vile
-    post :collect_field_vial, { :vial => { :label => "test vial with four flies" }, :number => "4" }
-    new_vial = Vial.find_by_label("test vial with four flies")
+  def test_collect_field_vial_of_nine_flies
+    post :collect_field_vial, { :vial => { :label => "nine fly vial" }, :number => "9" }
+    new_vial = Vial.find_by_label("nine fly vial")
     assert_not_nil new_vial
-    assert_equal 4, new_vial.flies.size
+    assert_equal new_vial.flies.map {|fly| fly.phenotype}.to_set, 
+    [:white, :white, :white, :red, :red, :red, :red, :red, :red].to_set
     
+    assert_response :redirect
+    assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
 
   def test_collect_field_vial_data

@@ -29,6 +29,14 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :id,           :integer
         t.column :label,        :string
       end
+      
+      s.table :genotypes do |t|
+        t.column :id,          :integer
+        t.column :fly_id,       :integer
+        t.column :position,     :float
+        t.column :mom_allele,   :integer
+        t.column :dad_allele,   :integer
+      end
     end
   end
   

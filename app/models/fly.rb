@@ -1,4 +1,5 @@
 class Fly < ActiveRecord::Base
+  has_many :genotypes, :dependent => :delete_all
 
   # 
   # Creates an array with the phenotypes.

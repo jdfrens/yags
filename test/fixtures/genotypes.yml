@@ -1,5 +1,50 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 one:
   id: 1
+  fly_id: 1
+  position: 0.5
+  mom_allele: 0
+  dad_allele: 0
 two:
   id: 2
+  fly_id: 1
+  position: 0.0
+  mom_allele: 1
+  dad_allele: 0
+three:
+  id: 3
+  fly_id: 2
+  position: 0.5
+  mom_allele: 0
+  dad_allele: 1
+four:
+  id: 4
+  fly_id: 2
+  position: 0.0
+  mom_allele: 1
+  dad_allele: 0
+five:
+  id: 5
+  fly_id: 3
+  position: 0.5
+  mom_allele: 1
+  dad_allele: 1
+six:
+  id: 6
+  fly_id: 3
+  position: 0.0
+  mom_allele: 1
+  dad_allele: 0
+seven:
+  id: 7
+  fly_id: 4
+  position: 0.5
+  mom_allele: 0
+  dad_allele: 1
+eight:
+  id: 8
+  fly_id: 4
+  position: 0.0
+  mom_allele: 1
+  dad_allele: 1
+  

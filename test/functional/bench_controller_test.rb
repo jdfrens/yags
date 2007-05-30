@@ -5,7 +5,7 @@ require 'bench_controller'
 class BenchController; def rescue_action(e) raise e end; end
 
 class BenchControllerTest < Test::Unit::TestCase
-  fixtures :flies, :vials
+  fixtures :flies, :vials, :genotypes
   
   def setup
     @controller = BenchController.new
@@ -20,7 +20,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
-    assert_equal new_vial.flies.map {|fly| fly.phenotype}.to_set, [:red ,:white, :red, :red].to_set
+    assert_equal new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.to_set, [:red ,:white, :red, :red].to_set
     
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
@@ -30,7 +30,7 @@ class BenchControllerTest < Test::Unit::TestCase
     post :collect_field_vial, { :vial => { :label => "nine fly vial" }, :number => "9" }
     new_vial = Vial.find_by_label("nine fly vial")
     assert_not_nil new_vial
-    assert_equal new_vial.flies.map {|fly| fly.phenotype}.to_set, 
+    assert_equal new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.to_set, 
     [:white, :white, :white, :red, :red, :red, :red, :red, :red].to_set
     
     assert_response :redirect

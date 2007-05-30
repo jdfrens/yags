@@ -1,21 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 fly_00:
   id: 1
-  locus_mom: 0
-  locus_dad: 0
   vial_id: 4
 fly_01:
   id: 2
-  locus_mom: 0
-  locus_dad: 1
   vial_id: 3
 fly_10:
   id: 3
-  locus_mom: 1
-  locus_dad: 0
   vial_id: 4
 fly_11:
   id: 4
-  locus_mom: 1
-  locus_dad: 1
   vial_id: 4

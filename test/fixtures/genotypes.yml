@@ -47,4 +47,16 @@ eight:
   position: 0.0
   mom_allele: 1
   dad_allele: 1
+nine:
+  id: 9
+  fly_id: 5
+  position: 0.5
+  mom_allele: 1
+  dad_allele: 0
+ten:
+  id: 10
+  fly_id: 5
+  position: 0.0
+  mom_allele: 1
+  dad_allele: 1
   

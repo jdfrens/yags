@@ -20,7 +20,10 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
-    assert_equal new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.to_set, [:red ,:white, :red, :red].to_set
+    assert_equal new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.to_set, 
+        [:red ,:white, :red, :red].to_set
+    assert_equal new_vial.flies.map {|fly| fly.phenotype(:gender)}.to_set, 
+        [:male, :male, :female, :female].to_set
     
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
@@ -31,7 +34,9 @@ class BenchControllerTest < Test::Unit::TestCase
     new_vial = Vial.find_by_label("nine fly vial")
     assert_not_nil new_vial
     assert_equal new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.to_set, 
-    [:white, :white, :white, :red, :red, :red, :red, :red, :red].to_set
+        [:white, :white, :white, :red, :red, :red, :red, :red, :red].to_set
+    assert_equal new_vial.flies.map {|fly| fly.phenotype(:gender)}.to_set, 
+        [:male, :male, :male, :male, :female, :female, :female, :female, :female].to_set
     
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
@@ -72,7 +77,7 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "1"
-      assert_select "tr:nth-child(3) td.count", "2"
+      assert_select "tr:nth-child(3) td.count", "3"
     end
   end
   

@@ -35,4 +35,20 @@ class VialTest < Test::Unit::TestCase
     assert_equal 2, vials(:vial_with_many_flies).number_of_flies(:gender, :female)
     assert_equal 2, vials(:vial_with_many_flies).number_of_flies(:gender, :male)
   end
+  
+  def test_count_of_flies_with_multiple_phenotypes
+    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :gender], [:white, :female])
+    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :gender], [:white, :male])
+    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :gender], [:red, :female])
+    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :gender], [:red, :male])
+    assert_equal 0, vials(:vial_with_a_fly).number_of_flies([:eye_color, :gender], [:white, :female])
+    assert_equal 0, vials(:vial_with_a_fly).number_of_flies([:eye_color, :gender], [:white, :male])
+    assert_equal 0, vials(:vial_with_a_fly).number_of_flies([:eye_color, :gender], [:red, :female])
+    assert_equal 1, vials(:vial_with_a_fly).number_of_flies([:eye_color, :gender], [:red, :male])
+    assert_equal 0, vials(:vial_with_many_flies).number_of_flies([:eye_color, :gender], [:white, :female])
+    assert_equal 1, vials(:vial_with_many_flies).number_of_flies([:eye_color, :gender], [:white, :male])
+    assert_equal 2, vials(:vial_with_many_flies).number_of_flies([:eye_color, :gender], [:red, :female])
+    assert_equal 1, vials(:vial_with_many_flies).number_of_flies([:eye_color, :gender], [:red, :male])
+  end
+  
 end

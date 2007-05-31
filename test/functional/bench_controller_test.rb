@@ -65,7 +65,9 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "1"
+      assert_select "tr:nth-child(2) td.count:nth-child(3)", "0"
       assert_select "tr:nth-child(3) td.count", "0"
+      assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
     end
   end
   
@@ -77,7 +79,9 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "1"
+      assert_select "tr:nth-child(2) td.count:nth-child(3)", "1"
       assert_select "tr:nth-child(3) td.count", "2"
+      assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
     end
   end
   
@@ -89,7 +93,9 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "0"
+      assert_select "tr:nth-child(2) td.count:nth-child(3)", "0"
       assert_select "tr:nth-child(3) td.count", "0"
+      assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
     end
   end
   

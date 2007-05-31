@@ -2,16 +2,28 @@
 <br />
 <table>   
     <tr>
-        <th>Phenotype</th>
-        <th>Count</th>
+        <th></th>
+        <th>Red</th>
+        <th>White</th>
+        <th>Total</th>
     </tr>
     <tr>
-        <td>White</td>
-        <td class="count"><%= @vial.number_of_flies(:eye_color, :white)%></td>
+        <th>Male</th>
+        <td class="count"><%= @vial.number_of_flies([:eye_color, :gender], [:red, :male]) %></td>
+        <td class="count"><%= @vial.number_of_flies([:eye_color, :gender], [:white, :male]) %></td>
+        <td class="count"><%= @vial.number_of_flies(:gender, :male)  %></td>
     </tr>
     <tr>
-        <td>Red</td>
-        <td class="count"><%= @vial.number_of_flies(:eye_color, :red) %></td> 
+        <th>Female</th>
+        <td class="count"><%= @vial.number_of_flies([:eye_color, :gender], [:red, :female]) %></td>
+        <td class="count"><%= @vial.number_of_flies([:eye_color, :gender], [:white, :female]) %></td>
+        <td class="count"><%= @vial.number_of_flies(:gender, :female)  %></td> 
+    </tr>
+    <tr>
+        <th>Total</th>
+        <td class="count"><%= @vial.number_of_flies(:eye_color, :red) %></td>
+        <td class="count"><%= @vial.number_of_flies(:eye_color, :white) %></td>
+        <td class="count"><%= @vial.flies.size %></td>
     </tr>
 </table>
 

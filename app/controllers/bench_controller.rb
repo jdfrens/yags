@@ -14,7 +14,6 @@ class BenchController < ApplicationController
   
   def list_vials
     @vials = Vial.find(:all)
-    #@vials_pages, @vials = paginate :vials, :per_page => 10
   end
   
   #

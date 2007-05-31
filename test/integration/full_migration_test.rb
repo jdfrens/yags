@@ -20,14 +20,14 @@ class FullMigrationTest < ActionController::IntegrationTest
     assert_schema do |s|
       s.table :flies do |t|
         t.column :id,          :integer
-#        t.column :locus_mom,   :integer
-#        t.column :locus_dad,   :integer
         t.column :vial_id,     :integer
       end
       
       s.table :vials do |t|
         t.column :id,           :integer
         t.column :label,        :string
+        t.column :mom_id,       :integer
+        t.column :dad_id,       :integer
       end
       
       s.table :genotypes do |t|

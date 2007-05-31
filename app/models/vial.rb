@@ -11,11 +11,6 @@ class Vial < ActiveRecord::Base
     flies_of_type(character, phenotype).first
   end
   
-  #
-  # Helpers
-  #
-  private
-  
   def flies_of_type (character, phenotype)
     character, phenotype = [*character], [*phenotype]
     selection = flies

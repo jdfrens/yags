@@ -20,6 +20,10 @@ class BenchController < ApplicationController
     @vials = Vial.find(:all)
   end
   
+  def mate_flies
+    
+  end
+  
   #
   # Helpers
   #

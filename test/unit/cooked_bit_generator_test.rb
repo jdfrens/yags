@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class CookedBitGeneratorTest < Test::Unit::TestCase
 
   def test_random_bit
-    bits = [0, 1, 0, 1, 0, 0, 1, 1]
+    bits = [0, 1, 0, 1, 0, 0, 0, 1]
     generator = CookedBitGenerator.new(bits)
     bits.each do |bit|
       assert_equal bit, generator.random_bit
@@ -30,8 +30,10 @@ class CookedBitGeneratorTest < Test::Unit::TestCase
     
     bits = [0]
     generator = CookedBitGenerator.new(bits)
-    1.upto(1000) do |i|
-      assert_equal 0, generator.random_bit
+    sum = 0
+    1000.times do
+      sum = sum + generator.random_bit
     end
+    assert_equal 0, sum
   end
 end

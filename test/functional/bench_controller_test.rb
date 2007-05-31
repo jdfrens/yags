@@ -64,8 +64,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div.vial-title", vials(:vial_with_a_fly).label
     
     assert_select "table" do
-      assert_select "tr:nth-child(2) td.count", "0"
-      assert_select "tr:nth-child(3) td.count", "1"
+      assert_select "tr:nth-child(2) td.count", "1"
+      assert_select "tr:nth-child(3) td.count", "0"
     end
   end
   
@@ -77,7 +77,7 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "1"
-      assert_select "tr:nth-child(3) td.count", "3"
+      assert_select "tr:nth-child(3) td.count", "2"
     end
   end
   

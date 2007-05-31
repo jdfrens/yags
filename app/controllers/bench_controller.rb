@@ -24,12 +24,13 @@ class BenchController < ApplicationController
   def create_and_add_many_field_flies(vial, number)
     mom_alleles = [0, 0, 1, 1, 0]
     dad_alleles = [1, 0, 1, 0]
+    sex_alleles = [1, 0, 1, 1, 0, 1, 0]
     number.times do |i|
        new_fly = Fly.create!
        new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => 0.5, 
            :mom_allele => mom_alleles[i % 5], :dad_allele => dad_alleles[i % 4])
        new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => 0.0, 
-           :mom_allele => 1, :dad_allele => dad_alleles[i % 4])
+           :mom_allele => 1, :dad_allele => sex_alleles[i % 4])
        vial.flies << new_fly
        vial.save!
     end

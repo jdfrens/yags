@@ -12,6 +12,10 @@ class BenchController < ApplicationController
     @vial = Vial.find(params[:id])    
   end
   
+  def view_fly
+    @fly = Fly.find(params[:id])    
+  end
+  
   def list_vials
     @vials = Vial.find(:all)
   end

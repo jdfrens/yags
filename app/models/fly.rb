@@ -15,4 +15,8 @@ class Fly < ActiveRecord::Base
     end
   end
   
+  def vial
+    Vial.find(vial_id)
+  end
+  
 end

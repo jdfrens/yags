@@ -51,4 +51,10 @@ class VialTest < Test::Unit::TestCase
     assert_equal 1, vials(:vial_with_many_flies).number_of_flies([:eye_color, :gender], [:red, :male])
   end
   
+  def test_pick_first_fly
+    assert_equal flies(:fly_00), vials(:vial_with_many_flies).first_of_type([:eye_color, :gender], [:white, :male])
+    assert_equal flies(:fly_11), vials(:vial_with_many_flies).first_of_type([:eye_color, :gender], [:red, :female])
+    assert_equal flies(:fly_10), vials(:vial_with_many_flies).first_of_type([:eye_color, :gender], [:red, :male])
+  end
+  
 end

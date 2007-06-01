@@ -29,4 +29,28 @@ class FlyTest < Test::Unit::TestCase
     assert_equal 0, Fly.find(:all, :conditions => "id = 5").size # :bob
     assert_equal 0, Genotype.find(:all, :conditions => "id = 9 or id = 10").size # :bob's genotypes
   end
+  
+  def test_mate_with
+    flies(:child_one).genotypes.zip(flies(:fly_mom).mate_with(flies(:fly_dad), CookedBitGenerator.new([0])).genotypes) do |pair|
+      assert_equal pair[0].position, pair[1].position
+      assert_equal pair[0].mom_allele, pair[1].mom_allele
+      assert_equal pair[0].dad_allele, pair[1].dad_allele
+    end
+    flies(:child_one).genotypes.zip(flies(:fly_dad).mate_with(flies(:fly_mom), CookedBitGenerator.new([0])).genotypes) do |pair|
+      assert_equal pair[0].position, pair[1].position
+      assert_equal pair[0].mom_allele, pair[1].mom_allele
+      assert_equal pair[0].dad_allele, pair[1].dad_allele
+    end
+    flies(:child_two).genotypes.zip(flies(:fly_mom).mate_with(flies(:fly_dad), CookedBitGenerator.new([1])).genotypes) do |pair|
+      assert_equal pair[0].position, pair[1].position
+      assert_equal pair[0].mom_allele, pair[1].mom_allele
+      assert_equal pair[0].dad_allele, pair[1].dad_allele
+    end
+  flies(:child_two).genotypes.zip(flies(:fly_dad).mate_with(flies(:fly_mom), CookedBitGenerator.new([1])).genotypes) do |pair|
+      assert_equal pair[0].position, pair[1].position
+      assert_equal pair[0].mom_allele, pair[1].mom_allele
+      assert_equal pair[0].dad_allele, pair[1].dad_allele
+    end
+  end
+  
 end

@@ -14,3 +14,6 @@ vial_with_a_fly:
 vial_with_many_flies:
   id: 4
   label: Multiple fly vial
+parents_vial:
+  id: 5
+  label: Parents vial

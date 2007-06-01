@@ -32,7 +32,7 @@ class BenchController < ApplicationController
   def mate_flies
     if (params[:vial])
       vial = Vial.create!(params[:vial])
-      create_and_add_many_field_flies(vial, params[:number].to_i)
+      populate_vial_with_children(vial, params[:number].to_i)
       redirect_to :action => "view_vial", :id => vial.id
     end
   end
@@ -54,6 +54,15 @@ class BenchController < ApplicationController
            :mom_allele => 1, :dad_allele => sex_alleles[i % 4])
        vial.flies << new_fly
        vial.save!
+    end
+  end
+  
+  def populate_vial_with_children(vial, number)
+    mom = Fly.find vial.mom_id
+    dad = Fly.find vial.dad_id
+    number.times do |i|
+      vial.flies << mom.mate_with(dad)
+      vial.save!
     end
   end
   

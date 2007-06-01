@@ -14,3 +14,13 @@ fly_11:
 bob:
   id: 5
   vial_id: 4
+fly_mom:
+  id: 6
+  vial_id: 5
+fly_dad:
+  id: 7
+  vial_id: 5
+child_one:
+  id: 8
+child_two:
+  id: 9

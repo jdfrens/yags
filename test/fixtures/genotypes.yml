@@ -59,4 +59,51 @@ ten:
   position: 0.0
   mom_allele: 1
   dad_allele: 1
-  
+eleven:
+  id: 11
+  fly_id: 6
+  position: 0.5
+  mom_allele: 0
+  dad_allele: 0
+twelve:
+  id: 12
+  fly_id: 6
+  position: 0.0
+  mom_allele: 1
+  dad_allele: 1
+thirteen:
+  id: 13
+  fly_id: 7
+  position: 0.5
+  mom_allele: 0
+  dad_allele: 1
+fourteen:
+  id: 14
+  fly_id: 7
+  position: 0.0
+  mom_allele: 1
+  dad_allele: 0
+fifteen:
+  id: 15
+  fly_id: 8
+  position: 0.5
+  mom_allele: 0
+  dad_allele: 0
+sixteen:
+  id: 16
+  fly_id: 8
+  position: 0.0
+  mom_allele: 1
+  dad_allele: 1
+seventeen:
+  id: 17
+  fly_id: 9
+  position: 0.5
+  mom_allele: 0
+  dad_allele: 1
+eighteen:
+  id: 18
+  fly_id: 9
+  position: 0.0
+  mom_allele: 1
+  dad_allele: 0  

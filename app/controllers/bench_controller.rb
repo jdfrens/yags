@@ -9,7 +9,16 @@ class BenchController < ApplicationController
   end
   
   def view_vial
-    @vial = Vial.find(params[:id])    
+    @vial = Vial.find(params[:id])
+    if @vial.mom_id && @vial.dad_id
+      @parents = true
+      @mom = Fly.find @vial.mom_id
+      @dad = Fly.find @vial.dad_id
+      @mom_vial = Vial.find @mom.vial_id
+      @dad_vial = Vial.find @dad.vial_id
+    else
+      @parents = false
+    end
   end
   
   def view_fly
@@ -21,7 +30,11 @@ class BenchController < ApplicationController
   end
   
   def mate_flies
-    
+    if (params[:vial])
+      vial = Vial.create!(params[:vial])
+      create_and_add_many_field_flies(vial, params[:number].to_i)
+      redirect_to :action => "view_vial", :id => vial.id
+    end
   end
   
   #

@@ -39,7 +39,9 @@
 
 <div class="parent-info">
     <h3>Parental Information</h3>
+    
     <table>
+    <% if @parents %>
         <tr>
             <th></th>
             <th>Eye Color</th>
@@ -47,15 +49,21 @@
         </tr>
         <tr>
             <th>Mom</th>
-            <td>mom's eye color</td>
-            <td>link to a vial</td>
+            <td><%= @mom.phenotype(:eye_color).to_s %></td>
+            <td><%= @mom_vial.label %></td>
         </tr>
         <tr>
             <th>Dad</th>
-            <td>Dad's eye color</td>
-            <td>link to a vial</td>
+            <td><%= @dad.phenotype(:eye_color).to_s %></td>
+            <td><%= @mom_vial.label %></td>
         </tr>
+    <% else %>
+      <p>
+        No parents!
+      </p>
+    <% end %>
     </table>
+
 </div>
 
 <br />
@@ -96,6 +104,14 @@
   </td>
 </tr>
 </table>
+<p>
+    <label for="label">Label for  Vial:</label>
+    <%= form.text_field :label, :size => 40, :value => "" %>
+</p>
+<p>
+        <label for="number_of_flies">Number of Flies:</label>
+        <%= text_field_tag :number %>
+</p>
 <%= submit_tag "Mate", :class => "submit" -%>
 <% end %>
              

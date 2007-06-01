@@ -84,9 +84,7 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
     end
     
-    assert_select "table:nth-child(2)" do
-      
-    end
+    assert_select "table:nth-child(2)"
   end
   
   def test_view_vial_one
@@ -117,13 +115,10 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_mate_flies
-    # given a post request with proper data, mate_flies
-    # should create a new vial
-    # the vial should come from the parents
-    # should redirect to view the vial
+    get :view_vial, :id => vials(:vial_with_many_flies).id
+    assert_response :success
+    assert_standard_layout
     
-    # given poor data, mate_flies
-    # should...
   end
   
 end

@@ -50,12 +50,12 @@
         <tr>
             <th>Mom</th>
             <td><%= @mom.phenotype(:eye_color).to_s %></td>
-            <td><%= @mom_vial.label %></td>
+            <td><%= link_to @mom_vial.label, :action => :view_vial, :id => @mom_vial %></td>
         </tr>
         <tr>
             <th>Dad</th>
             <td><%= @dad.phenotype(:eye_color).to_s %></td>
-            <td><%= @mom_vial.label %></td>
+            <td><%= link_to @dad_vial.label, :action => :view_vial, :id => @dad_vial %></td>
         </tr>
     <% else %>
       <p>
@@ -105,11 +105,11 @@
 </tr>
 </table>
 <p>
-    <label for="label">Label for  Vial:</label>
+    <label for="label">Label for Offspring Vial:</label>
     <%= form.text_field :label, :size => 40, :value => "" %>
 </p>
 <p>
-        <label for="number_of_flies">Number of Flies:</label>
+        <label for="number_of_flies">Number of Desired Flies:</label>
         <%= text_field_tag :number %>
 </p>
 <%= submit_tag "Mate", :class => "submit" -%>

@@ -2,5 +2,5 @@
 <ul>
   <li>Gender: <%= @fly.phenotype(:gender) -%></li>
   <li>Eye color: <%= @fly.phenotype(:eye_color) -%></li>
-  <li>Source vial: <%= link_to @fly.vial.label, :action => :view_vial, :id => @fly.vial_id -%></li>
+  <li>Source vial: <%= link_to h(@fly.vial.label), :action => :view_vial, :id => @fly.vial_id -%></li>
 </ul>

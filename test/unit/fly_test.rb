@@ -53,4 +53,13 @@ class FlyTest < Test::Unit::TestCase
     end
   end
   
+  def test_mate_with_same_sex
+    assert_raise ArgumentError do
+      flies(:fly_mom).mate_with(flies(:fly_11))   
+    end
+    assert_raise ArgumentError do
+      flies(:fly_dad).mate_with(flies(:fly_00))    
+    end
+  end
+  
 end

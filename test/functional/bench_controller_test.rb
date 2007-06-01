@@ -69,6 +69,10 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "tr:nth-child(3) td.count", "0"
       assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
     end
+    assert_select "div.parent-info"
+    assert_select "div.parent-info table" do
+      assert_select "p", "No parents!"
+    end
   end
   
   def test_view_vial_with_many_flies
@@ -83,8 +87,10 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "tr:nth-child(3) td.count", "2"
       assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
     end
-    
-    assert_select "table:nth-child(2)"
+    assert_select "div.parent-info"
+    assert_select "div.parent-info table" do
+      assert_select "p", "No parents!"
+    end
   end
   
   def test_view_vial_one
@@ -98,6 +104,10 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "tr:nth-child(2) td.count:nth-child(3)", "0"
       assert_select "tr:nth-child(3) td.count", "0"
       assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
+    end
+    assert_select "div.parent-info"
+    assert_select "div.parent-info table" do
+      assert_select "p", "No parents!"
     end
   end
   
@@ -115,10 +125,13 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_mate_flies
-    get :view_vial, :id => vials(:vial_with_many_flies).id
-    assert_response :success
-    assert_standard_layout
+    post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, :number => "8" }
+    new_vial = Vial.find_by_label("children vial")
+    assert_not_nil new_vial
+    assert_equal new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.to_set, [:white].to_set
     
+    assert_response :redirect
+    assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
   
 end

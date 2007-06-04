@@ -124,6 +124,16 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_view_individual_fly
+    get :view_fly, :id => flies(:bob).id
+    assert_select "ul" do
+      assert_select "li", 3
+      assert_select "li", "Gender: female"
+      assert_select "li", "Eye color: red"
+      assert_select "li", "Source vial: Multiple fly vial"
+    end
+  end
+  
   def test_mate_flies
     post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, :number => "8" }
     new_vial = Vial.find_by_label("children vial")

@@ -1,5 +1,5 @@
 class Fly < ActiveRecord::Base
-  has_many :genotypes, :dependent => :delete_all
+  has_many :genotypes, :dependent => :destroy
     
   EYE_COLOR_LOOKUP = [:white, :red, :red]
   GENDER_LOOKUP = [:not_possible, :male, :female]

@@ -1,5 +1,5 @@
 class Vial < ActiveRecord::Base
-  has_many :flies
+  has_many :flies, :dependent => :destroy
   
   validates_presence_of :label
   

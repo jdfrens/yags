@@ -57,4 +57,13 @@ class VialTest < Test::Unit::TestCase
     assert_equal flies(:fly_10), vials(:vial_with_many_flies).first_of_type([:eye_color, :gender], [:red, :male])
   end
   
+    def test_destroying_of_vial
+    number_of_old_vials = Vial.find(:all).size
+    assert_equal 1, Vial.find(:all, :conditions => "id = 6").size 
+    
+    vials(:destroyable_vial).destroy
+    assert_equal number_of_old_vials - 1, Vial.find(:all).size
+    assert_equal 0, Vial.find(:all, :conditions => "id = 6").size 
+  end
+  
 end

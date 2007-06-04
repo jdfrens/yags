@@ -39,9 +39,7 @@
     </tr>
 </table>
 
-<br />
-
-<div class="parent-info">
+<div class="parent-info" style="border-bottom: 2px dotted #ccc; width: 500px;">
     <h3>Parental Information</h3>
     
     <table>
@@ -67,7 +65,11 @@
       </p>
     <% end %>
     </table>
-
+<br />
+<div id="destroy-vial" style="border: 2px dashed #ff0000; width: 140px; padding: 2px;">
+    <%= button_to "Destroy this vial!", { :action => :destroy_vial, :id => @vial.id }, :confirm => "Are you sure?" %>
+</div>
+<br />
 </div>
 
 <br />
@@ -118,4 +120,5 @@
 </p>
 <%= submit_tag "Mate", :class => "submit" -%>
 <% end %>
-             
+<br />
+       

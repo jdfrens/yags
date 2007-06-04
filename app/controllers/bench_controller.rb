@@ -30,6 +30,11 @@ class BenchController < ApplicationController
     @vials = Vial.find(:all)
   end
   
+  def destroy_vial
+    @vial = Vial.find(params[:id]).destroy
+    redirect_to :action => :list_vials
+  end
+  
   def mate_flies
     if (params[:vial])
       vial = Vial.create!(params[:vial])

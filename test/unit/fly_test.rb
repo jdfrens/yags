@@ -62,4 +62,8 @@ class FlyTest < Test::Unit::TestCase
     end
   end
   
+  def test_has_species
+    assert_not_nil flies(:fly_mom).species
+  end
+  
 end

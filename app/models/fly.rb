@@ -19,6 +19,10 @@ class Fly < ActiveRecord::Base
     Vial.find(vial_id)
   end
   
+  def species
+    Species.singleton
+  end
+  
   def mate_with(partner, bit_generator = RandomBitGenerator.new)
     if self.phenotype(:gender) == :male 
       raise ArgumentError, "mating two males" if partner.phenotype(:gender) == :male

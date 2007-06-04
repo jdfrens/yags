@@ -1,4 +1,5 @@
 class BenchController < ApplicationController
+  in_place_edit_for :vial, :label
   
   def collect_field_vial
     if (params[:vial])

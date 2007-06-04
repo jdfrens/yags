@@ -61,7 +61,7 @@ class BenchControllerTest < Test::Unit::TestCase
     get :view_vial, :id => vials(:vial_with_a_fly).id 
     assert_response :success
     assert_standard_layout
-    assert_select "div.vial-title", vials(:vial_with_a_fly).label
+    assert_select "h3 span#vial_label_3_in_place_editor", vials(:vial_with_a_fly).label
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "1"
@@ -79,7 +79,7 @@ class BenchControllerTest < Test::Unit::TestCase
     get :view_vial, :id => vials(:vial_with_many_flies).id
     assert_response :success
     assert_standard_layout
-    assert_select "div.vial-title", vials(:vial_with_many_flies).label
+    assert_select "h3 span#vial_label_4_in_place_editor", vials(:vial_with_many_flies).label
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "1"
@@ -97,7 +97,7 @@ class BenchControllerTest < Test::Unit::TestCase
     get :view_vial, :id => vials(:vial_one).id
     assert_response :success
     assert_standard_layout
-    assert_select "div.vial-title", vials(:vial_one).label
+    assert_select "h3 span#vial_label_1_in_place_editor", vials(:vial_one).label
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "0"

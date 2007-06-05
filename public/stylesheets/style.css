@@ -20,10 +20,27 @@ table {
 }
 
 #vial-table {
+	width: 390px;
+	margin: 0 0 0 110px;
 }
 
-#vial-table td, #vial-table th {
+#vial-table td {
 	text-align: right;
 	border-bottom: 1px dotted #aaa;
 	border-right: 1px dotted #aaa;
+}
+
+#vial-table th {
+	text-align: justify;
+	border-bottom: 1px dotted #aaa;
+	border-right: 1px dotted #aaa;	
+}
+
+#cols_character {
+	padding-left: 150px;
+}
+
+#rows_character {
+	float: left;
+	padding-top: 45px;
 }

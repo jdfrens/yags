@@ -1,3 +1,6 @@
+require "erb"
+  include ERB::Util
+
 class BenchController < ApplicationController
   in_place_edit_for :vial, :label
   
@@ -41,6 +44,14 @@ class BenchController < ApplicationController
       populate_vial_with_children(vial, params[:number].to_i)
       redirect_to :action => "view_vial", :id => vial.id
     end
+  end
+  
+  def set_vial_label
+    @vial = Vial.find(params[:id])
+    previous_label = @vial.label
+    @vial.label = params[:value]
+    @vial.label = previous_label unless @vial.save
+    render :text => h(@vial.label)
   end
   
   #

@@ -111,6 +111,17 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_set_vial_label
+    xhr :post, :set_vial_label, { :id => vials(:vial_one).id, :value => '<Bob>' }
+    
+    assert_response :success
+    assert_equal '&lt;Bob&gt;', @response.body
+    
+    vial = vials(:vial_one)
+    vial.reload
+    assert_equal '<Bob>', vial.label
+  end
+  
   def test_list_vials
     get :list_vials
     assert_response :success

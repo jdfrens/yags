@@ -3,6 +3,10 @@ class Vial < ActiveRecord::Base
   
   validates_presence_of :label
   
+  def species
+    Species.singleton
+  end
+  
   def number_of_flies (character, phenotype)
     flies_of_type(character, phenotype).size
   end

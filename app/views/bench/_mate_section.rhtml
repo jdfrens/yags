@@ -1,0 +1,47 @@
+<h3>Select Flies to Mate</h3>
+<% form_for :vial, :url => { :action => :mate_flies} do |form| %>
+<table>
+<tr>
+  <th>Male White</th>
+  <td>
+    <% @vial.flies_of_type([:eye_color, :gender], [:white, :male]).each do |fly| %>
+      <%= form.radio_button "dad_id", fly.id -%>
+    <% end %>
+  </td>
+</tr>
+<tr>
+  <th>Male Red</th>
+  <td>
+    <% @vial.flies_of_type([:eye_color, :gender], [:red, :male]).each do |fly| %>
+      <%= form.radio_button "dad_id", fly.id -%>
+    <% end %>
+  </td>
+</tr>
+<tr>
+  <th>Female White</th>
+  <td>
+    <% @vial.flies_of_type([:eye_color, :gender], [:white, :female]).each do |fly| %>
+      <%= form.radio_button "mom_id", fly.id -%>
+    <% end %>
+  </td>
+</tr>
+<tr>
+  <th>Female Red</th>
+  <td>
+    <% @vial.flies_of_type([:eye_color, :gender], [:red, :female]).each do |fly| %>
+      <%= form.radio_button "mom_id", fly.id -%>
+    <% end %>
+  </td>
+</tr>
+</table>
+<p>
+    <label for="label">Label for Offspring Vial:</label>
+    <%= form.text_field :label, :size => 40, :value => "" %>
+</p>
+<p>
+        <label for="number_of_flies">Number of Desired Flies:</label>
+        <%= text_field_tag :number %>
+</p>
+<%= submit_tag "Mate", :class => "submit" -%>
+<% end %>
+<br />

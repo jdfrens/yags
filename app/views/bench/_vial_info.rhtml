@@ -1,0 +1,27 @@
+<p> <strong>Total number of flies: </strong><%= @vial.flies.size %></p>
+
+<table id="vial-table">   
+    <tr>
+        <th></th>
+        <th>Red</th>
+        <th>White</th>
+    </tr>
+    <tr>
+        <th>Male</th>
+        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:red, :male]),
+            :action => :view_fly, 
+            :id => @vial.first_of_type([:eye_color, :gender], [:red, :male]) %></td>
+        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:white, :male]),
+            :action => :view_fly, 
+            :id => @vial.first_of_type([:eye_color, :gender], [:white, :male]) %></td>
+    </tr>
+    <tr>
+        <th>Female</th>
+        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:red, :female]),
+            :action => :view_fly, 
+            :id => @vial.first_of_type([:eye_color, :gender], [:red, :female]) %></td>
+        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:white, :female]),
+            :action => :view_fly, 
+            :id => @vial.first_of_type([:eye_color, :gender], [:white, :female]) %></td>
+    </tr>
+</table>

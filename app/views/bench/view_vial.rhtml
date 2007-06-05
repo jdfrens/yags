@@ -1,124 +1,16 @@
 <div class="vial-title">
-<h3><%= in_place_editor_field :vial, 'label', {}  %></h3>
+<strong>Label: </strong><%= in_place_editor_field :vial, 'label', {} %>
 </div>
 
-<br />
-
-<table>   
-    <tr>
-        <th></th>
-        <th>Red</th>
-        <th>White</th>
-        <th>Total</th>
-    </tr>
-    <tr>
-        <th>Male</th>
-        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:red, :male]),
-            :action => :view_fly, 
-            :id => @vial.first_of_type([:eye_color, :gender], [:red, :male]) %></td>
-        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:white, :male]),
-            :action => :view_fly, 
-            :id => @vial.first_of_type([:eye_color, :gender], [:white, :male]) %></td>
-        <td class="count"><%= @vial.number_of_flies(:gender, :male)  %></td>
-    </tr>
-    <tr>
-        <th>Female</th>
-        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:red, :female]),
-            :action => :view_fly, 
-            :id => @vial.first_of_type([:eye_color, :gender], [:red, :female]) %></td>
-        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:white, :female]),
-            :action => :view_fly, 
-            :id => @vial.first_of_type([:eye_color, :gender], [:white, :female]) %></td>
-        <td class="count"><%= @vial.number_of_flies(:gender, :female)  %></td> 
-    </tr>
-    <tr>
-        <th>Total</th>
-        <td class="count"><%= @vial.number_of_flies(:eye_color, :red) %></td>
-        <td class="count"><%= @vial.number_of_flies(:eye_color, :white) %></td>
-        <td class="count"><%= @vial.flies.size %></td>
-    </tr>
-</table>
-
-<div class="parent-info" style="border-bottom: 2px dotted #ccc; width: 500px;">
-    <h3>Parental Information</h3>
-    
-    <table>
-    <% if @parents %>
-        <tr>
-            <th></th>
-            <th>Eye Color</th>
-            <th>Source Vial</th>
-        </tr>
-        <tr>
-            <th>Mom</th>
-            <td><%= @mom.phenotype(:eye_color).to_s %></td>
-            <td><%= link_to @mom_vial.label, :action => :view_vial, :id => @mom_vial %></td>
-        </tr>
-        <tr>
-            <th>Dad</th>
-            <td><%= @dad.phenotype(:eye_color).to_s %></td>
-            <td><%= link_to @dad_vial.label, :action => :view_vial, :id => @dad_vial %></td>
-        </tr>
-    <% else %>
-      <p>
-        No parents!
-      </p>
-    <% end %>
-    </table>
-<br />
-<div id="destroy-vial" style="border: 2px dashed #ff0000; width: 140px; padding: 2px;">
-    <%= button_to "Destroy this vial!", { :action => :destroy_vial, :id => @vial.id }, :confirm => "Are you sure?" %>
-</div>
-<br />
+<div id="vial-info">
+<%= render(:partial => "vial_info") %>
 </div>
 
-<br />
+<div id="parent-info">
+<%= render(:partial => "parents_info") %>
+</div>
 
-<h3>Select Flies to Mate</h3>
-<% form_for :vial, :url => { :action => :mate_flies} do |form| %>
-<table>
-<tr>
-  <th>Male White</th>
-  <td>
-    <% @vial.flies_of_type([:eye_color, :gender], [:white, :male]).each do |fly| %>
-      <%= form.radio_button "dad_id", fly.id -%>
-    <% end %>
-  </td>
-</tr>
-<tr>
-  <th>Male Red</th>
-  <td>
-    <% @vial.flies_of_type([:eye_color, :gender], [:red, :male]).each do |fly| %>
-      <%= form.radio_button "dad_id", fly.id -%>
-    <% end %>
-  </td>
-</tr>
-<tr>
-  <th>Female White</th>
-  <td>
-    <% @vial.flies_of_type([:eye_color, :gender], [:white, :female]).each do |fly| %>
-      <%= form.radio_button "mom_id", fly.id -%>
-    <% end %>
-  </td>
-</tr>
-<tr>
-  <th>Female Red</th>
-  <td>
-    <% @vial.flies_of_type([:eye_color, :gender], [:red, :female]).each do |fly| %>
-      <%= form.radio_button "mom_id", fly.id -%>
-    <% end %>
-  </td>
-</tr>
-</table>
-<p>
-    <label for="label">Label for Offspring Vial:</label>
-    <%= form.text_field :label, :size => 40, :value => "" %>
-</p>
-<p>
-        <label for="number_of_flies">Number of Desired Flies:</label>
-        <%= text_field_tag :number %>
-</p>
-<%= submit_tag "Mate", :class => "submit" -%>
-<% end %>
-<br />
+<div id="mate-flies">
+<%= render(:partial => "mate_section")%>
+</div>
        

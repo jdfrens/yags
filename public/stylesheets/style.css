@@ -1,0 +1,29 @@
+.vial-title {
+	border-top: 2px dotted #ccc; 
+	width: 500px; 
+	padding: 5px 0 0 0;
+}
+
+#parent-info {
+	 border-bottom: 2px dotted #ccc; 
+	 width: 500px;
+}
+
+#destroy-vial {
+	border: 2px dashed #ff0000; 
+	width: 140px; 
+	padding: 2px;
+}
+
+table {
+	text-align: justify;
+}
+
+#vial-table {
+}
+
+#vial-table td, #vial-table th {
+	text-align: right;
+	border-bottom: 1px dotted #aaa;
+	border-right: 1px dotted #aaa;
+}

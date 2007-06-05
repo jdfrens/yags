@@ -61,7 +61,7 @@ class BenchControllerTest < Test::Unit::TestCase
     get :view_vial, :id => vials(:vial_with_a_fly).id 
     assert_response :success
     assert_standard_layout
-    assert_select "h3 span#vial_label_3_in_place_editor", vials(:vial_with_a_fly).label
+    assert_select "span#vial_label_3_in_place_editor", vials(:vial_with_a_fly).label
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "1"
@@ -69,8 +69,8 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "tr:nth-child(3) td.count", "0"
       assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
     end
-    assert_select "div.parent-info"
-    assert_select "div.parent-info table" do
+    assert_select "div#parent-info"
+    assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
     end
   end
@@ -79,7 +79,7 @@ class BenchControllerTest < Test::Unit::TestCase
     get :view_vial, :id => vials(:vial_with_many_flies).id
     assert_response :success
     assert_standard_layout
-    assert_select "h3 span#vial_label_4_in_place_editor", vials(:vial_with_many_flies).label
+    assert_select "span#vial_label_4_in_place_editor", vials(:vial_with_many_flies).label
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "1"
@@ -87,8 +87,8 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "tr:nth-child(3) td.count", "2"
       assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
     end
-    assert_select "div.parent-info"
-    assert_select "div.parent-info table" do
+    assert_select "div#parent-info"
+    assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
     end
   end
@@ -97,7 +97,7 @@ class BenchControllerTest < Test::Unit::TestCase
     get :view_vial, :id => vials(:vial_one).id
     assert_response :success
     assert_standard_layout
-    assert_select "h3 span#vial_label_1_in_place_editor", vials(:vial_one).label
+    assert_select "span#vial_label_1_in_place_editor", vials(:vial_one).label
     
     assert_select "table" do
       assert_select "tr:nth-child(2) td.count", "0"
@@ -105,8 +105,8 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "tr:nth-child(3) td.count", "0"
       assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
     end
-    assert_select "div.parent-info"
-    assert_select "div.parent-info table" do
+    assert_select "div#parent-info"
+    assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
     end
   end

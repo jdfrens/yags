@@ -1,19 +1,19 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ApplicationHelperTest < Test::Unit::TestCase
+class CartesianProductTest < Test::Unit::TestCase
 
-  include ApplicationHelper
+  include CartesianProduct
   
-  def test_crossproduct_handles_empty_input
-    assert_equal [[]], crossproduct([])
+  def test_cartesian_product_handles_empty_input
+    assert_equal [[]], cartesian_product([])
   end
   
-  def test_crossproduct_handles_single_factor
+  def test_cartesian_product_handles_single_factor
     factor = [['A','B','C']]
-    assert_equal [['A'],['B'],['C']], crossproduct(factor)
+    assert_equal [['A'],['B'],['C']], cartesian_product(factor)
   end
   
-  def test_crossproduct
+  def test_cartesian_product
     factor1 = ['a','b','c']
     factor2 = [1,2,3,4]
     factor3 = [5,6]
@@ -31,8 +31,8 @@ class ApplicationHelperTest < Test::Unit::TestCase
       [6,'b',1],[6,'b',2],[6,'b',3], [6,'b',4],
       [6,'c',1],[6,'c',2],[6,'c',3], [6,'c',4],
     ]
-    assert_equal result12, crossproduct([factor1,factor2])
-    assert_equal result312, crossproduct([factor3,factor1,factor2])
+    assert_equal result12, cartesian_product([factor1,factor2])
+    assert_equal result312, cartesian_product([factor3,factor1,factor2])
   end
   
 end

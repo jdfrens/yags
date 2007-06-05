@@ -8,9 +8,9 @@ class SpeciesTest < Test::Unit::TestCase
   end
   
   def test_singleton_represents_fruit_fly
-    assert_equal [:gender, :eye_color, :wings], flies(:fly_00).species.characters
-    assert_equal [:not_possible, :male, :female], flies(:fly_00).species.phenotypes(:gender)
-    assert_equal [:white, :red, :red], flies(:fly_00).species.phenotypes(:eye_color)
+    assert_equal [:gender, :eye_color, :wings, :legs], Species.singleton.characters
+    assert_equal [:not_possible, :male, :female], Species.singleton.phenotypes(:gender)
+    assert_equal [:white, :red, :red], Species.singleton.phenotypes(:eye_color)
   end
   
 end

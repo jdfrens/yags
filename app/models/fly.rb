@@ -3,7 +3,7 @@ class Fly < ActiveRecord::Base
   
   def phenotype(character)
     genotype = genotypes.find(:first, :conditions => "position = #{species.position_of(character)}")
-    species.phenotypes(character)[genotype.mom_allele + genotype.dad_allele]
+    species.phenotype_from character, genotype.mom_allele, genotype.dad_allele
   end
   
   # 

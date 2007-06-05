@@ -1,107 +1,107 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+fly_00_eye_color:
   id: 1
   fly_id: 1
   position: 0.5
   mom_allele: 0
   dad_allele: 0
-two:
+fly_00_gender:
   id: 2
   fly_id: 1
   position: 0.0
   mom_allele: 1
   dad_allele: 0
-three:
+fly_01_eye_color:
   id: 3
   fly_id: 2
   position: 0.5
   mom_allele: 0
   dad_allele: 1
-four:
+fly_01_gender:
   id: 4
   fly_id: 2
   position: 0.0
   mom_allele: 1
   dad_allele: 0
-five:
+fly_10_eye_color:
   id: 5
   fly_id: 3
   position: 0.5
   mom_allele: 1
   dad_allele: 1
-six:
+fly_10_gender:
   id: 6
   fly_id: 3
   position: 0.0
   mom_allele: 1
   dad_allele: 0
-seven:
+fly_11_eye_color:
   id: 7
   fly_id: 4
   position: 0.5
-  mom_allele: 0
+  mom_allele: 1
   dad_allele: 1
-eight:
+fly_11_gender:
   id: 8
   fly_id: 4
   position: 0.0
   mom_allele: 1
   dad_allele: 1
-nine:
+bob_eye_color:
   id: 9
   fly_id: 5
   position: 0.5
   mom_allele: 1
   dad_allele: 0
-ten:
+bob_gender:
   id: 10
   fly_id: 5
   position: 0.0
   mom_allele: 1
   dad_allele: 1
-eleven:
+fly_mom_eye_color:
   id: 11
   fly_id: 6
   position: 0.5
   mom_allele: 0
   dad_allele: 0
-twelve:
+fly_mom_gender:
   id: 12
   fly_id: 6
   position: 0.0
   mom_allele: 1
   dad_allele: 1
-thirteen:
+fly_dad_eye_color:
   id: 13
   fly_id: 7
   position: 0.5
   mom_allele: 0
   dad_allele: 1
-fourteen:
+fly_dad_gender:
   id: 14
   fly_id: 7
   position: 0.0
   mom_allele: 1
   dad_allele: 0
-fifteen:
+child_one_eye_color:
   id: 15
   fly_id: 8
   position: 0.5
   mom_allele: 0
   dad_allele: 0
-sixteen:
+child_one_gender:
   id: 16
   fly_id: 8
   position: 0.0
   mom_allele: 1
   dad_allele: 1
-seventeen:
+child_two_eye_color:
   id: 17
   fly_id: 9
   position: 0.5
   mom_allele: 0
   dad_allele: 1
-eighteen:
+child_two_gender:
   id: 18
   fly_id: 9
   position: 0.0

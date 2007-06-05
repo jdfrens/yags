@@ -20,11 +20,11 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
-    assert_equal new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.to_set, 
-        [:red ,:white, :red, :red].to_set
-    assert_equal new_vial.flies.map {|fly| fly.phenotype(:gender)}.to_set, 
-        [:male, :male, :female, :female].to_set
-    
+    assert_equal ([:red] * 3 + [:white]).sort_by { |p| p.to_s },
+        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
+    assert_equal ([:male] + [:female] * 3).sort_by { |p| p.to_s },
+        new_vial.flies.map {|fly| fly.phenotype(:gender)}.sort_by { |p| p.to_s } 
+        
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
@@ -33,11 +33,11 @@ class BenchControllerTest < Test::Unit::TestCase
     post :collect_field_vial, { :vial => { :label => "nine fly vial" }, :number => "9" }
     new_vial = Vial.find_by_label("nine fly vial")
     assert_not_nil new_vial
-    assert_equal new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.to_set, 
-        [:white, :white, :white, :red, :red, :red, :red, :red, :red].to_set
-    assert_equal new_vial.flies.map {|fly| fly.phenotype(:gender)}.to_set, 
-        [:male, :male, :male, :male, :female, :female, :female, :female, :female].to_set
-    
+    assert_equal ([:red] * 7 + [:white] * 2).sort_by { |p| p.to_s },
+        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
+    assert_equal ([:male] * 4 + [:female] * 5).sort_by { |p| p.to_s }, 
+        new_vial.flies.map {|fly| fly.phenotype(:gender)}.sort_by { |p| p.to_s }
+        
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
@@ -138,8 +138,14 @@ class BenchControllerTest < Test::Unit::TestCase
     post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, :number => "8" }
     new_vial = Vial.find_by_label("children vial")
     assert_not_nil new_vial
-    assert_equal new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.to_set, [:white].to_set
+    assert_equal [:white] * 8, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
+    assert_response :redirect
+    assert_redirected_to :action => "view_vial", :id => new_vial.id
     
+    post :mate_flies, { :vial => { :label => "children 2", :mom_id => "4", :dad_id => "3" }, :number => "3" }
+    new_vial = Vial.find_by_label("children 2")
+    assert_not_nil new_vial
+    assert_equal [:red] * 3, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end

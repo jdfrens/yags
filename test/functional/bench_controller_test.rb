@@ -20,24 +20,17 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
-    assert_equal ([:red] * 3 + [:white]).sort_by { |p| p.to_s },
-        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
-    assert_equal ([:male] + [:female] * 3).sort_by { |p| p.to_s },
-        new_vial.flies.map {|fly| fly.phenotype(:gender)}.sort_by { |p| p.to_s } 
-        
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
   
   def test_collect_field_vial_of_nine_flies
+    number_of_old_vials =  Vial.find(:all).size
     post :collect_field_vial, { :vial => { :label => "nine fly vial" }, :number => "9" }
     new_vial = Vial.find_by_label("nine fly vial")
     assert_not_nil new_vial
-    assert_equal ([:red] * 7 + [:white] * 2).sort_by { |p| p.to_s },
-        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
-    assert_equal ([:male] * 4 + [:female] * 5).sort_by { |p| p.to_s }, 
-        new_vial.flies.map {|fly| fly.phenotype(:gender)}.sort_by { |p| p.to_s }
-        
+    assert_equal number_of_old_vials + 1, Vial.find(:all).size
+    assert_equal 9, new_vial.flies.size
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end

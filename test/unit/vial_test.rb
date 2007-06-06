@@ -83,4 +83,26 @@ class VialTest < Test::Unit::TestCase
                                    vials(:vial_one).combinations_of_phenotypes([:eye_color, :legs])
   end
   
+  def test_collect_four_flies_from_field
+    new_vial = Vial.collect_from_field({ :label => "four fly vial"}, 4, CookedBitGenerator.new([1]))
+    assert_equal ([:female] * 4), new_vial.flies.map {|fly| fly.phenotype(:gender)}
+    assert_equal ([:red] * 4), new_vial.flies.map {|fly| fly.phenotype(:eye_color)} 
+    assert_equal ([:straight] * 4), new_vial.flies.map {|fly| fly.phenotype(:wings)}
+    assert_equal ([:hairy] * 4), new_vial.flies.map {|fly| fly.phenotype(:legs)} 
+  end
+  
+  def test_collect_nine_flies_from_field
+    new_vial = Vial.collect_from_field({ :label => "four fly vial"}, 9, 
+        CookedBitGenerator.new([0, 1, 0, 0]))
+    assert_equal ([:male] * 7 + [:female] * 2).sort_by { |p| p.to_s }, 
+        new_vial.flies.map {|fly| fly.phenotype(:gender)}.sort_by { |p| p.to_s }
+    assert_equal ([:red] * 5 + [:white] * 4).sort_by { |p| p.to_s },
+        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
+    assert_equal ([:straight] * 4 + [:curly] * 5).sort_by { |p| p.to_s },
+        new_vial.flies.map {|fly| fly.phenotype(:wings)}.sort_by { |p| p.to_s }
+    assert_equal ([:hairy] * 5 + [:smooth] * 4).sort_by { |p| p.to_s },
+        new_vial.flies.map {|fly| fly.phenotype(:legs)}.sort_by { |p| p.to_s }
+    assert_equal 2, new_vial.flies_of_type([:gender, :legs],[:female, :smooth]).size
+  end
+  
 end

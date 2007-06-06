@@ -6,8 +6,8 @@ class BenchController < ApplicationController
   
   def collect_field_vial
     if (params[:vial])
-      vial = Vial.create!(params[:vial])
-      create_and_add_many_field_flies(vial, params[:number].to_i)
+#      vial = Vial.create!(params[:vial])
+      vial = Vial.collect_from_field(params[:vial], params[:number].to_i)
       redirect_to :action => "view_vial", :id => vial.id
     end
   end
@@ -62,26 +62,6 @@ class BenchController < ApplicationController
   # Helpers
   #
   private
-  
-  def create_and_add_many_field_flies(vial, number)
-    # we could randomize this method soon.
-    mom_alleles = [0, 0, 1, 1, 0]
-    dad_alleles = [1, 0, 1, 0]
-    sex_alleles = [1, 0, 1, 1, 0, 1, 0]
-    number.times do |i|
-       new_fly = Fly.create!
-       new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => 0.5, 
-           :mom_allele => mom_alleles[i % 5], :dad_allele => dad_alleles[i % 4])
-       new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => 0.0, 
-           :mom_allele => 1, :dad_allele => sex_alleles[i % 7])
-       new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => 1.0, 
-           :mom_allele => mom_alleles[i % 5], :dad_allele => 0)
-       new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => 1.2, 
-           :mom_allele => 1, :dad_allele => dad_alleles[i % 4])
-       vial.flies << new_fly
-       vial.save!
-    end
-  end
   
   def populate_vial_with_children(vial, number)
     mom = Fly.find vial.mom_id

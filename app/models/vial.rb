@@ -5,6 +5,26 @@ class Vial < ActiveRecord::Base
   
   validates_presence_of :label
   
+  def self.collect_from_field(vial_params, number, bit_generator = RandomBitGenerator.new)
+    vial = Vial.create!(vial_params)
+    species = vial.species
+    number.times do |i|
+       new_fly = Fly.create!
+       species.characters.each do |character|
+         if character == :gender # could this be handled better?
+           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => species.position_of(character), 
+               :mom_allele => 1, :dad_allele => bit_generator.random_bit)
+         else
+           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => species.position_of(character), 
+               :mom_allele => bit_generator.random_bit, :dad_allele => bit_generator.random_bit)
+         end
+       end
+       vial.flies << new_fly
+       vial.save!
+    end
+    vial
+  end
+  
   def species
     Species.singleton
   end

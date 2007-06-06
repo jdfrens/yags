@@ -23,6 +23,10 @@ class BenchController < ApplicationController
     else
       @parents = false
     end
+    @phenotypes_to_flies = {}
+    @vial.combinations_of_phenotypes.each do |combination|
+      @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
+    end
   end
   
   def view_fly
@@ -70,6 +74,10 @@ class BenchController < ApplicationController
            :mom_allele => mom_alleles[i % 5], :dad_allele => dad_alleles[i % 4])
        new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => 0.0, 
            :mom_allele => 1, :dad_allele => sex_alleles[i % 7])
+       new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => 1.0, 
+           :mom_allele => mom_alleles[i % 5], :dad_allele => 0)
+       new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => 1.2, 
+           :mom_allele => 1, :dad_allele => dad_alleles[i % 4])
        vial.flies << new_fly
        vial.save!
     end

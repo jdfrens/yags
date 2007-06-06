@@ -1,10 +1,17 @@
 class Vial < ActiveRecord::Base
   has_many :flies, :dependent => :destroy
   
+  include CartesianProduct
+  
   validates_presence_of :label
   
   def species
     Species.singleton
+  end
+  
+  def combinations_of_phenotypes(characters = species.characters)
+    # characters = [*characters]
+    cartesian_product(characters.collect { |c| species.phenotypes(c).uniq } )
   end
   
   def number_of_flies (characters, phenotypes)

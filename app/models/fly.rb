@@ -2,7 +2,7 @@ class Fly < ActiveRecord::Base
   has_many :genotypes, :dependent => :destroy
   
   def phenotype(character)
-    genotype = genotypes.find(:first, :conditions => "position = #{species.position_of(character)}")
+    genotype = genotypes.select { |g| g.position == species.position_of(character) }.first
     species.phenotype_from character, genotype.mom_allele, genotype.dad_allele
   end
   
@@ -18,6 +18,10 @@ class Fly < ActiveRecord::Base
   
   def species
     Species.singleton
+  end
+  
+  def male?
+    phenotype(:gender) == :male
   end
   
   def mate_with(partner, bit_generator = RandomBitGenerator.new)

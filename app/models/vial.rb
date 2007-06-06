@@ -7,20 +7,20 @@ class Vial < ActiveRecord::Base
     Species.singleton
   end
   
-  def number_of_flies (character, phenotype)
-    flies_of_type(character, phenotype).size
+  def number_of_flies (characters, phenotypes)
+    flies_of_type(characters, phenotypes).size
   end
   
-  def first_of_type (character, phenotype)
-    flies_of_type(character, phenotype).first
+  def first_of_type (characters, phenotypes)
+    flies_of_type(characters, phenotypes).first
   end
   
-  def flies_of_type (character, phenotype)
-    character, phenotype = [*character], [*phenotype]
+  def flies_of_type (characters, phenotypes)
+    characters, phenotypes = [*characters], [*phenotypes]
     selection = flies
-    character.size.times do |i|
+    characters.each_with_index do |character, i|
       selection = selection.select do |fly|
-        fly.phenotype(character[i]) == phenotype[i]
+        fly.phenotype(character) == phenotypes[i]
       end
     end
     selection

@@ -10,7 +10,7 @@ class Species
     @characters = [:gender, :eye_color, :wings, :legs]
     @phenotypes = { :gender => [:not_possible, :male, :female], 
                     :eye_color => [:white, :red, :red], 
-                    :wings => [:curly, :straight, :striaght], 
+                    :wings => [:curly, :straight, :straight], 
                     :legs => [:smooth, :hairy, :hairy] }
     @positions = { :gender => 0.0, :eye_color => 0.5, :wings => 1.0, :legs => 1.2 }
   end

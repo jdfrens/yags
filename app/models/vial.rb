@@ -5,18 +5,19 @@ class Vial < ActiveRecord::Base
   
   validates_presence_of :label
   
-  def self.collect_from_field(vial_params, number, bit_generator = RandomBitGenerator.new)
+  def self.collect_from_field(vial_params, number, bit_generator = RandomBitGenerator.new, allele_frequences = {})
+    allele_frequences.default = 0.5
     vial = Vial.create!(vial_params)
     species = vial.species
     number.times do |i|
        new_fly = Fly.create!
        species.characters.each do |character|
          if character == :gender # could this be handled better?
-           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => species.position_of(character), 
-               :mom_allele => 1, :dad_allele => bit_generator.random_bit)
+           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => species.position_of(:gender), 
+               :mom_allele => 1, :dad_allele => bit_generator.random_bit(allele_frequences[:gender]))
          else
            new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => species.position_of(character), 
-               :mom_allele => bit_generator.random_bit, :dad_allele => bit_generator.random_bit)
+               :mom_allele => bit_generator.random_bit(allele_frequences[character]), :dad_allele => bit_generator.random_bit(allele_frequences[character]))
          end
        end
        vial.flies << new_fly

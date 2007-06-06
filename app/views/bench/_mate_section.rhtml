@@ -1,8 +1,10 @@
 <h3>Select Flies to Mate</h3>
 
-<% form_for :vial, :url => { :action => :mate_flies} do |form| %>
+<% form_for :vial, :url => { :action => :mate_flies} do |form| -%>
 <table>
-  <% @phenotypes_to_flies.each do |phenotypes, flies| %>
+  <% @phenotypes_to_flies.sort { |a, b| a.to_s <=> b.to_s }.each do |entry| -%>
+  <!-- sadly, <=> is not defined for :symbols -->
+  <% phenotypes, flies = entry[0], entry[1] -%>
   <tr>
     <% phenotypes.each do |phenotype|%>
       <th>
@@ -11,7 +13,7 @@
     <% end %>
     <td>
       <% flies.each do |fly| %>
-        <%= form.radio_button ((fly.male? ? "dad_id" : "mom_id"), fly.id) -%>
+        <%= form.radio_button((fly.male? ? "dad_id" : "mom_id"), fly.id) -%>
       <% end %>
     </td>
   </tr>

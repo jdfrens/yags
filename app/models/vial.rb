@@ -25,6 +25,18 @@ class Vial < ActiveRecord::Base
     vial
   end
   
+  def self.make_babies_and_vial(vial_params, number, bit_generator = RandomBitGenerator.new)
+    vial = Vial.create!(vial_params)
+    species = vial.species
+    mom = Fly.find vial.mom_id
+    dad = Fly.find vial.dad_id
+    number.times do |i|
+      vial.flies << mom.mate_with(dad, bit_generator)
+      vial.save!
+    end
+    vial
+  end
+  
   def species
     Species.singleton
   end

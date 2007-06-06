@@ -6,8 +6,14 @@ class BenchController < ApplicationController
   
   def collect_field_vial
     if (params[:vial])
-#      vial = Vial.create!(params[:vial])
       vial = Vial.collect_from_field(params[:vial], params[:number].to_i)
+      redirect_to :action => "view_vial", :id => vial.id
+    end
+  end
+  
+  def mate_flies
+    if (params[:vial])
+      vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)
       redirect_to :action => "view_vial", :id => vial.id
     end
   end
@@ -42,34 +48,12 @@ class BenchController < ApplicationController
     redirect_to :action => :list_vials
   end
   
-  def mate_flies
-    if (params[:vial])
-      vial = Vial.create!(params[:vial])
-      populate_vial_with_children(vial, params[:number].to_i)
-      redirect_to :action => "view_vial", :id => vial.id
-    end
-  end
-  
   def set_vial_label
     @vial = Vial.find(params[:id])
     previous_label = @vial.label
     @vial.label = params[:value]
     @vial.label = previous_label unless @vial.save
     render :text => h(@vial.label)
-  end
-  
-  #
-  # Helpers
-  #
-  private
-  
-  def populate_vial_with_children(vial, number)
-    mom = Fly.find vial.mom_id
-    dad = Fly.find vial.dad_id
-    number.times do |i|
-      vial.flies << mom.mate_with(dad)
-      vial.save!
-    end
   end
   
 end

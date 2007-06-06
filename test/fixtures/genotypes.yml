@@ -15,14 +15,14 @@ fly_00_wings:
   id: 101
   fly_id: 1
   position: 1.0
-  mom_allele: 0
-  dad_allele: 0
+  mom_allele: 1
+  dad_allele: 1
 fly_00_legs:
   id: 102
   fly_id: 1
   position: 1.2
-  mom_allele: 1
-  dad_allele: 0
+  mom_allele: 0
+  dad_allele: 1
 fly_01_eye_color:
   id: 3
   fly_id: 2
@@ -63,8 +63,8 @@ fly_10_wings:
   id: 105
   fly_id: 3
   position: 1.0
-  mom_allele: 1
-  dad_allele: 1
+  mom_allele: 0
+  dad_allele: 0
 fly_10_legs:
   id: 106
   fly_id: 3
@@ -88,13 +88,13 @@ fly_11_wings:
   fly_id: 4
   position: 1.0
   mom_allele: 1
-  dad_allele: 1
+  dad_allele: 0
 fly_11_legs:
   id: 108
   fly_id: 4
   position: 1.2
-  mom_allele: 1
-  dad_allele: 1
+  mom_allele: 0
+  dad_allele: 0
 bob_eye_color:
   id: 9
   fly_id: 5
@@ -141,8 +141,8 @@ fly_mom_legs:
   id: 112
   fly_id: 6
   position: 1.2
-  mom_allele: 1
-  dad_allele: 1
+  mom_allele: 0
+  dad_allele: 0
 fly_dad_eye_color:
   id: 13
   fly_id: 7
@@ -189,7 +189,7 @@ child_one_legs:
   id: 116
   fly_id: 8
   position: 1.2
-  mom_allele: 1
+  mom_allele: 0
   dad_allele: 1
 child_two_eye_color:
   id: 17
@@ -213,5 +213,5 @@ child_two_legs:
   id: 118
   fly_id: 9
   position: 1.2
-  mom_allele: 1
+  mom_allele: 0
   dad_allele: 0  

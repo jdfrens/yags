@@ -33,25 +33,25 @@ class FlyTest < Test::Unit::TestCase
   def test_mate_with
     flies(:child_one).genotypes.zip(flies(:fly_mom).mate_with(flies(:fly_dad), 
         CookedBitGenerator.new([0])).genotypes) do |pair|
-      assert_equal pair[0].position, pair[1].position
+      assert_equal pair[0].gene_number, pair[1].gene_number
       assert_equal pair[0].mom_allele, pair[1].mom_allele
       assert_equal pair[0].dad_allele, pair[1].dad_allele
     end
     flies(:child_one).genotypes.zip(flies(:fly_dad).mate_with(flies(:fly_mom), 
         CookedBitGenerator.new([0])).genotypes) do |pair|
-      assert_equal pair[0].position, pair[1].position
+      assert_equal pair[0].gene_number, pair[1].gene_number
       assert_equal pair[0].mom_allele, pair[1].mom_allele
       assert_equal pair[0].dad_allele, pair[1].dad_allele
     end
     flies(:child_two).genotypes.zip(flies(:fly_mom).mate_with(flies(:fly_dad), 
         CookedBitGenerator.new([1])).genotypes) do |pair|
-      assert_equal pair[0].position, pair[1].position
+      assert_equal pair[0].gene_number, pair[1].gene_number
       assert_equal pair[0].mom_allele, pair[1].mom_allele
       assert_equal pair[0].dad_allele, pair[1].dad_allele
     end
     flies(:child_two).genotypes.zip(flies(:fly_dad).mate_with(flies(:fly_mom), 
         CookedBitGenerator.new([1])).genotypes) do |pair|
-      assert_equal pair[0].position, pair[1].position
+      assert_equal pair[0].gene_number, pair[1].gene_number
       assert_equal pair[0].mom_allele, pair[1].mom_allele
       assert_equal pair[0].dad_allele, pair[1].dad_allele
     end
@@ -76,7 +76,9 @@ class FlyTest < Test::Unit::TestCase
     Fly.find(:all).each do |fly|
       assert_equal fly.species.characters.size, fly.genotypes.size
       fly.species.characters.each do |character|
-        assert_equal 1, fly.genotypes.select { |g| g.position == fly.species.position_of(character) }.size
+        assert_equal 1, fly.genotypes.select { |g| # why can't this be a do end block?
+          g.gene_number == fly.species.gene_number_of(character)
+        }.size
       end
     end
   end

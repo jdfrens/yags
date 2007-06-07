@@ -2,7 +2,7 @@ class Fly < ActiveRecord::Base
   has_many :genotypes, :dependent => :destroy
   
   def phenotype(character)
-    genotype = genotypes.select { |g| g.position == species.position_of(character) }.first
+    genotype = genotypes.select { |g| g.gene_number == species.gene_number_of(character) }.first
     species.phenotype_from character, genotype.mom_allele, genotype.dad_allele
   end
   
@@ -32,13 +32,11 @@ class Fly < ActiveRecord::Base
       raise ArgumentError, "mating two females"
     else
       child = Fly.create!   #is this correct?  use create! or new ?
-      last_position = genotypes[0].position
       genotypes.zip(partner.genotypes) do |pair|
-        #distance = last_position - pair[0].position
         m = bit_generator.random_bit == 0 ? pair[0].mom_allele : pair[0].dad_allele
         d = bit_generator.random_bit == 0 ? pair[1].mom_allele : pair[1].dad_allele
-        last_position = pair[0].position
-        child.genotypes << Genotype.create!(:position => last_position, :mom_allele => m, :dad_allele => d)
+        current_gene_number = pair[0].gene_number
+        child.genotypes << Genotype.create!(:gene_number => current_gene_number, :mom_allele => m, :dad_allele => d)
       end
       child.save!
       child

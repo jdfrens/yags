@@ -13,10 +13,10 @@ class Vial < ActiveRecord::Base
        new_fly = Fly.create!
        species.characters.each do |character|
          if character == :gender # could this be handled better?
-           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => species.position_of(:gender), 
+           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(:gender), 
                :mom_allele => 1, :dad_allele => bit_generator.random_bit(allele_frequences[:gender]))
          else
-           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :position => species.position_of(character), 
+           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(character), 
                :mom_allele => bit_generator.random_bit(allele_frequences[character]), :dad_allele => bit_generator.random_bit(allele_frequences[character]))
          end
        end

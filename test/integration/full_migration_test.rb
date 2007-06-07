@@ -31,11 +31,11 @@ class FullMigrationTest < ActionController::IntegrationTest
       end
       
       s.table :genotypes do |t|
-        t.column :id,          :integer
+        t.column :id,           :integer
         t.column :fly_id,       :integer
-        t.column :position,     :float
         t.column :mom_allele,   :integer
         t.column :dad_allele,   :integer
+        t.column :gene_number,  :integer
       end
     end
   end

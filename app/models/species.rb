@@ -12,15 +12,22 @@ class Species
                     :eye_color => [:white, :red, :red], 
                     :wings => [:curly, :straight, :straight], 
                     :legs => [:smooth, :hairy, :hairy] }
-    @positions = { :gender => 0.0, :eye_color => 0.5, :wings => 1.0, :legs => 1.2 }
+    @gene_numbers = { :gender => 137, :eye_color => 52, :wings => 163, :legs => 7 }
+    
+    # or should this be a hash from characters to positions still?
+    @positions = { 137 => 0.0, 52 => 0.5, 163 => 1.0, 7 => 1.2 }
   end
   
   def phenotypes(character)
     @phenotypes[character]
   end
   
-  def position_of(character)
-    @positions[character]
+  def gene_number_of(character)
+    @gene_numbers[character]
+  end
+  
+  def position_of(gene_number)
+    @positions[gene_number]
   end
   
   def phenotype_from(character, mom_allele, dad_allele)

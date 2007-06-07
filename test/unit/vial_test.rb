@@ -73,12 +73,12 @@ class VialTest < Test::Unit::TestCase
   
   def test_combinations_of_phenotypes
     assert_equal [:gender, :eye_color, :wings, :legs], vials(:vial_one).species.characters
-    assert_equal cartesian_product([[:not_possible, :male, :female],
+    assert_equal cartesian_product([[:male, :female],
                                    [:white, :red], 
                                    [:curly, :straight],
                                    [:smooth, :hairy]]),
                                    vials(:vial_one).combinations_of_phenotypes
-    assert_equal cartesian_product([[:not_possible, :male, :female],
+    assert_equal cartesian_product([[:male, :female],
                                    [:white, :red]]),
                                    vials(:vial_one).combinations_of_phenotypes([:gender, :eye_color])
     assert_equal cartesian_product([[:white, :red],

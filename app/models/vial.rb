@@ -43,8 +43,11 @@ class Vial < ActiveRecord::Base
   end
   
   def combinations_of_phenotypes(characters = species.characters)
-    # characters = [*characters]
-    cartesian_product(characters.collect { |c| species.phenotypes(c).uniq } )
+    cartesian_product( characters.collect do |character| 
+      phenotypes = species.phenotypes(character).uniq 
+      phenotypes.delete(:not_possible) # there is probably a better way to get rid of this
+      phenotypes
+    end )
   end
   
   def number_of_flies (characters, phenotypes)

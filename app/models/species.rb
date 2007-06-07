@@ -35,4 +35,8 @@ class Species
     # replace this with a look-up table
   end
   
+  def order(genotypes)
+    genotypes.sort { |a, b| position_of(a.gene_number) <=> position_of(b.gene_number) }
+  end
+  
 end

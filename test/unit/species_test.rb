@@ -19,4 +19,19 @@ class SpeciesTest < Test::Unit::TestCase
     assert_equal 7, Species.singleton.gene_number_of(:legs)
   end
   
+  def test_phenotype_from
+    assert_equal :female, Species.singleton.phenotype_from(:gender, 1, 1)
+    assert_equal :male, Species.singleton.phenotype_from(:gender, 0, 1)
+    assert_equal :red, Species.singleton.phenotype_from(:eye_color, 1, 0)
+    assert_equal :curly, Species.singleton.phenotype_from(:wings, 0, 0)
+    assert_equal :hairy, Species.singleton.phenotype_from(:legs, 1, 1)
+  end
+  
+  def test_ordering_of_genotypes
+    assert_equal [137, 52, 163, 7], 
+        flies(:fly_00).species.order(flies(:fly_00).genotypes).map { |g| g.gene_number }
+    assert_equal [137, 52, 163, 7], 
+        flies(:bob).species.order(flies(:bob).genotypes).map { |g| g.gene_number }
+  end
+  
 end

@@ -66,6 +66,20 @@ class FlyTest < Test::Unit::TestCase
     end
   end
   
+  def test_male?
+    assert flies(:fly_dad).male?
+    assert flies(:fly_00).male?
+    assert !flies(:fly_mom).male?
+    assert !flies(:fly_11).male?
+  end
+  
+  def test_female?
+    assert flies(:fly_mom).female?
+    assert flies(:fly_11).female?
+    assert !flies(:fly_dad).female?
+    assert !flies(:fly_00).female?
+  end
+  
   def test_each_fly_has_a_species
     Fly.find(:all).each do |fly|
       assert_not_nil fly.species

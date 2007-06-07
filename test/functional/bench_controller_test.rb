@@ -107,9 +107,9 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "table" do
       assert_select "tr:nth-child(1) th:nth-child(2)", "white"
       assert_select "tr:nth-child(1) th:nth-child(3)", "red"
-      assert_select "tr:nth-child(2) th:nth-child(1)", "not_possible"
-      assert_select "tr:nth-child(3) th:nth-child(1)", "male"
-      assert_select "tr:nth-child(4) th:nth-child(1)", "female"
+      #assert_select "tr:nth-child(2) th:nth-child(1)", "not_possible"
+      assert_select "tr:nth-child(2) th:nth-child(1)", "male"
+      assert_select "tr:nth-child(3) th:nth-child(1)", "female"
     end
   end
   

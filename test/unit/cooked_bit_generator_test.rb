@@ -10,11 +10,28 @@ class CookedBitGeneratorTest < Test::Unit::TestCase
     end
   end
 
-  def test_random_bit_ignores_parameter
-    bits = [0, 1, 0, 1, 0, 0, 1, 1]
-    generator = CookedBitGenerator.new(bits)
-    bits.each do |bit|
-      assert_equal bit, generator.random_bit(0.14159)
+  def test_random_bit_uses_parameter
+    ps = [0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]
+    generator = CookedBitGenerator.new(ps)
+    
+    answers = [0,0,0,0,0,0,1]
+    answers.each do |bit|
+      assert_equal bit, generator.random_bit(0.9)
+    end
+    
+    answers = [0,0,0,0,1,1,1]
+    answers.each do |bit|
+      assert_equal bit, generator.random_bit(0.6)
+    end
+    
+    answers = [0,0,0,1,1,1,1]
+    answers.each do |bit|
+      assert_equal bit, generator.random_bit(0.5)
+    end
+    
+    answers = [0,1,1,1,1,1,1]
+    answers.each do |bit|
+      assert_equal bit, generator.random_bit(0.2)
     end
   end
 

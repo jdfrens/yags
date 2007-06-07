@@ -21,7 +21,7 @@ table {
 
 #vial-table {
 	width: 390px;
-	margin: 0 0 0 110px;
+	padding: 0 0 0 75px;
 }
 
 #vial-table td {
@@ -43,4 +43,8 @@ table {
 #rows_character {
 	float: left;
 	padding-top: 45px;
+}
+
+#character_rows, #character_cols {
+	display: inline;
 }

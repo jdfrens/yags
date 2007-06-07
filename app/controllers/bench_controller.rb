@@ -29,6 +29,8 @@ class BenchController < ApplicationController
     else
       @parents = false
     end
+      @column_titles = @vial.species.phenotypes(:gender)
+      @row_titles = @vial.species.phenotypes(:gender)
     @phenotypes_to_flies = {}
     @vial.combinations_of_phenotypes.each do |combination|
       @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
@@ -55,5 +57,19 @@ class BenchController < ApplicationController
     @vial.label = previous_label unless @vial.save
     render :text => h(@vial.label)
   end
-  
+
+  def update_table
+      if request.post?
+        vial = params[:vial_id]
+        @vial = Vial.find(vial)
+        @columns = params[:character_col].intern
+        @rows = params[:character_row].intern
+        @column_titles = @vial.species.phenotypes(@columns)
+        @row_titles = @vial.species.phenotypes(@rows)
+      end
+     render :update do |page|
+       page.replace_html "vial-table", :partial => "character_table"
+     end
+  end
+
 end

@@ -1,18 +1,21 @@
 <p> <strong>Total number of flies: </strong><%= @vial.flies.size %></p>
 
-<div id="cols_character">
-<% form_for :character_list_cols do |form| %>
-<%= form.select(:character, @vial.species.characters, {}) %>
-<% end %>
-</div>
-
-<div id="rows_character">
-<% form_for :character_list_rows do |form| %>
-<%= form.select(:character, @vial.species.characters, {}) %>
-<% end %>
+<div>
+    <% form_remote_tag :url => {:action => :update_table} do %>
+    <div id="character_cols">
+        <label for="character_select_col">Columns: </label>
+        <%= select_tag(:character_col, options_for_select(@vial.species.characters, params[:character_col]) ) %>
+    </div>
+    <div id="character_rows">
+        <label for="character_select_row">Rows: </label>
+        <%= select_tag(:character_row, options_for_select(@vial.species.characters, params[:character_row]) ) %>
+    </div>
+        <%= hidden_field_tag(:vial_id, @vial.id) %>
+        <%= submit_tag "Update Table" %>
+    <% end %>
 </div>
 
 <br />
 <div id="vial-table">
-<%= render(:partial => "character_table") %>
+    <%= render :partial => "character_table" %>
 </div>

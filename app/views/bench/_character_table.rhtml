@@ -1,11 +1,11 @@
 <table>   
     <tr>
         <th></th>
-        <th>Red</th>
-        <th>White</th>
+        <th><%= @column_titles[0] %></th>
+        <th><%= @column_titles[2] %></th>
     </tr>
     <tr>
-        <th>Male</th>
+        <th><%= @row_titles[0] %></th>
         <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:red, :male]),
             :action => :view_fly, 
             :id => @vial.first_of_type([:eye_color, :gender], [:red, :male]) %></td>
@@ -14,7 +14,7 @@
             :id => @vial.first_of_type([:eye_color, :gender], [:white, :male]) %></td>
     </tr>
     <tr>
-        <th>Female</th>
+        <th><%= @row_titles[2] %></th>
         <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:red, :female]),
             :action => :view_fly, 
             :id => @vial.first_of_type([:eye_color, :gender], [:red, :female]) %></td>

@@ -61,11 +61,14 @@ class VialTest < Test::Unit::TestCase
   
   def test_destroying_of_vial
     number_of_old_vials = Vial.find(:all).size
-    assert_equal 1, Vial.find(:all, :conditions => "id = 6").size 
+    number_of_old_flies = Fly.find(:all).size
+    assert_equal 1, destroyable_vial = Vial.find(:all, :conditions => "id = 6").size
+    assert_equal 2, Fly.find(:all, :conditions => "vial_id = 6").size
     
     vials(:destroyable_vial).destroy
     assert_equal number_of_old_vials - 1, Vial.find(:all).size
-    assert_equal 0, Vial.find(:all, :conditions => "id = 6").size 
+    assert_equal 0, Vial.find(:all, :conditions => "id = 6").size
+    assert_equal 0, Fly.find(:all, :conditions => "vial_id = 6").size
   end
   
   def test_combinations_of_phenotypes
@@ -106,19 +109,19 @@ class VialTest < Test::Unit::TestCase
   end
   
   def test_collecting_field_vial_with_allele_frequencies
-    recessive_vial = Vial.collect_from_field({ :label => "white eyed curly and shaven flies"}, 14, 
+    recessive_vial = Vial.collect_from_field({ :label => "white-eyed curly and shaven flies"}, 14, 
         RandomBitGenerator.new, { :eye_color => 0.0, :wings => 0.0, :legs => 0.0})
     assert_equal 14, recessive_vial.number_of_flies([:eye_color],[:white])
     assert_equal 14, recessive_vial.number_of_flies([:wings],[:curly])
     assert_equal 14, recessive_vial.number_of_flies([:legs],[:smooth])
     
-    dominant_vial = Vial.collect_from_field({ :label => "white eyed curly and shaven flies"}, 15, 
+    dominant_vial = Vial.collect_from_field({ :label => "red-eyed gruff flies"}, 15, 
         RandomBitGenerator.new, { :eye_color => 1.0, :wings => 1.0, :legs => 1.0})
     assert_equal 15, dominant_vial.number_of_flies([:eye_color],[:red])
     assert_equal 15, dominant_vial.number_of_flies([:wings],[:straight])
     assert_equal 15, dominant_vial.number_of_flies([:legs],[:hairy])
     
-    strange_male_vial = Vial.collect_from_field({ :label => "white eyed curly and shaven flies"}, 16, 
+    strange_male_vial = Vial.collect_from_field({ :label => "wasp flies"}, 16, 
         RandomBitGenerator.new, { :eye_color => 0.0, :gender => 0.0})
     assert_equal 16, strange_male_vial.number_of_flies([:eye_color],[:white])
     assert_equal 16, strange_male_vial.number_of_flies([:gender],[:male])

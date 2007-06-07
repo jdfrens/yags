@@ -21,15 +21,13 @@ class FlyTest < Test::Unit::TestCase
     number_of_old_flies = Fly.find(:all).size
     number_of_old_genotypes = Genotype.find(:all).size
     assert_equal 1, Fly.find(:all, :conditions => "id = 5").size # :bob
-    assert_equal 4, Genotype.find(:all, :conditions => 
-        "id = 9 or id = 10 or id = 109 or id = 110").size # :bob's genotypes
+    assert_equal 4, Genotype.find(:all, :conditions => "fly_id = 5").size # :bob's genotypes
     
     flies(:bob).destroy
     assert_equal number_of_old_flies - 1, Fly.find(:all).size
     assert_equal number_of_old_genotypes - 4, Genotype.find(:all).size
     assert_equal 0, Fly.find(:all, :conditions => "id = 5").size # :bob
-    assert_equal 0, Genotype.find(:all, :conditions => 
-        "id = 9 or id = 10 or id = 109 or id = 110").size # :bob's genotypes
+    assert_equal 0, Genotype.find(:all, :conditions => "fly_id = 5").size # :bob's genotypes
   end
   
   def test_mate_with

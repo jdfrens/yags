@@ -22,5 +22,7 @@ fly_dad:
   vial_id: 5
 child_one:
   id: 8
+  vial_id: 6
 child_two:
   id: 9
+  vial_id: 6

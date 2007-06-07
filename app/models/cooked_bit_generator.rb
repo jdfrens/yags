@@ -1,13 +1,19 @@
 class CookedBitGenerator
 
-  def initialize(probs)
-    @probs = probs
+  def initialize(bits)
+    @bits = bits
+    @ps = []
     @counter = -1
   end
   
   def random_bit(p=0.5)
-    @counter = (@counter + 1) % @probs.length
-    (@probs[@counter] < p ? 0 : 1)
+    @ps << p
+    @counter = (@counter + 1) % @bits.length
+    @bits[@counter]
   end
   
+  def received_ps
+    @ps
+  end
+
 end

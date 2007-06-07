@@ -1,12 +1,20 @@
 .vial-title {
 	border-top: 2px dotted #ccc; 
-	width: 500px; 
+	width: 700px; 
 	padding: 5px 0 0 0;
 }
 
 #parent-info {
 	 border-bottom: 2px dotted #ccc; 
-	 width: 500px;
+	 width: 700px;
+}
+
+#parent-table td {
+	text-align: right;
+}
+
+#parent-table th {
+	text-align: justify;
 }
 
 #destroy-vial {
@@ -20,7 +28,7 @@ table {
 }
 
 #vial-table {
-	width: 390px;
+	width: 400px;
 	padding: 0 0 0 75px;
 }
 
@@ -36,15 +44,11 @@ table {
 	border-right: 1px dotted #aaa;	
 }
 
-#cols_character {
-	padding-left: 150px;
-}
-
-#rows_character {
-	float: left;
-	padding-top: 45px;
-}
-
 #character_rows, #character_cols {
 	display: inline;
+}
+
+#instruction {
+	color: #949494;
+	font: 14px Tahoma;
 }

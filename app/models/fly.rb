@@ -5,13 +5,7 @@ class Fly < ActiveRecord::Base
     genotype = genotypes.select { |g| g.gene_number == species.gene_number_of(character) }.first
     species.phenotype_from character, genotype.mom_allele, genotype.dad_allele
   end
-  
-  # 
-  def phenotypes
-    species.phenotypes
-  end
-  #
-  
+    
   def vial
     Vial.find(vial_id)
   end

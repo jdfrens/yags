@@ -1,20 +1,26 @@
-    <h3>Parental Information</h3>
+    <h4>Parental Information</h4>
     
-    <table>
+    <table id="parent-table">
     <% if @parents %>
         <tr>
             <th></th>
-            <th>Eye Color</th>
-            <th>Source Vial</th>
+            <% @vial.species.characters.each do |ch| %>
+            <th><%= ch %></th>
+            <% end %>
+            <th>source vial</th>
         </tr>
         <tr>
             <th>Mom</th>
-            <td><%= @mom.phenotype(:eye_color).to_s %></td>
+            <% @vial.species.characters.each do |ch| %>
+            <td><%= @mom.phenotype(ch) %></td>
+            <% end %>
             <td><%= link_to @mom_vial.label, :action => :view_vial, :id => @mom_vial %></td>
         </tr>
         <tr>
             <th>Dad</th>
-            <td><%= @dad.phenotype(:eye_color).to_s %></td>
+            <% @vial.species.characters.each do |ch| %>
+            <td><%= @dad.phenotype(ch) %></td>
+            <% end %>
             <td><%= link_to @dad_vial.label, :action => :view_vial, :id => @dad_vial %></td>
         </tr>
     <% else %>

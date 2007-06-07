@@ -55,13 +55,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "span#vial_label_3_in_place_editor", vials(:vial_with_a_fly).label
-    
-    assert_select "table" do
-      assert_select "tr:nth-child(2) td.count", "1"
-      assert_select "tr:nth-child(2) td.count:nth-child(3)", "0"
-      assert_select "tr:nth-child(3) td.count", "0"
-      assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
-    end
+        
+    assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
@@ -74,12 +69,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "span#vial_label_4_in_place_editor", vials(:vial_with_many_flies).label
     
-    assert_select "table" do
-      assert_select "tr:nth-child(2) td.count", "1"
-      assert_select "tr:nth-child(2) td.count:nth-child(3)", "1"
-      assert_select "tr:nth-child(3) td.count", "2"
-      assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
-    end
+    assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
@@ -91,13 +81,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "span#vial_label_1_in_place_editor", vials(:vial_one).label
-    
-    assert_select "table" do
-      assert_select "tr:nth-child(2) td.count", "0"
-      assert_select "tr:nth-child(2) td.count:nth-child(3)", "0"
-      assert_select "tr:nth-child(3) td.count", "0"
-      assert_select "tr:nth-child(3) td.count:nth-child(3)", "0"
-    end
+
+    assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
@@ -123,7 +108,8 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "tr:nth-child(1) th:nth-child(2)", "white"
       assert_select "tr:nth-child(1) th:nth-child(3)", "red"
       assert_select "tr:nth-child(2) th:nth-child(1)", "not_possible"
-      assert_select "tr:nth-child(3) th:nth-child(1)", "female"
+      assert_select "tr:nth-child(3) th:nth-child(1)", "male"
+      assert_select "tr:nth-child(4) th:nth-child(1)", "female"
     end
   end
   

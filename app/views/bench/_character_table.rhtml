@@ -1,25 +1,19 @@
 <table>   
     <tr>
         <th></th>
-        <th><%= @column_titles[0] %></th>
-        <th><%= @column_titles[2] %></th>
+        <% @column_titles.each do |title| %>
+        <th><%= title %></th>
+        <% end %>
     </tr>
+    <% @row_titles.each do |row_title| %>
     <tr>
-        <th><%= @row_titles[0] %></th>
-        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:red, :male]),
+        <th><%= row_title %></th>
+        <% @column_titles.each do |col_title| %>
+        <td class="count"><%= link_to @vial.number_of_flies([@rows, @columns], [row_title, col_title]),
             :action => :view_fly, 
-            :id => @vial.first_of_type([:eye_color, :gender], [:red, :male]) %></td>
-        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:white, :male]),
-            :action => :view_fly, 
-            :id => @vial.first_of_type([:eye_color, :gender], [:white, :male]) %></td>
+            :id => @vial.first_of_type([@rows, @columns], [row_title, col_title]) %></td>
+        <% end %>
     </tr>
-    <tr>
-        <th><%= @row_titles[2] %></th>
-        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:red, :female]),
-            :action => :view_fly, 
-            :id => @vial.first_of_type([:eye_color, :gender], [:red, :female]) %></td>
-        <td class="count"><%= link_to @vial.number_of_flies([:eye_color, :gender], [:white, :female]),
-            :action => :view_fly, 
-            :id => @vial.first_of_type([:eye_color, :gender], [:white, :female]) %></td>
-    </tr>
+    <% end %>
+
 </table>

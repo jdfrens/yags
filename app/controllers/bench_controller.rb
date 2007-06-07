@@ -29,8 +29,8 @@ class BenchController < ApplicationController
     else
       @parents = false
     end
-      @column_titles = @vial.species.phenotypes(:gender)
-      @row_titles = @vial.species.phenotypes(:gender)
+    @column_titles = @vial.species.phenotypes(:gender)
+    @row_titles = @vial.species.phenotypes(:gender)
     @phenotypes_to_flies = {}
     @vial.combinations_of_phenotypes.each do |combination|
       @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
@@ -60,12 +60,11 @@ class BenchController < ApplicationController
 
   def update_table
       if request.post?
-        vial = params[:vial_id]
-        @vial = Vial.find(vial)
+        @vial = Vial.find(params[:vial_id])
         @columns = params[:character_col].intern
         @rows = params[:character_row].intern
-        @column_titles = @vial.species.phenotypes(@columns)
-        @row_titles = @vial.species.phenotypes(@rows)
+        @column_titles = @vial.species.phenotypes(@columns).uniq
+        @row_titles = @vial.species.phenotypes(@rows).uniq
       end
       redirect_to :action => "view_vial", :id => @vial unless request.xhr?
   end

@@ -115,6 +115,18 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_equal '<Bob>', vial.label
   end
   
+  def test_update_table
+    xhr :post, :update_table, { :vial_id => vials(:vial_one).id, :character_col => "eye_color", :character_row => "gender" }
+    assert_response :success
+    
+    assert_select "table" do
+      assert_select "tr:nth-child(1) th:nth-child(2)", "white"
+      assert_select "tr:nth-child(1) th:nth-child(3)", "red"
+      assert_select "tr:nth-child(2) th:nth-child(1)", "not_possible"
+      assert_select "tr:nth-child(3) th:nth-child(1)", "female"
+    end
+  end
+  
   def test_list_vials
     get :list_vials
     assert_response :success

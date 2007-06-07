@@ -1,0 +1,1 @@
+page.replace_html "vial-table", :partial => "character_table"

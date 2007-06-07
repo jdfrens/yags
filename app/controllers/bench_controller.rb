@@ -67,9 +67,7 @@ class BenchController < ApplicationController
         @column_titles = @vial.species.phenotypes(@columns)
         @row_titles = @vial.species.phenotypes(@rows)
       end
-     render :update do |page|
-       page.replace_html "vial-table", :partial => "character_table"
-     end
+      redirect_to :action => "view_vial", :id => @vial unless request.xhr?
   end
 
 end

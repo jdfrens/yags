@@ -119,6 +119,12 @@ bob_legs:
   mom_allele: 1
   dad_allele: 1
   gene_number: 7
+bobs_secret_sex_linked_char:
+  id: 99
+  fly_id: nil
+  mom_allele: 1
+  dad_allele: 0
+  gene_number: 144
 fly_mom_eye_color:
   id: 11
   fly_id: 6

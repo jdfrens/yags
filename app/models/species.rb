@@ -8,12 +8,18 @@ class Species
   
   def initialize
     @characters = [:gender, :eye_color, :wings, :legs]
-    @phenotypes = { :gender => [:not_possible, :male, :female], 
-                    :eye_color => [:white, :red, :red], 
-                    :wings => [:curly, :straight, :straight], 
-                    :legs => [:smooth, :hairy, :hairy] }
-    @gene_numbers = { :gender => 137, :eye_color => 52, :wings => 163, :legs => 7 }
-    @positions = { 137 => 0.0, 52 => 0.5, 163 => 1.0, 7 => 1.125 }
+    @phenotypes = { :gender => [:male, :female], 
+                    :eye_color => [:white, :red], 
+                    :wings => [:curly, :straight], 
+                    :legs => [:smooth, :hairy],
+                    :sex_linked_char => [:rec, :dom] }
+    @phenotype_lookup = { :gender => {[1,1] => :female, [0,1] => :male, [0,0] => :not_possible },
+                          :eye_color => {[1,1] => :red, [0,1] => :red, [0,0] => :white }, 
+                          :wings => {[1,1] => :straight, [0,1] => :straight, [0,0] => :curly }, 
+                          :legs => {[1,1] => :hairy, [0,1] => :hairy, [0,0] => :smooth },
+                          :sex_linked_char => {[6,6] => :rec, [6,7] => :dom, [7,7] => :dom, [0, 6] => :rec, [0,7] => :dom } }
+    @gene_numbers = { :gender => 137, :eye_color => 52, :wings => 163, :legs => 7, :sex_linked_char => 144}
+    @positions = { 137 => 0.0, 52 => 0.5, 163 => 1.0, 7 => 1.2, 144 => 0.0 }
   end
   
   def phenotypes(character)
@@ -29,12 +35,18 @@ class Species
   end
   
   def phenotype_from(character, mom_allele, dad_allele)
-    @phenotypes[character][mom_allele + dad_allele]
-    # replace this with a look-up table
+    @phenotype_lookup[character][[mom_allele, dad_allele].sort]
   end
   
   def order(genotypes)
-    genotypes.sort { |a, b| position_of(a.gene_number) <=> position_of(b.gene_number) }
+    genotypes.sort do |a, b| 
+      if (comparison_value = position_of(a.gene_number) <=> position_of(b.gene_number)) != 0
+        comparison_value
+      else
+        a.gene_number <=> b.gene_number
+        # this gives sex linked genes a definite order
+      end
+    end
   end
   
   def distance_between(gene_number1, gene_number2)

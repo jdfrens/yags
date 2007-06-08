@@ -29,7 +29,7 @@ class Fly < ActiveRecord::Base
     elsif partner.female?
       raise ArgumentError, "mating two females"
     else
-      child = Fly.create!   # is this correct?  use create! or new ?
+      child = Fly.new
       mom_gamete = self.make_gamete(bit_gen)
       dad_gamete = partner.make_gamete(bit_gen)
       mom_gamete.zip(dad_gamete) do |pair|
@@ -40,11 +40,6 @@ class Fly < ActiveRecord::Base
       child
     end
   end
-  
-  #
-  # Helper
-  #
-  #private # can we still test this method if it is private?
   
   def make_gamete(bit_gen)
     side = 0

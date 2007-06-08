@@ -1,11 +1,11 @@
 .vial-title {
+}
+#vial-info {
 	border-top: 2px dotted #ccc; 
 	width: 700px; 
-	padding: 5px 0 0 0;
 }
 
 #parent-info {
-	 border-bottom: 2px dotted #ccc; 
 	 width: 700px;
 }
 
@@ -52,3 +52,16 @@ table {
 	color: #949494;
 	font: 14px Tahoma;
 }
+
+.section_header {
+  cursor: pointer;
+  font-size: 1.3em;
+  padding-left: 1.3em;
+  background: no-repeat center left;
+  margin: .4em 0;
+}
+
+.section_closed .section_header { background-image: url(/images/arrow_closed.png);}
+.section_open .section_header   { background-image: url(/images/arrow_open.png); }
+
+.section_closed .section_content { display: none; }

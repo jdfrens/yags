@@ -1,3 +1,10 @@
+<div class="section_open">
+    <div class="section_header" onclick="toggle_section(this.parentNode)">Vial Information</div>
+<div class="section_content">
+<div class="vial-title">
+<strong>Label: </strong><%= in_place_editor_field :vial, 'label', {} %>
+</div>
+
 <p> <strong>Total number of flies: </strong><%= @vial.flies.size %></p>
 
 <div>
@@ -19,4 +26,6 @@
 <div id="vial-table">
     <em id="instruction">To view the table, select two characters from above. <br />
     Then, click <q>Update Table</q></em>
+</div>
+</div>
 </div>

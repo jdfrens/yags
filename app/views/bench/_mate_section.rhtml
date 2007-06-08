@@ -1,4 +1,6 @@
-<h3>Select Flies to Mate</h3>
+<div class="section_closed">
+    <div class="section_header" onclick="toggle_section(this.parentNode)">Select Flies to Mate</div>
+<div class="section_content">
 
 <% form_for :vial, :url => { :action => :mate_flies} do |form| -%>
 <table>
@@ -31,3 +33,5 @@
 <% end %>
 
 <br />
+</div>
+</div>

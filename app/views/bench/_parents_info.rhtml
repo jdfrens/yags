@@ -1,5 +1,6 @@
-    <h4>Parental Information</h4>
-    
+<div class="section_closed">
+    <div class="section_header" onclick="toggle_section(this.parentNode)">Parental Information</div>
+<div class="section_content">
     <table id="parent-table">
     <% if @parents %>
         <tr>
@@ -34,3 +35,5 @@
     <%= button_to "Destroy this vial!", { :action => :destroy_vial, :id => @vial.id }, :confirm => "Are you sure?" %>
 </div>
 <br />
+</div>
+</div>

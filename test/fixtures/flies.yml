@@ -26,3 +26,6 @@ child_one:
 child_two:
   id: 9
   vial_id: 6
+gamete_maker:
+  id: 10
+  vial_id: 7

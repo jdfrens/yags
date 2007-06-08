@@ -17,3 +17,6 @@ parents_vial:
 destroyable_vial:
   id: 6
   label: Destroyable vial
+random_vial:
+  id: 7
+  label: Another vial

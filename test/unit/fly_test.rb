@@ -30,27 +30,41 @@ class FlyTest < Test::Unit::TestCase
     assert_equal 0, Genotype.find(:all, :conditions => "fly_id = 5").size # :bob's genotypes
   end
   
+  def test_make_gamete
+    assert_equal [[0,137],[0,52],[0,163],[0,7]], 
+        flies(:gamete_maker).make_gamete(CookedBitGenerator.new([0,0,0,0]))
+    assert_equal [[0,137],[1,52],[1,163],[1,7]], 
+        flies(:gamete_maker).make_gamete(CookedBitGenerator.new([0,1,0,0]))
+    assert_equal [[1,137],[0,52],[1,163],[0,7]], 
+        flies(:gamete_maker).make_gamete(CookedBitGenerator.new([1,1,1,1]))
+    assert_equal [[1,137],[1,52],[1,163],[0,7]], 
+        flies(:gamete_maker).make_gamete(CookedBitGenerator.new([1,0,0,1]))
+    assert_equal [[1,137],[0,52],[0,163],[1,7]], 
+        flies(:bob).make_gamete(CookedBitGenerator.new([1,0,0,0]))
+  end
+  
   def test_mate_with
-    flies(:child_one).genotypes.zip(flies(:fly_mom).mate_with(flies(:fly_dad), 
+    s = Species.singleton
+    s.order(flies(:child_one).genotypes).zip(flies(:fly_mom).mate_with(flies(:fly_dad), 
         CookedBitGenerator.new([0])).genotypes) do |pair|
       assert_equal pair[0].gene_number, pair[1].gene_number
       assert_equal pair[0].mom_allele, pair[1].mom_allele
       assert_equal pair[0].dad_allele, pair[1].dad_allele
     end
-    flies(:child_one).genotypes.zip(flies(:fly_dad).mate_with(flies(:fly_mom), 
+    s.order(flies(:child_one).genotypes).zip(flies(:fly_dad).mate_with(flies(:fly_mom), 
         CookedBitGenerator.new([0])).genotypes) do |pair|
       assert_equal pair[0].gene_number, pair[1].gene_number
       assert_equal pair[0].mom_allele, pair[1].mom_allele
       assert_equal pair[0].dad_allele, pair[1].dad_allele
     end
-    flies(:child_two).genotypes.zip(flies(:fly_mom).mate_with(flies(:fly_dad), 
-        CookedBitGenerator.new([1])).genotypes) do |pair|
+    s.order(flies(:child_two).genotypes).zip(flies(:fly_mom).mate_with(flies(:fly_dad), 
+        CookedBitGenerator.new([1,0,0,0])).genotypes) do |pair|
       assert_equal pair[0].gene_number, pair[1].gene_number
       assert_equal pair[0].mom_allele, pair[1].mom_allele
       assert_equal pair[0].dad_allele, pair[1].dad_allele
     end
-    flies(:child_two).genotypes.zip(flies(:fly_dad).mate_with(flies(:fly_mom), 
-        CookedBitGenerator.new([1])).genotypes) do |pair|
+    s.order(flies(:child_two).genotypes).zip(flies(:fly_dad).mate_with(flies(:fly_mom), 
+        CookedBitGenerator.new([1,0,0,0])).genotypes) do |pair|
       assert_equal pair[0].gene_number, pair[1].gene_number
       assert_equal pair[0].mom_allele, pair[1].mom_allele
       assert_equal pair[0].dad_allele, pair[1].dad_allele

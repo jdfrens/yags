@@ -215,3 +215,27 @@ child_two_legs:
   mom_allele: 0
   dad_allele: 0
   gene_number: 7
+gamete_maker_color:
+  id: 19
+  fly_id: 10
+  mom_allele: 0
+  dad_allele: 1
+  gene_number: 52
+gamete_maker_gender:
+  id: 20
+  fly_id: 10
+  mom_allele: 0
+  dad_allele: 1
+  gene_number: 137
+gamete_maker_wings:
+  id: 119
+  fly_id: 10
+  mom_allele: 0
+  dad_allele: 1
+  gene_number: 163
+gamete_maker_legs:
+  id: 120
+  fly_id: 10
+  mom_allele: 0
+  dad_allele: 1
+  gene_number: 7

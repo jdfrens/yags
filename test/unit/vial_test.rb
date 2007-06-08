@@ -138,16 +138,16 @@ class VialTest < Test::Unit::TestCase
   
   def test_making_seven_babies_and_a_vial
     new_vial = Vial.make_babies_and_vial({ :label => "seven fly syblings", 
-        :mom_id => "4", :dad_id => "3" }, 7, CookedBitGenerator.new([0, 1, 0, 1, 1]))
-    assert_equal ([:male] * 5 + [:female] * 2).sort_by { |p| p.to_s }, 
+        :mom_id => "4", :dad_id => "3" }, 7, CookedBitGenerator.new([0, 1, 1, 0, 0]))
+    assert_equal ([:male] * 3 + [:female] * 4).sort_by { |p| p.to_s }, 
         new_vial.flies.map {|fly| fly.phenotype(:gender)}.sort_by { |p| p.to_s }
     assert_equal ([:red] * 7 + [:white] * 0).sort_by { |p| p.to_s },
         new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
-    assert_equal ([:straight] * 3 + [:curly] * 4).sort_by { |p| p.to_s },
+    assert_equal ([:straight] * 5 + [:curly] * 2).sort_by { |p| p.to_s },
         new_vial.flies.map {|fly| fly.phenotype(:wings)}.sort_by { |p| p.to_s }
     assert_equal ([:hairy] * 4 + [:smooth] * 3).sort_by { |p| p.to_s },
         new_vial.flies.map {|fly| fly.phenotype(:legs)}.sort_by { |p| p.to_s }
-    assert_equal 2, new_vial.flies_of_type([:wings, :legs],[:curly, :smooth]).size
+    assert_equal 1, new_vial.flies_of_type([:wings, :legs],[:curly, :smooth]).size
   end
   
 end

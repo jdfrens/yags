@@ -13,9 +13,7 @@ class Species
                     :wings => [:curly, :straight, :straight], 
                     :legs => [:smooth, :hairy, :hairy] }
     @gene_numbers = { :gender => 137, :eye_color => 52, :wings => 163, :legs => 7 }
-    
-    # or should this be a hash from characters to positions still?
-    @positions = { 137 => 0.0, 52 => 0.5, 163 => 1.0, 7 => 1.2 }
+    @positions = { 137 => 0.0, 52 => 0.5, 163 => 1.0, 7 => 1.125 }
   end
   
   def phenotypes(character)
@@ -37,6 +35,15 @@ class Species
   
   def order(genotypes)
     genotypes.sort { |a, b| position_of(a.gene_number) <=> position_of(b.gene_number) }
+  end
+  
+  def distance_between(gene_number1, gene_number2)
+    if gene_number1.nil? or 
+        (distance = position_of(gene_number2) - position_of(gene_number1)) > 0.5
+      0.5
+    else
+      distance
+    end
   end
   
 end

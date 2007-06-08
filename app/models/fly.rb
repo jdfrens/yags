@@ -23,21 +23,41 @@ class Fly < ActiveRecord::Base
   end
   
   def mate_with(partner, bit_gen = RandomBitGenerator.new)
-    if male? 
+    if self.male? 
       raise ArgumentError, "mating two males" if partner.male?
       partner.mate_with(self, bit_gen)
     elsif partner.female?
       raise ArgumentError, "mating two females"
     else
       child = Fly.create!   # is this correct?  use create! or new ?
-      genotypes.zip(partner.genotypes) do |pair|
-        child.genotypes << Genotype.create!(:gene_number => pair[0].gene_number, 
-            :mom_allele => bit_gen.random_bit == 0 ? pair[0].mom_allele : pair[0].dad_allele,
-            :dad_allele => bit_gen.random_bit == 0 ? pair[1].mom_allele : pair[1].dad_allele)
+      mom_gamete = self.make_gamete(bit_gen)
+      dad_gamete = partner.make_gamete(bit_gen)
+      mom_gamete.zip(dad_gamete) do |pair|
+        child.genotypes << Genotype.create!(:gene_number => pair[0][1],
+            :mom_allele => pair[0][0], :dad_allele => pair[1][0])
       end
       child.save!
       child
     end
+  end
+  
+  #
+  # Helper
+  #
+  #private # can we still test this method if it is private?
+  
+  def make_gamete(bit_gen)
+    side = 0
+    gamete = []
+    last_gene_number = nil
+    species.order(genotypes).each do |genotype|
+      if bit_gen.random_bit(species.distance_between(last_gene_number, genotype.gene_number)) == 1
+        side = [1, 0][side]
+      end
+      gamete << [side == 0 ? genotype.mom_allele : genotype.dad_allele, 
+          last_gene_number = genotype.gene_number]
+    end
+    gamete
   end
   
 end

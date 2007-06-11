@@ -63,10 +63,8 @@ class BenchController < ApplicationController
         @vial = Vial.find(params[:vial_id])
         @columns = params[:character_col].intern
         @rows = params[:character_row].intern
-        @column_titles = @vial.species.phenotypes(@columns).uniq
-        @column_titles.delete(:not_possible) # not elegant
-        @row_titles = @vial.species.phenotypes(@rows).uniq
-        @row_titles.delete(:not_possible)    # not elegant
+        @column_titles = @vial.species.phenotypes(@columns)
+        @row_titles = @vial.species.phenotypes(@rows)
       end
       redirect_to :action => "view_vial", :id => @vial unless request.xhr?
   end

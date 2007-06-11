@@ -32,9 +32,9 @@ class Fly < ActiveRecord::Base
       child = Fly.new
       mom_gamete = self.make_gamete(bit_gen)
       dad_gamete = partner.make_gamete(bit_gen)
-      mom_gamete.zip(dad_gamete) do |pair|
-        child.genotypes << Genotype.create!(:gene_number => pair[0][1],
-            :mom_allele => pair[0][0], :dad_allele => pair[1][0])
+      mom_gamete.zup(dad_gamete) do |mom, dad|
+        child.genotypes << Genotype.create!(:gene_number => mom[1],
+            :mom_allele => mom[0], :dad_allele => dad[0])
       end
       child.save!
       child
@@ -47,12 +47,18 @@ class Fly < ActiveRecord::Base
     last_gene_number = nil
     species.order(genotypes).each do |genotype|
       if bit_gen.random_bit(species.distance_between(last_gene_number, genotype.gene_number)) == 1
-        side = [1, 0][side]
+        side = flip(side)
       end
-      gamete << [side == 0 ? genotype.mom_allele : genotype.dad_allele, 
-          last_gene_number = genotype.gene_number]
+      gamete << [side == 0 ? genotype.mom_allele : genotype.dad_allele, genotype.gene_number]
+      last_gene_number = genotype.gene_number
     end
     gamete
+  end
+  
+  private
+  
+  def flip(side)
+    [1, 0][side]
   end
   
 end

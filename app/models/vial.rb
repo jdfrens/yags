@@ -17,7 +17,8 @@ class Vial < ActiveRecord::Base
                :mom_allele => 1, :dad_allele => bit_generator.random_bit(allele_frequences[:gender]))
          else
            new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(character), 
-               :mom_allele => bit_generator.random_bit(allele_frequences[character]), :dad_allele => bit_generator.random_bit(allele_frequences[character]))
+               :mom_allele => bit_generator.random_bit(allele_frequences[character]), 
+               :dad_allele => bit_generator.random_bit(allele_frequences[character]))
          end
        end
        vial.flies << new_fly
@@ -44,9 +45,7 @@ class Vial < ActiveRecord::Base
   
   def combinations_of_phenotypes(characters = species.characters)
     cartesian_product( characters.collect do |character| 
-      phenotypes = species.phenotypes(character).uniq 
-      phenotypes.delete(:not_possible) # there is probably a better way to get rid of this
-      phenotypes
+      phenotypes = species.phenotypes(character)
     end )
   end
   

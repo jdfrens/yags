@@ -37,6 +37,31 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :dad_allele,   :integer
         t.column :gene_number,  :integer
       end
+      
+      # authentication
+      s.table "groups" do |t|
+        t.column "id",          :integer
+        t.column "name",        :string
+      end
+      
+      s.table "privileges" do |t|
+        t.column "id",          :integer
+        t.column "name",        :string
+      end
+      
+      s.table "groups_privileges" do |t|
+        t.column "id",           :integer
+        t.column "group_id",     :integer
+        t.column "privilege_id", :integer
+      end
+      
+      s.table "users" do |t|
+        t.column "id",            :integer
+        t.column "username",      :string
+        t.column "password_hash", :string
+        t.column "group_id",      :integer
+        t.column "email_address", :string
+      end
     end
   end
   

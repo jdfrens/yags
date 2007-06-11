@@ -107,10 +107,14 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "table" do
       assert_select "tr:nth-child(1) th:nth-child(2)", "white"
       assert_select "tr:nth-child(1) th:nth-child(3)", "red"
-      #assert_select "tr:nth-child(2) th:nth-child(1)", "not_possible"
       assert_select "tr:nth-child(2) th:nth-child(1)", "male"
       assert_select "tr:nth-child(3) th:nth-child(1)", "female"
     end
+  end
+  
+  def test_show_mateable_flies
+    xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }
+    assert_response :success
   end
   
   def test_list_vials

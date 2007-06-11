@@ -1,0 +1,15 @@
+<table>
+    <% @phenotypes_to_flies.sort { |a, b| a.to_s <=> b.to_s }.each do |entry| -%>
+        <% phenotypes, flies = entry[0], entry[1] -%>
+        <tr>
+            <% phenotypes.each do |phenotype| %>
+                <th><%= phenotype.to_s %></th>
+            <% end %>
+            <td>
+                <% flies.each do |fly| %>
+                    <%= radio_button_tag( (fly.male? ? "vial[dad_id]" : "vial[mom_id]"), fly.id ) -%>
+                <% end %>
+            </td>
+        </tr>
+    <% end %>
+</table>

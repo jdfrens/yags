@@ -1,24 +1,22 @@
-<div class="section_closed">
+<div class="section_open">
     <div class="section_header" onclick="toggle_section(this.parentNode)">Select Flies to Mate</div>
     <div class="section_content">
 
+        <% form_remote_tag :url => {:action => :show_mateable_flies} do %>
+            <div id="first-vial">
+                <label for="first-vial">Vial:</label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
+            </div>
+            <%= submit_tag "Show Flies" %>
+        <% end %>
+
         <% form_for :vial, :url => { :action => :mate_flies} do |form| -%>
-            <table>
-                <% @phenotypes_to_flies.sort { |a, b| a.to_s <=> b.to_s }.each do |entry| -%>
-                    <!-- sadly, <=> is not defined for :symbols -->
-                    <% phenotypes, flies = entry[0], entry[1] -%>
-                    <tr>
-                        <% phenotypes.each do |phenotype| %>
-                            <th><%= phenotype.to_s %></th>
-                        <% end %>
-                        <td>
-                            <% flies.each do |fly| %>
-                                <%= form.radio_button((fly.male? ? "dad_id" : "mom_id"), fly.id) -%>
-                            <% end %>
-                        </td>
-                    </tr>
-                <% end %>
-            </table>
+            <br />
+            <div id="big-table">
+                <em id="instruction">To mate the flies, select two vials.
+                    <br />Then, click <q>Show Flies</q>
+                </em>
+            </div>
+
             <p>
                 <label for="label">Label for Offspring Vial:</label><%= form.text_field :label, :size => 40, :value => "" %>
             </p>

@@ -1,0 +1,1 @@
+page.replace_html "big-table", :partial => "the_big_table"

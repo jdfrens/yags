@@ -1,0 +1,4 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+student_group_priviledge_mapping:
+  group_id: 1
+  privilege_id: 1

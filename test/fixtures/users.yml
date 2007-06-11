@@ -1,0 +1,12 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+# Testing plan:
+#   us as students
+#   mendel and darwin as instructors
+#   calvin as administrator
+steve:
+  id: 1
+  username: steve
+  password_hash: <%= User.hash_password('steve_password') %>
+  group_id: 1
+  email_address: steve@calvin.foo

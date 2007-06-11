@@ -1,0 +1,4 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+manage_bench:
+  id: 1
+  name: manage_bench

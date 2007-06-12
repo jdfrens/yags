@@ -45,9 +45,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
 
   def test_collect_field_vial_data
-    number_of_old_vials =  Vial.find(:all).size
     post :collect_field_vial, {}, user_session(:manage_bench)
-    
     assert_response :success
     assert_standard_layout
     

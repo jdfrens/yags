@@ -21,6 +21,10 @@
   <hr />
   
   <a href="/">Home page</a>
+  <% if session[:current_user_id] != nil -%>
+    <a href="../bench">Bench</a>
+    <a href="../users/logout">Logout</a>
+  <% end %>
   
 </body>
 </html>

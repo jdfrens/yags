@@ -33,6 +33,10 @@ class Test::Unit::TestCase
   def assert_standard_layout
     assert_select "h1", "YAGS"
     assert_select "a[href=/]", /home page/i
+    if logged_in?
+      assert_select "a[href=../bench]", /bench/i
+      assert_select "a[href=../users/logout]", /logout/i
+    end
   end
   
   def assert_redirected_to_login

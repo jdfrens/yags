@@ -4,8 +4,15 @@ require "erb"
 class BenchController < ApplicationController
   in_place_edit_for :vial, :label
   
+  restrict_to :manage_bench
+  
+  def index
+    @username = current_user.username
+  end
+  
   def collect_field_vial
     if (params[:vial])
+      params[:vial][:user_id] = current_user.id
       vial = Vial.collect_from_field(params[:vial], params[:number].to_i)
       redirect_to :action => "view_vial", :id => vial.id
     end
@@ -18,6 +25,7 @@ class BenchController < ApplicationController
       @vial_labels_and_ids << [vial.label, vial.id]
     end
     if (params[:vial])
+      params[:vial][:user_id] = current_user.id
       vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)
       redirect_to :action => "view_vial", :id => vial.id
     end

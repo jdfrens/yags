@@ -25,8 +25,31 @@ class Test::Unit::TestCase
   self.use_instantiated_fixtures  = false
 
   # Add more helper methods to be used by all tests here...
+  
+  def self.user_fixtures
+    fixtures :users, :groups, :privileges, :groups_privileges
+  end
+  
   def assert_standard_layout
     assert_select "h1", "YAGS"
     assert_select "a[href=/]", /home page/i
   end
+  
+  def assert_redirected_to_login
+    assert_redirected_to :controller => 'users', :action => 'login'
+  end
+    
+  def logged_in?
+    session[:current_user_id] != nil
+  end
+  
+  def user_session(privilege)
+    case privilege
+    when :manage_bench
+      { :current_user_id => 1 }
+    else
+      {}
+    end
+  end
+  
 end

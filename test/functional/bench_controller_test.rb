@@ -112,9 +112,36 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_mate_flies_page
+    get :mate_flies
+    assert_response :success
+    assert_standard_layout
+    assert_select "div#first-vial"
+    assert_select "div#second-vial"
+    assert_select "div#big-table"
+    assert_select "div#big-table-1"
+  end
+  
+  def test_collect_mate_data
+    get :mate_flies
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "form" do
+      assert_select "p", "Label for Offspring Vial:"
+      assert_select "input"
+      assert_select "p", "Number of Desired Flies:"
+      assert_select "input"
+    end
+  end
+  
   def test_show_mateable_flies
     xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }
     assert_response :success
+    assert_select "table"
+    xhr :post, :show_mateable_flies_1, {:vial => vials(:vial_with_many_flies) }
+    assert_response :success
+    assert_select "table"
   end
   
   def test_list_vials

@@ -4,14 +4,31 @@
 
         <% form_remote_tag :url => {:action => :show_mateable_flies} do %>
             <div id="first-vial">
-                <label for="first-vial">Vial:</label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
+                <label for="first-vial">First Vial: </label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
             </div>
+            <br />
+            <%= submit_tag "Show Flies" %>
+        <% end %>
+        
+        <% form_remote_tag :url => {:action => :show_mateable_flies_1} do %>
+            <div id="second-vial">
+                <label for="second-vial">Second Vial: </label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
+            </div>
+            <br />
             <%= submit_tag "Show Flies" %>
         <% end %>
 
         <% form_for :vial, :url => { :action => :mate_flies} do |form| -%>
             <br />
+            <h4><em>First Vial</em></h4>
             <div id="big-table">
+                <em id="instruction">To mate the flies, select two vials.
+                    <br />Then, click <q>Show Flies</q>
+                </em>
+            </div>
+            <br />
+            <h4><em>Second Vial</em></h4>
+            <div id="big-table-1">
                 <em id="instruction">To mate the flies, select two vials.
                     <br />Then, click <q>Show Flies</q>
                 </em>

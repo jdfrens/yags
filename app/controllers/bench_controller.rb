@@ -31,19 +31,9 @@ class BenchController < ApplicationController
     @vial.combinations_of_phenotypes.each do |combination|
       @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
     end
+    @which_vial = params[:which_vial]
     redirect_to :action => "mate_flies" unless request.xhr? 
   end
-  
-  def show_mateable_flies_1
-    if request.post?
-      @vial = Vial.find(params[:vial])
-    end
-    @phenotypes_to_flies = {}
-    @vial.combinations_of_phenotypes.each do |combination|
-      @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
-    end
-    redirect_to :action => "mate_flies" unless request.xhr? 
-  end  
   
   def view_vial
     @vial = Vial.find(params[:id])

@@ -118,8 +118,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "div#first-vial"
     assert_select "div#second-vial"
-    assert_select "div#big-table"
     assert_select "div#big-table-1"
+    assert_select "div#big-table-2"
   end
   
   def test_collect_mate_data

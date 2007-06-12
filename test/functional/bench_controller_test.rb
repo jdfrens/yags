@@ -151,8 +151,14 @@ class BenchControllerTest < Test::Unit::TestCase
     get :mate_flies, {}, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
-    assert_select "div#first-vial"
-    assert_select "div#second-vial"
+    assert_select "div#first-vial" do
+      assert_select "select[name=vial]"
+      assert_select "input[name=which_vial][value=1]"
+    end
+    assert_select "div#second-vial" do
+      assert_select "select[name=vial]"
+      assert_select "input[name=which_vial][value=2]"
+    end
     assert_select "div#big-table-1"
     assert_select "div#big-table-2"
   end
@@ -174,7 +180,7 @@ class BenchControllerTest < Test::Unit::TestCase
     xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }, user_session(:manage_bench)
     assert_response :success
     assert_select "table"
-    xhr :post, :show_mateable_flies_1, {:vial => vials(:vial_with_many_flies) }
+    xhr :post, :show_mateable_flies, {:vial => vials(:vial_with_many_flies) }
     assert_response :success
     assert_select "table"
   end

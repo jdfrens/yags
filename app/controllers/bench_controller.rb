@@ -67,7 +67,8 @@ class BenchController < ApplicationController
   end
   
   def list_vials
-    @vials = Vial.find(:all)
+    @vials = Vial.find(:all, :conditions => "user_id = #{current_user.id}" )
+    @all_vials = Vial.find(:all)
   end
   
   def destroy_vial

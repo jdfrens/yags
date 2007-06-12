@@ -2,21 +2,28 @@
 vial_one:
   id: 1
   label: First vial
+  user_id: 1
 vial_empty:
   id: 2
   label: Empty vial
+  user_id: 1
 vial_with_a_fly:
   id: 3
   label: Single fly vial
+  user_id: 1
 vial_with_many_flies:
   id: 4
   label: Multiple fly vial
+  user_id: 1
 parents_vial:
   id: 5
   label: Parents vial
+  user_id: 
 destroyable_vial:
   id: 6
   label: Destroyable vial
+  user_id: 
 random_vial:
   id: 7
   label: Another vial
+  user_id: 

@@ -1,22 +1,30 @@
 <div class="section_header">Select Flies to Mate</div>
 <div class="section_content">
 
-    <% form_remote_tag :url => {:action => :show_mateable_flies} do -%>
+    <% form_remote_tag :url => {:action => :show_mateable_flies},
+                       :before => "Element.show('spinner');",
+                       :complete => "Element.hide('spinner');" do -%>
         <div id="first-vial">
             <label for="first-vial">First Vial:</label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
             <%= hidden_field_tag 'which_vial', '1' %>
         </div>
         <%= submit_tag "Show Flies" %>
     <% end %>
+    
     <br />
-    <% form_remote_tag :url => {:action => :show_mateable_flies} do -%>
+    
+    <% form_remote_tag :url => {:action => :show_mateable_flies},
+                       :before => "Element.show('spinner');",
+                       :complete => "Element.hide('spinner');" do -%>
         <div id="second-vial">
             <label for="second-vial">Second Vial:</label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
             <%= hidden_field_tag 'which_vial', '2' %>
         </div>
         <%= submit_tag "Show Flies" %>
     <% end %>
-
+    
+    <%= image_tag '/images/ajax-loader-blue-circle.gif', :id => 'spinner', :style => 'display: none;' %>
+    
     <% form_for :vial, :url => { :action => :mate_flies} do |form| -%>
         <br />
         <div class="section_open">
@@ -27,8 +35,8 @@
                 </div>
             </div>
         </div>
-
         <br />
+        <hr />
         <div class="section_open">
             <div class="section_header" onclick="toggle_section(this.parentNode)">Second Vial</div>
             <div class="section_content">

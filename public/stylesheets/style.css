@@ -64,3 +64,7 @@ table {
 .section_open .section_header   { background-image: url(/images/arrow_open.png); }
 
 .section_closed .section_content { display: none; }
+
+#spinner {
+	position: relative;
+}

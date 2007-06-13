@@ -19,7 +19,8 @@ class BenchController < ApplicationController
   end
   
   def mate_flies
-    @vials = Vial.find(:all)
+    @all_vials = Vial.find(:all)
+    @vials = Vial.find(:all, :conditions => "user_id = #{current_user.id}" )
     @vial_labels_and_ids = []
     @vials.each do |vial|
       @vial_labels_and_ids << [vial.label, vial.id]

@@ -194,11 +194,12 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "div#list-vials" do
       assert_select "ul" do
-        assert_select "li", 4
+        assert_select "li", 5
         assert_select "li#1", "First vial"
         assert_select "li#2", "Empty vial"
         assert_select "li#3", "Single fly vial"
         assert_select "li#4", "Multiple fly vial"
+        assert_select "li#5", "Parents vial"
       end
     end
   end
@@ -209,8 +210,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "div#list-vials" do
       assert_select "ul" do
-        assert_select "li", 3
-        assert_select "li#5", "Parents vial"
+        assert_select "li", 2
         assert_select "li#6", "Destroyable vial"
         assert_select "li#7", "Another vial"
       end
@@ -233,6 +233,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_mate_flies
+    number_of_old_vials = Vial.find(:all).size
     post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, 
         :number => "8" }, user_session(:manage_bench)
     new_vial = Vial.find_by_label("children vial")
@@ -241,6 +242,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
     assert_equal 1, new_vial.user_id
+    assert_equal number_of_old_vials + 1, Vial.find(:all).size
   end
     
   def test_mate_flies_again  
@@ -252,6 +254,15 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
     assert_equal 1, new_vial.user_id
+  end
+  
+  def test_mate_flies_fails_when_NOT_owned_by_current_user
+    number_of_old_vials = Vial.find(:all).size
+    post :mate_flies, { :vial => { :label => "stolen children", :mom_id => "4", :dad_id => "3" }, 
+        :number => "2" }, user_session(:manage_bench_as_frens)
+    assert_nil Vial.find_by_label("stolen children")
+    assert_redirected_to :controller => 'bench', :action => 'list_vials'
+    assert_equal number_of_old_vials, Vial.find(:all).size
   end
   
   def test_mate_flies_fails_when_NOT_logged_in

@@ -71,19 +71,27 @@ class FullMigrationTest < ActionController::IntegrationTest
   end
   
   def see_default_data
-    assert_equal 1, Group.find(:all).size, "should be one group"
+    assert_equal 2, Group.find(:all).size, "should be two groups"
     assert_equal 1, Group.find(:all).select { |g| g.name == "student" }.size,
         "should have student group"
+    assert_equal 1, Group.find(:all).select { |g| g.name == "admin" }.size,
+        "should have admin group"
     
-    assert_equal 1, Privilege.find(:all).size, "should be one privilege"
+    assert_equal 2, Privilege.find(:all).size, "should be two privileges"
     assert_equal 1, Privilege.find(:all).select { |p| p.name == "manage_bench" }.size,
-        "should have manage bench privilege"
+        "should have manage_bench privilege"
+    assert_equal 1, Privilege.find(:all).select { |p| p.name == "manage_student" }.size,
+        "should have manage_student privilege"
     
-    assert_equal 1, GroupPrivilege.find(:all).size, "should be one group privilege mapping"
-    assert_equal 1, GroupPrivilege.find(:all).select { |gp| # why can't this be a do end block?
+    assert_equal 2, GroupPrivilege.find(:all).size, "should be one group privilege mapping"
+    assert_equal 1, GroupPrivilege.find(:all).select { |gp| # why can't this be a "do end" block?
       gp.group_id == Group.find_by_name("student").id and
       gp.privilege_id == Privilege.find_by_name("manage_bench").id
-    }.size, "should be mapping between student and manage bench"
+    }.size, "should be mapping between student and manage_bench"
+    assert_equal 1, GroupPrivilege.find(:all).select { |gp|
+      gp.group_id == Group.find_by_name("admin").id and
+      gp.privilege_id == Privilege.find_by_name("manage_student").id
+    }.size, "should be mapping between admin and manage_student"
   end
   
   def see_empty_schema

@@ -29,6 +29,11 @@ class UsersControllerTest < Test::Unit::TestCase
     assert flash.empty?
     assert_redirected_to :controller => 'bench', :action => 'index'
     assert logged_in?
+    
+    post :login, :user => { :username => 'calvin', :password => 'calvin_password' }
+    assert flash.empty?
+    assert_redirected_to :controller => 'bench', :action => 'index' # change later?
+    assert logged_in?
   end
   
   def test_wrong_password

@@ -76,8 +76,11 @@ class BenchController < ApplicationController
     @all_vials = Vial.find(:all)
   end
   
+  # future: confirm deletetion of vial
   def destroy_vial
-    @vial = Vial.find(params[:id]).destroy
+    if params[:id] && request.post?
+      Vial.find(params[:id]).destroy      
+    end
     redirect_to :action => :list_vials
   end
   

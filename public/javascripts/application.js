@@ -9,3 +9,11 @@ function toggle_section(section) {
   else
     section.className = "section_open"
 }
+
+// fade flashes automatically 
+Event.observe(window, 'load', function() { 
+  $A(document.getElementsByClassName('error')).each(function(o) {
+    o.opacity = 100.0
+    Effect.Fade(o, {duration: 5.0})
+  });
+});

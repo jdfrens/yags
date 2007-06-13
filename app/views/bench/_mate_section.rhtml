@@ -2,8 +2,8 @@
 <div class="section_content">
 
     <% form_remote_tag :url => {:action => :show_mateable_flies},
-                       :before => "Element.show('spinner');",
-                       :complete => "Element.hide('spinner');" do -%>
+                       :before => visual_effect(:appear, 'spinner'),
+                       :complete => visual_effect(:fade, 'spinner') do -%>
         <div id="first-vial">
             <label for="first-vial">First Vial:</label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
             <%= hidden_field_tag 'which_vial', '1' %>
@@ -14,8 +14,8 @@
     <br />
     
     <% form_remote_tag :url => {:action => :show_mateable_flies},
-                       :before => "Element.show('spinner');",
-                       :complete => "Element.hide('spinner');" do -%>
+                       :before => visual_effect(:appear, 'spinner'),
+                       :complete => visual_effect(:fade, 'spinner') do -%>
         <div id="second-vial">
             <label for="second-vial">Second Vial:</label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
             <%= hidden_field_tag 'which_vial', '2' %>
@@ -23,7 +23,7 @@
         <%= submit_tag "Show Flies" %>
     <% end %>
     
-    <%= image_tag '/images/ajax-loader-blue-circle.gif', :id => 'spinner', :style => 'display: none;' %>
+    <%= image_tag '/images/ajax-loader-red.gif', :id => 'spinner', :style => 'display: none;' %>
     
     <% form_for :vial, :url => { :action => :mate_flies} do |form| -%>
         <br />

@@ -18,12 +18,12 @@ vial_with_many_flies:
 parents_vial:
   id: 5
   label: Parents vial
-  user_id: 
+  user_id: 3
 destroyable_vial:
   id: 6
   label: Destroyable vial
-  user_id: 
+  user_id: 3
 random_vial:
   id: 7
   label: Another vial
-  user_id: 
+  user_id: 3

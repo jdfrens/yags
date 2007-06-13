@@ -53,6 +53,8 @@ class Test::Unit::TestCase
       { :current_user_id => 1 }
     when :manage_student
       { :current_user_id => 2 }
+    when :manage_bench_as_frens
+      { :current_user_id => 3 }
     else
       {}
     end

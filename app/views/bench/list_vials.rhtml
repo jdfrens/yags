@@ -10,7 +10,7 @@
 
 <h1>Listing All Vials</h1>
 
-<div id="list-vials">
+<div id="list-all-vials">
     <ul>
         <% for vial in @all_vials %>
             <li id=<%= vial.id %> ><%= link_to vial.label, :action => :view_vial, :id => vial %></li>

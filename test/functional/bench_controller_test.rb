@@ -192,12 +192,28 @@ class BenchControllerTest < Test::Unit::TestCase
     get :list_vials, {}, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
-    assert_select "div#list-vials"
-    
-    assert_select "ul" do
-      assert_select "li#1", "First vial"
-      assert_select "li#4", "Multiple fly vial"
-      assert_select "li#2", "Empty vial"
+    assert_select "div#list-vials" do
+      assert_select "ul" do
+        assert_select "li", 4
+        assert_select "li#1", "First vial"
+        assert_select "li#2", "Empty vial"
+        assert_select "li#3", "Single fly vial"
+        assert_select "li#4", "Multiple fly vial"
+      end
+    end
+  end
+  
+  def test_list_vials_lists_only_current_users_vials
+    get :list_vials, {}, user_session(:manage_bench_as_frens)
+    assert_response :success
+    assert_standard_layout
+    assert_select "div#list-vials" do
+      assert_select "ul" do
+        assert_select "li", 3
+        assert_select "li#5", "Parents vial"
+        assert_select "li#6", "Destroyable vial"
+        assert_select "li#7", "Another vial"
+      end
     end
   end
   

@@ -16,3 +16,9 @@ calvin:
   password_hash: <%= User.hash_password('calvin_password') %>
   group_id: 2
   email_address: john@calvin.foo
+jdfrens:
+  id: 3
+  username: jdfrens
+  password_hash: <%= User.hash_password('jdfrens_password') %>
+  group_id: 1
+  email_address: jdfrens@calvin.foo

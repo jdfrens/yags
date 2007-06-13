@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   acts_as_login_controller
   
-  restrict_to :manage_student, :only => [ :list_users, :add_student, :index ]
+  restrict_to :manage_student, :only => [ :list_users, :add_student, :index, :delete_user ]
 
   redirect_after_login do |controller|
     { :controller => 'bench', :action => 'index' }
@@ -22,4 +22,12 @@ class UsersController < ApplicationController
       redirect_to :action => "list_users"
     end
   end
+  
+  def delete_user
+    if params[:id] and request.post?
+      User.find(params[:id]).destroy
+    end
+    redirect_to :action => :list_users
+  end
+  
 end

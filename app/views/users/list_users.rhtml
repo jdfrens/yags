@@ -3,7 +3,9 @@
 <div id="list-users">
     <ul>
         <% for user in @users %>
-            <li id=<%= user.id %> ><%= h(user.username) %> (<%= h(user.group.name) %>)</li>
+            <li id=<%= user.id %> >
+              <%= h(user.username) -%> (<%= h(user.group.name) -%>) [<%= link_to "delete", { :action => "delete_user", :id => user.id }, :confirm => "Are you sure?", :method => :post -%>]
+            </li>
         <% end %>
     </ul>
 </div>

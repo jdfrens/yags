@@ -48,8 +48,10 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "div#list-users"
     assert_select "ul" do
-      assert_select "li#1", "steve (student)"
-      assert_select "li#2", "calvin (admin)"
+      assert_select "li", 3
+      assert_select "li#1", "steve (student) [delete]"
+      assert_select "li#2", "calvin (admin) [delete]"
+      assert_select "li#3", "jdfrens (student) [delete]"
     end
   end
   
@@ -58,9 +60,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
     
     get :list_users, {}, user_session(:manage_bench)
-    # assert_redirected_to :controller => 'bench', :action => 'index'
-    # i don't know how to control the redirects with lwt
-    assert_response(401) # access denied
+    assert_response 401 # access denied
   end
   
   def test_add_student
@@ -82,10 +82,29 @@ class UsersControllerTest < Test::Unit::TestCase
     
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
         :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_bench)
-    # assert_redirected_to :controller => 'bench', :action => 'index'
-    # i don't know how to control the redirects with lwt
     assert_nil User.find_by_username("david hansson")
-    assert_response(401) # access denied
+    assert_response 401 # access denied
+  end
+  
+  def test_delete_user
+    number_of_old_users = User.find(:all).size
+    assert_not_nil User.find_by_username("steve")
+    post :delete_user, { :id => 1 }, user_session(:manage_student)
+    assert_nil User.find_by_username("steve")
+    assert_equal number_of_old_users - 1, User.find(:all).size
+    assert_response :redirect
+    assert_redirected_to :action => "list_users"
+  end
+  
+  def test_delete_user_fails_when_NOT_logged_in_as_admin
+    assert_not_nil User.find_by_username("steve")
+    post :delete_user, { :id => 1 }
+    assert_redirected_to_login
+    
+    assert_not_nil User.find_by_username("steve")
+    post :delete_user, { :id => 1 }, user_session(:manage_bench)
+    assert_not_nil User.find_by_username("steve")
+    assert_response 401 # access denied
   end
     
 end

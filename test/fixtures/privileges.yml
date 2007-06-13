@@ -2,3 +2,6 @@
 manage_bench:
   id: 1
   name: manage_bench
+manage_student:
+  id: 2
+  name: manage_student

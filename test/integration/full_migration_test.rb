@@ -1,6 +1,8 @@
 require "#{File.dirname(__FILE__)}/../test_helper"
 
 class FullMigrationTest < ActionController::IntegrationTest
+
+  user_fixtures
   
   def test_full_migration
     drop_all_tables
@@ -8,12 +10,14 @@ class FullMigrationTest < ActionController::IntegrationTest
     
     migrate
     see_full_schema
+    see_default_data
     
     migrate :version => 0
     see_empty_schema
     
     migrate
     see_full_schema
+    see_default_data
   end
   
   def see_full_schema
@@ -64,6 +68,22 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column "email_address", :string
       end
     end
+  end
+  
+  def see_default_data
+    assert_equal 1, Group.find(:all).size, "should be one group"
+    assert_equal 1, Group.find(:all).select { |g| g.name == "student" }.size,
+        "should have student group"
+    
+    assert_equal 1, Privilege.find(:all).size, "should be one privilege"
+    assert_equal 1, Privilege.find(:all).select { |p| p.name == "manage_bench" }.size,
+        "should have manage bench privilege"
+    
+    assert_equal 1, GroupPrivilege.find(:all).size, "should be one group privilege mapping"
+    assert_equal 1, GroupPrivilege.find(:all).select { |gp| # why can't this be a do end block?
+      gp.group_id == Group.find_by_name("student").id and
+      gp.privilege_id == Privilege.find_by_name("manage_bench").id
+    }.size, "should be mapping between student and manage bench"
   end
   
   def see_empty_schema

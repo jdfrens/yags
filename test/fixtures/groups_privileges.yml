@@ -2,3 +2,6 @@
 student_group_priviledge_mapping:
   group_id: 1
   privilege_id: 1
+admin_group_privilege_mapping:
+  group_id: 2
+  privilege_id: 2

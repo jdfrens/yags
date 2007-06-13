@@ -10,3 +10,9 @@ steve:
   password_hash: <%= User.hash_password('steve_password') %>
   group_id: 1
   email_address: steve@calvin.foo
+calvin:
+  id: 2
+  username: calvin
+  password_hash: <%= User.hash_password('calvin_password') %>
+  group_id: 2
+  email_address: john@calvin.foo

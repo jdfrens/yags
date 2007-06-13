@@ -1,0 +1,9 @@
+<h1>Listing All Users</h1>
+
+<div id="list-users">
+    <ul>
+        <% for user in @users %>
+            <li id=<%= user.id %> ><%= h(user.username) %> (<%= h(user.group.name) %>)</li>
+        <% end %>
+    </ul>
+</div>

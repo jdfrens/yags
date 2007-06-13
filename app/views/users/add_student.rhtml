@@ -1,0 +1,22 @@
+<h1>Add Student</h1>
+
+<% form_for :user do |form| %>
+    <p>
+        <label for="username">Username:</label>
+        <%= form.text_field :username, :size => 40 %>
+    </p>
+    <p>
+        <label for="email address">Email Address:</label>
+        <%= form.text_field :email_address, :size => 40 %>
+    </p>
+    <p>
+        <label for="password">Password:</label>
+        <%= form.text_field :password, :size => 40 %>
+    </p>
+    <p>
+        <label for="password confirmation">Password Confirmation:</label>
+        <%= form.text_field :password_confirmation, :size => 40 %>
+    </p>
+    
+    <%= submit_tag "Add Student", :class => "submit" %>
+<% end %>

@@ -41,5 +41,51 @@ class UsersControllerTest < Test::Unit::TestCase
     assert flash.empty?
     assert !logged_in?
   end
+  
+  def test_list_users
+    get :list_users, {}, user_session(:manage_student)
+    assert_response :success
+    assert_standard_layout
+    assert_select "div#list-users"
+    assert_select "ul" do
+      assert_select "li#1", "steve (student)"
+      assert_select "li#2", "calvin (admin)"
+    end
+  end
+  
+  def test_list_users_fails_when_NOT_logged_in_as_admin
+    get :list_users
+    assert_redirected_to_login
+    
+    get :list_users, {}, user_session(:manage_bench)
+    # assert_redirected_to :controller => 'bench', :action => 'index'
+    # i don't know how to control the redirects with lwt
+    assert_response(401) # access denied
+  end
+  
+  def test_add_student
+    number_of_old_users =  User.find(:all).size
+    post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
+        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_student)
+    new_user = User.find_by_username("david hansson")
+    assert_not_nil new_user
+    assert_equal number_of_old_users + 1, User.find(:all).size
+    assert_equal "student", new_user.group.name
+    assert_response :redirect
+    assert_redirected_to :action => "list_users"
+  end
+  
+  def test_add_student_fails_when_NOT_logged_in_as_admin
+    post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
+        :password => 'rails', :password_confirmation => 'rails' } }
+    assert_redirected_to_login
+    
+    post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
+        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_bench)
+    # assert_redirected_to :controller => 'bench', :action => 'index'
+    # i don't know how to control the redirects with lwt
+    assert_nil User.find_by_username("david hansson")
+    assert_response(401) # access denied
+  end
     
 end

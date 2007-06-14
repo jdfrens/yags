@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   acts_as_login_controller
   
-  restrict_to :manage_student, :only => [ :list_users, :add_student, :index, :delete_user ]
-
+  restrict_to :manage_student, :only => [ :list_users, :add_student, :index, :delete_user]
+  
   redirect_after_login do |controller|
     { :controller => 'users', :action => 'redirect_user' }
   end
@@ -30,6 +30,14 @@ class UsersController < ApplicationController
     redirect_to :action => :list_users
   end
   
+  def change_password
+    @user = current_user
+    if request.post? 
+      @user.update_attributes(:password => params[:user][:password], :password_confirmation => params[:user][:password_confirmation])
+      flash[:notice]="Password Changed"
+    end
+  end
+  
   def redirect_user
     if current_user
       case current_user.group.name
@@ -44,5 +52,4 @@ class UsersController < ApplicationController
       redirect_to :controller => "users", :action => "login"
     end
   end
-  
 end

@@ -77,6 +77,14 @@ table {
 	font: bold smaller sans-serif;
 }
 
+.notice {
+	border: 2px solid green;
+	padding: 1em;
+	margin-bottom: 2em;
+	background-color: #f0f0f0;
+	font: bold smaller sans-serif;
+}
+
 .bar {
 	background-color: #fa4;
 	color: #222;
@@ -107,7 +115,6 @@ table {
 }
 
 .bar img {
-
 	height: 80px;
 }
 

@@ -74,6 +74,7 @@ class BenchController < ApplicationController
   end
   
   # future: confirm deletetion of vial
+  #   through a flash[]
   def destroy_vial
     if params[:id] && request.post?
       Vial.find(params[:id]).destroy      

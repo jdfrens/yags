@@ -5,7 +5,7 @@ require 'users_controller'
 class UsersController; def rescue_action(e) raise e end; end
 
 class UsersControllerTest < Test::Unit::TestCase
-
+  
   user_fixtures
   
   def setup
@@ -13,7 +13,7 @@ class UsersControllerTest < Test::Unit::TestCase
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
   end
-
+  
   def test_login
     get :login
     assert_response :success
@@ -120,11 +120,25 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response 401 # access denied
   end
   
+  def test_change_password
+    post :login, :user => { :username => 'steve', :password => 'steve_password' }
+    assert flash.empty?
+    assert_redirected_to :controller => 'users', :action => 'redirect_user'
+    assert logged_in?
+    
+    post :change_password, {:user => { :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_bench)    
+    assert_response :success
+  end
+  
+  def test_change_password_fails_when_NOT_logged_in
+    
+  end
+  
   def test_index
     post :index, {}, user_session(:manage_student)
     assert_response :success
     assert_select "ul" do
-      assert_select "li", 2
+      assert_select "li", 3
     end
   end
   
@@ -143,10 +157,10 @@ class UsersControllerTest < Test::Unit::TestCase
     get :redirect_user, {}, user_session(:manage_student)
     assert_redirected_to :controller => "users", :action => "index"
   end
-    
+  
   def test_redirect_user_when_NOT_logged_in
     get :redirect_user
     assert_redirected_to_login
   end
-    
+  
 end

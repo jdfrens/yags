@@ -141,12 +141,32 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
+    def test_delete_vial
+    number_of_old_vials =  Vial.find(:all).size
+    post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
+    assert logged_in?, "should be logged in"
+    assert_nil Vial.find_by_id(vials(:vial_one).id)
+    assert_equal number_of_old_vials - 1, Vial.find(:all).size
+    assert_response :redirect
+    assert_redirected_to :action => "list_vials"
+  end
+  
+  def test_delete_vial_fails_when_NOT_logged_in
+    post :destroy_vial, { :id => vials(:vial_one).id }
+    assert_not_nil Vial.find_by_id(vials(:vial_one).id)
+    assert_redirected_to_login
+    
+    post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:manage_student)
+    assert_not_nil Vial.find_by_id(vials(:vial_one).id)
+    assert_response 401 # access denied
+  end
+  
   def test_index_page
     get :index, {}, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
     assert_select "ul:first-of-type" do
-      assert_select "li", 3
+      assert_select "li", 4
     end
   end
   

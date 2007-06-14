@@ -10,7 +10,9 @@
         </p>
 
         <div>
-            <% form_remote_tag :url => {:action => :update_table} do %>
+            <% form_remote_tag :url => {:action => :update_table},
+                       :before => visual_effect(:appear, 'spinner'),
+                       :complete => visual_effect(:fade, 'spinner')  do %>
                 <div id="character_cols">
                     <label for="character_select_col">Columns:</label><%= select_tag(:character_col, options_for_select(@vial.species.characters, params[:character_col]) ) %>
                 </div>
@@ -21,7 +23,7 @@
                 <%= submit_tag "Update Table" %>
             <% end %>
         </div>
-
+<%= image_tag '/images/ajax-loader-red.gif', :id => 'spinner', :style => 'display: none;' %>
         <br />
         <div id="vial-table">
             <em id="instruction">To view the table, select two characters from above.

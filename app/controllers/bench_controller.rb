@@ -69,10 +69,6 @@ class BenchController < ApplicationController
     end
   end
   
-  def view_fly
-    @fly = Fly.find(params[:id])    
-  end
-  
   def list_vials
     @vials = current_user.vials
   end

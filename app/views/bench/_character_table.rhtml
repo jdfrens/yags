@@ -9,9 +9,7 @@
     <tr>
         <th><%= row_title %></th>
         <% @column_titles.each do |col_title| %>
-        <td class="count"><%= link_to @vial.number_of_flies([@rows, @columns], [row_title, col_title]),
-            :action => :view_fly, 
-            :id => @vial.first_of_type([@rows, @columns], [row_title, col_title]) %></td>
+        <td class="count"><%= @vial.number_of_flies([@rows, @columns], [row_title, col_title]) %></td>
         <% end %>
     </tr>
     <% end %>

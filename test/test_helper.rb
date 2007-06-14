@@ -64,4 +64,8 @@ class Test::Unit::TestCase
     end
   end
   
+  def assert_equal_set(expected, actual, message=nil)
+    assert_equal expected.to_set, actual.to_set, message
+  end
+  
 end

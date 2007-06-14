@@ -1,7 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class VialTest < Test::Unit::TestCase
-  fixtures :vials, :flies, :genotypes
+
+  fixtures :vials, :flies, :genotypes, :users
   
   include CartesianProduct
   
@@ -97,15 +98,15 @@ class VialTest < Test::Unit::TestCase
   def test_collect_nine_flies_from_field
     new_vial = Vial.collect_from_field({ :label => "nine fly vial"}, 9, 
         CookedBitGenerator.new([0, 1, 0, 0]))
-    assert_equal ([:male] * 7 + [:female] * 2).sort_by { |p| p.to_s }, 
-        new_vial.flies.map {|fly| fly.phenotype(:gender)}.sort_by { |p| p.to_s }
-    assert_equal ([:red] * 5 + [:white] * 4).sort_by { |p| p.to_s },
-        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
-    assert_equal ([:straight] * 4 + [:curly] * 5).sort_by { |p| p.to_s },
-        new_vial.flies.map {|fly| fly.phenotype(:wings)}.sort_by { |p| p.to_s }
-    assert_equal ([:hairy] * 5 + [:smooth] * 4).sort_by { |p| p.to_s },
-        new_vial.flies.map {|fly| fly.phenotype(:legs)}.sort_by { |p| p.to_s }
-    assert_equal 2, new_vial.flies_of_type([:gender, :legs],[:female, :smooth]).size  # nice
+    assert_equal_set ([:male] * 7 + [:female] * 2), 
+        new_vial.flies.map {|fly| fly.phenotype(:gender)}
+    assert_equal_set ([:red] * 5 + [:white] * 4),
+        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}
+    assert_equal_set ([:straight] * 4 + [:curly] * 5),
+        new_vial.flies.map {|fly| fly.phenotype(:wings)}
+    assert_equal_set ([:hairy] * 5 + [:smooth] * 4),
+        new_vial.flies.map {|fly| fly.phenotype(:legs)}
+    assert_equal 2, new_vial.flies_of_type([:gender, :legs],[:female, :smooth]).size
   end
   
   def test_collecting_field_vial_with_allele_frequencies
@@ -139,15 +140,21 @@ class VialTest < Test::Unit::TestCase
   def test_making_seven_babies_and_a_vial
     new_vial = Vial.make_babies_and_vial({ :label => "seven fly syblings", 
         :mom_id => "4", :dad_id => "3" }, 7, CookedBitGenerator.new([0, 1, 1, 0, 0]))
-    assert_equal ([:male] * 3 + [:female] * 4).sort_by { |p| p.to_s }, 
-        new_vial.flies.map {|fly| fly.phenotype(:gender)}.sort_by { |p| p.to_s }
-    assert_equal ([:red] * 7 + [:white] * 0).sort_by { |p| p.to_s },
-        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
-    assert_equal ([:straight] * 5 + [:curly] * 2).sort_by { |p| p.to_s },
-        new_vial.flies.map {|fly| fly.phenotype(:wings)}.sort_by { |p| p.to_s }
-    assert_equal ([:hairy] * 4 + [:smooth] * 3).sort_by { |p| p.to_s },
-        new_vial.flies.map {|fly| fly.phenotype(:legs)}.sort_by { |p| p.to_s }
+    assert_equal_set ([:male] * 3 + [:female] * 4), 
+        new_vial.flies.map {|fly| fly.phenotype(:gender)}
+    assert_equal_set ([:red] * 7 + [:white] * 0),
+        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}
+    assert_equal_set ([:straight] * 5 + [:curly] * 2),
+        new_vial.flies.map {|fly| fly.phenotype(:wings)}
+    assert_equal_set ([:hairy] * 4 + [:smooth] * 3),
+        new_vial.flies.map {|fly| fly.phenotype(:legs)}
     assert_equal 1, new_vial.flies_of_type([:wings, :legs],[:curly, :smooth]).size
+  end
+  
+  def test_belongs_to_user
+    assert_equal users(:steve), vials(:parents_vial).user
+    assert_equal users(:steve), vials(:vial_one).user
+    assert_equal users(:jdfrens), vials(:destroyable_vial).user
   end
   
 end

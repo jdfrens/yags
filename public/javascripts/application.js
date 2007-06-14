@@ -14,6 +14,10 @@ function toggle_section(section) {
 Event.observe(window, 'load', function() { 
   $A(document.getElementsByClassName('error')).each(function(o) {
     o.opacity = 100.0
-    Effect.Fade(o, {duration: 5.0})
+    Effect.Fade(o, {duration: 6.0})
+  });
+    $A(document.getElementsByClassName('notice')).each(function(o) {
+    o.opacity = 100.0
+    Effect.Fade(o, {duration: 6.0})
   });
 });

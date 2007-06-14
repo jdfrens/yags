@@ -78,8 +78,8 @@ table {
 }
 
 .bar {
-	background-color: #f93;
-	color: #333;
+	background-color: #fa4;
+	color: #222;
 	padding: 1em;  
 }
 
@@ -88,24 +88,27 @@ table {
 }
 
 .bar a:link {
-	color: #117;
+	color: #04f;
 }
 
 .bar a:visited {
-	color: #171;
+	color: #b40;
 }
 
 .bar a:hover {
-	background-color:  #333;
+	background-color:  #222;
 	color: #f93;
+	text-decoration: none;
 }
 
 .bar h1 {
 	display: inline;
+	font-size: 100px;
 }
 
 .bar img {
-	vertical-align: middle;
+
+	height: 100px;
 }
 
 .main {

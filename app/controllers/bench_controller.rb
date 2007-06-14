@@ -18,9 +18,8 @@ class BenchController < ApplicationController
   end
   
   def mate_flies
-    vials = Vial.find(:all, :conditions => "user_id = #{current_user.id}" )
     @vial_labels_and_ids = []
-    vials.each do |vial|
+    current_user.vials.each do |vial|
       @vial_labels_and_ids << [vial.label, vial.id]
     end
     if (params[:vial])
@@ -75,8 +74,7 @@ class BenchController < ApplicationController
   end
   
   def list_vials
-    @vials = Vial.find(:all, :conditions => "user_id = #{current_user.id}" )
-    @all_vials = Vial.find(:all)
+    @vials = current_user.vials
   end
   
   # future: confirm deletetion of vial

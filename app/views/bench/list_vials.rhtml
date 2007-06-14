@@ -7,13 +7,3 @@
         <% end %>
     </ul>
 </div>
-<br />
-<h3>Listing All Vials</h3>
-
-<div id="list-all-vials">
-    <ul>
-        <% for vial in @all_vials %>
-            <li id=<%= vial.id %> ><%= link_to vial.label, :action => :view_vial, :id => vial %></li>
-        <% end %>
-    </ul>
-</div>

@@ -50,20 +50,24 @@ class BenchController < ApplicationController
   
   def view_vial
     @vial = Vial.find(params[:id])
-    if @vial.mom_id && @vial.dad_id
-      @parents = true
-      @mom = Fly.find @vial.mom_id
-      @dad = Fly.find @vial.dad_id
-      @mom_vial = Vial.find @mom.vial_id
-      @dad_vial = Vial.find @dad.vial_id
+    if @vial.user_id == current_user.id
+      if @vial.mom_id && @vial.dad_id
+        @parents = true
+        @mom = Fly.find @vial.mom_id
+        @dad = Fly.find @vial.dad_id
+        @mom_vial = Vial.find @mom.vial_id
+        @dad_vial = Vial.find @dad.vial_id
+      else
+        @parents = false
+      end
+      @column_titles = @vial.species.phenotypes(:gender)
+      @row_titles = @vial.species.phenotypes(:gender)
+      @phenotypes_to_flies = {}
+      @vial.combinations_of_phenotypes.each do |combination|
+        @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
+      end
     else
-      @parents = false
-    end
-    @column_titles = @vial.species.phenotypes(:gender)
-    @row_titles = @vial.species.phenotypes(:gender)
-    @phenotypes_to_flies = {}
-    @vial.combinations_of_phenotypes.each do |combination|
-      @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
+      redirect_to :action => "list_vials"
     end
   end
   

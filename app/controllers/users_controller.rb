@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   restrict_to :manage_student, :only => [ :list_users, :add_student, :index, :delete_user ]
 
   redirect_after_login do |controller|
-    { :controller => 'bench', :action => 'index' }
+    { :controller => 'users', :action => 'redirect_user' }
   end
   
   def index
@@ -28,6 +28,21 @@ class UsersController < ApplicationController
       User.find(params[:id]).destroy
     end
     redirect_to :action => :list_users
+  end
+  
+  def redirect_user
+    if current_user
+      case current_user.group.name
+      when "student"
+        redirect_to :controller => "bench", :action => "index"
+      when "admin"
+        redirect_to :controller => "users", :action => "index"
+      else
+        redirect_to :controller => "users", :action => "logout" # because we don't know who they are.
+      end
+    else
+      redirect_to :controller => "users", :action => "login"
+    end
   end
   
 end

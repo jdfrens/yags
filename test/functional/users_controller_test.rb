@@ -27,12 +27,12 @@ class UsersControllerTest < Test::Unit::TestCase
   def test_login_for_real
     post :login, :user => { :username => 'steve', :password => 'steve_password' }
     assert flash.empty?
-    assert_redirected_to :controller => 'bench', :action => 'index'
+    assert_redirected_to :controller => 'users', :action => 'redirect_user'
     assert logged_in?
     
     post :login, :user => { :username => 'calvin', :password => 'calvin_password' }
     assert flash.empty?
-    assert_redirected_to :controller => 'bench', :action => 'index' # change later?
+    assert_redirected_to :controller => 'users', :action => 'redirect_user'
     assert logged_in?
   end
   
@@ -61,6 +61,19 @@ class UsersControllerTest < Test::Unit::TestCase
     
     get :list_users, {}, user_session(:manage_bench)
     assert_response 401 # access denied
+  end
+  
+  def test_add_student_form
+    post :add_student, {}, user_session(:manage_student)
+    assert_response :success
+    assert_standard_layout
+    assert_select "form" do
+      assert_select "p", "Username:"
+      assert_select "p", "Email Address:"
+      assert_select "p", "Password:"
+      assert_select "p", "Password Confirmation:"
+      assert_select "label", 4
+    end
   end
   
   def test_add_student
@@ -105,6 +118,35 @@ class UsersControllerTest < Test::Unit::TestCase
     post :delete_user, { :id => 1 }, user_session(:manage_bench)
     assert_not_nil User.find_by_username("steve")
     assert_response 401 # access denied
+  end
+  
+  def test_index
+    post :index, {}, user_session(:manage_student)
+    assert_response :success
+    assert_select "ul" do
+      assert_select "li", 2
+    end
+  end
+  
+  def test_index_fails_when_NOT_logged_in_as_admin
+    post :index
+    assert_redirected_to_login
+    
+    post :index, {}, user_session(:manage_bench)
+    assert_response 401 # access denied
+  end
+  
+  def test_redirect_user
+    get :redirect_user, {}, user_session(:manage_bench)
+    assert_redirected_to :controller => "bench", :action => "index"
+    
+    get :redirect_user, {}, user_session(:manage_student)
+    assert_redirected_to :controller => "users", :action => "index"
+  end
+    
+  def test_redirect_user_when_NOT_logged_in
+    get :redirect_user
+    assert_redirected_to_login
   end
     
 end

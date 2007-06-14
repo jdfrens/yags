@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   acts_as_login_controller
   
   restrict_to :manage_student, :only => [ :list_users, :add_student, :index, :delete_user]
+  restrict_to :manage_bench, :only => [ :change_password ]
   
   redirect_after_login do |controller|
     { :controller => 'users', :action => 'redirect_user' }
@@ -33,8 +34,13 @@ class UsersController < ApplicationController
   def change_password
     @user = current_user
     if request.post? 
-      @user.update_attributes(:password => params[:user][:password], :password_confirmation => params[:user][:password_confirmation])
-      flash[:notice]="Password Changed"
+      if User.hash_password(params[:old_password]) == @user.password_hash and 
+          params[:user][:password] == params[:user][:password_confirmation]
+        @user.update_attributes(params[:user])
+        flash[:notice] = "Password Changed"
+      else
+        flash[:notice] = "Try Again"
+      end
     end
   end
   

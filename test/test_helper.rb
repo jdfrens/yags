@@ -55,6 +55,8 @@ class Test::Unit::TestCase
     case privilege
     when :manage_bench
       { :current_user_id => 1 }
+    when :steve
+      { :current_user_id => 1 }
     when :manage_student
       { :current_user_id => 2 }
     when :manage_bench_as_frens

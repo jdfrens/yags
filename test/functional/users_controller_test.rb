@@ -121,17 +121,48 @@ class UsersControllerTest < Test::Unit::TestCase
   end
   
   def test_change_password
-    post :login, :user => { :username => 'steve', :password => 'steve_password' }
-    assert flash.empty?
-    assert_redirected_to :controller => 'users', :action => 'redirect_user'
-    assert logged_in?
-    
-    post :change_password, {:user => { :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_bench)    
+    steve = users(:steve)
+    assert_equal User.hash_password("steve_password"), steve.password_hash
+    post :change_password, { :user => { :password => 'steve_m', :password_confirmation => 'steve_m' },
+        :old_password => "steve_password" }, user_session(:steve)
     assert_response :success
+    assert_standard_layout
+    steve.reload
+    assert_equal User.hash_password('steve_m'), steve.password_hash
+    assert_equal "Password Changed", flash[:notice]
   end
   
-  def test_change_password_fails_when_NOT_logged_in
+  def test_change_password_fails_with_wrong_old_password
+    steve = users(:steve)
+    post :change_password, { :user => { :password => 'rails', :password_confirmation => 'rails' }, 
+        :old_password => "not_steve_password" }, user_session(:steve)
+    assert_response :success
+    assert_standard_layout
+    steve.reload
+    assert_equal User.hash_password("steve_password"), steve.password_hash
+    assert_equal "Try Again", flash[:notice]
+  end
+  
+  def test_change_password_fails_with_mismatched_confirmation
+    steve = users(:steve)
+    post :change_password, { :user => { :password => 'rails', :password_confirmation => 'trains' }, 
+        :old_password => "steve_password" }, user_session(:steve)
+    assert_response :success
+    assert_standard_layout
+    steve.reload
+    assert_equal User.hash_password("steve_password"), steve.password_hash
+    assert_equal "Try Again", flash[:notice]
+  end
+  
+  def test_change_password_fails_when_NOT_logged_in_as_student
+    post :change_password, { :user => { :password => 'buddy', :password_confirmation => 'buddy' }, 
+        :old_password => "lab141" }
+    assert_redirected_to_login
     
+    # so, i guess admins will use a different method
+    post :change_password, { :user => { :password => 'beat_hope', :password_confirmation => 'beat_hope' }, 
+        :old_password => "john" }, user_session(:manage_student)
+    assert_response 401 # access denied
   end
   
   def test_index

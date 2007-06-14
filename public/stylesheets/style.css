@@ -76,3 +76,44 @@ table {
 	background-color: #f0f0f0;
 	font: bold smaller sans-serif;
 }
+
+.bar {
+	background-color: #f93;
+	color: #333;
+	padding: 1em;  
+}
+
+#session-info {
+	float: right;
+}
+
+.bar a:link {
+	color: #117;
+}
+
+.bar a:visited {
+	color: #171;
+}
+
+.bar a:hover {
+	background-color:  #333;
+	color: #f93;
+}
+
+.bar h1 {
+	display: inline;
+}
+
+.bar img {
+	vertical-align: middle;
+}
+
+.main {
+	background-color: #fff;
+}
+
+body {
+	background-color: #ccc;
+}
+
+

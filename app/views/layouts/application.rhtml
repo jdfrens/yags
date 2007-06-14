@@ -13,18 +13,27 @@
 
 <body>
 
-<h1>YAGS</h1>
-  <hr />
-    
-  <%= yield :layout %>
+  <div class="bar">
+      <div id="session-info">
+          <% if session[:current_user_id] != nil -%>
+            Logged in as: <%= User.find(session[:current_user_id]).username -%><br />
+            <%= link_to "Logout", :controller => 'users', :action => "logout" %>
+          <% else %>
+            <%= link_to "Login", :controller => 'users', :action => "login" %>
+          <% end %> 
+      </div>
+      <img id="logo" src="../../../../images/Beelzebub.png" width="70" alt="temp logo" />
+      <h1>YAGS</h1>
+  </div>
   
-  <hr />
+  <div class="main">
+    <%= yield :layout %>
+  </div>
   
-  <a href="/">Home page</a>
-  <% if session[:current_user_id] != nil -%>
-    <%= link_to "Bench", :controller => 'bench', :action => "index" %>
-    <%= link_to "Logout", :controller => 'users', :action => "logout" %>
-  <% end %>
+  <div class="bar">
+      <a href="/">Home page</a>
+      <%= link_to "Bench", :controller => 'bench', :action => "index" if session[:current_user_id] -%>
+  </div>
   
 </body>
 </html>

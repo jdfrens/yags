@@ -145,7 +145,6 @@ class BenchControllerTest < Test::Unit::TestCase
     get :index, {}, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
-    assert_select "p", "Welcome #{users(:steve).username}"
     assert_select "ul:first-of-type" do
       assert_select "li", 3
     end

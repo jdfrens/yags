@@ -7,7 +7,6 @@ class BenchController < ApplicationController
   restrict_to :manage_bench
   
   def index
-    @username = current_user.username
   end
   
   def collect_field_vial

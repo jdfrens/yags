@@ -7,36 +7,24 @@ class Vial < ActiveRecord::Base
   
   validates_presence_of :label
   
-  def self.collect_from_field(vial_params, number, bit_generator = RandomBitGenerator.new, allele_frequences = {})
-    allele_frequences.default = 0.5
-    vial = Vial.create!(vial_params)
-    species = vial.species
-    number.times do |i|
-       new_fly = Fly.create!
-       species.characters.each do |character|
-         if character == :gender # could this be handled better?
-           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(:gender), 
-               :mom_allele => 1, :dad_allele => bit_generator.random_bit(allele_frequences[:gender]))
-         else
-           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(character), 
-               :mom_allele => bit_generator.random_bit(allele_frequences[character]), 
-               :dad_allele => bit_generator.random_bit(allele_frequences[character]))
-         end
-       end
-       vial.flies << new_fly
-       vial.save!
+  def self.collect_from_field(vial_params, number, bit_generator = RandomBitGenerator.new, allele_frequencies = {})
+    allele_frequencies.default = 0.5
+    vial = Vial.new(vial_params)
+    if vial.save
+      vial.fill_from_field(number, bit_generator, allele_frequencies)
     end
     vial
   end
   
   def self.make_babies_and_vial(vial_params, number, bit_generator = RandomBitGenerator.new)
-    vial = Vial.create!(vial_params)
+    vial = Vial.new(vial_params)
     species = vial.species
     mom = Fly.find vial.mom_id
     dad = Fly.find vial.dad_id
-    number.times do |i|
-      vial.flies << mom.mate_with(dad, bit_generator)
-      vial.save!
+    if vial.save
+      number.times do |i|
+        vial.flies << mom.mate_with(dad, bit_generator)
+      end
     end
     vial
   end
@@ -68,6 +56,24 @@ class Vial < ActiveRecord::Base
       end
     end
     selection
+  end
+
+  def fill_from_field(number, bit_generator, allele_frequencies)
+    number.times do |i|
+       new_fly = Fly.create!
+       species.characters.each do |character|
+         if character == :gender # could this be handled better?
+           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(:gender), 
+               :mom_allele => 1, :dad_allele => bit_generator.random_bit(allele_frequencies[:gender]))
+         else
+           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(character), 
+               :mom_allele => bit_generator.random_bit(allele_frequencies[character]), 
+               :dad_allele => bit_generator.random_bit(allele_frequencies[character]))
+         end
+       end
+       flies << new_fly
+    end
+    self
   end
   
 end

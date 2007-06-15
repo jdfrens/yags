@@ -22,7 +22,7 @@
             <%= link_to "Login", :controller => 'users', :action => "login" %>
           <% end %> 
       </div>
-      <img id="logo" src="../../../../images/Beelzebub.png" alt="temp logo" />
+      <img id="logo" src="/images/Beelzebub.png" alt="temp logo" />
       <h1>YAGS</h1>
   </div>
   
@@ -33,6 +33,9 @@
   <div class="bar">
       <a href="/">Home page</a>
       <%= link_to "Bench", :controller => 'bench', :action => "index" if session[:current_user_id] -%>
+	  
+	  <p style=" font-size: 11px; text-align: center">&copy; 2007 Calvin College | All Rights Reserved <br />
+	  Other fine print information	  </p> 
   </div>
   
 </body>

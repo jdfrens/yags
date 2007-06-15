@@ -19,9 +19,14 @@ class UsersController < ApplicationController
   def add_student
     if params[:user]
       params[:user][:group] = Group.find_by_name('student')
-      student = User.create!(params[:user])
+      @user = User.new(params[:user])
+      @user.save!
       redirect_to :action => "list_users"
+    else
+      render
     end
+  rescue ActiveRecord::RecordInvalid
+    render
   end
   
   def delete_user

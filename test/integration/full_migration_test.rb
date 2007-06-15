@@ -43,6 +43,12 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :gene_number,  :integer
       end
       
+      s.table :courses do |t|
+        t.column :id,            :integer
+        t.column :instructor_id, :integer
+        t.column :name,          :string
+      end
+      
       # authentication
       s.table "groups" do |t|
         t.column "id",          :integer
@@ -66,21 +72,22 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column "password_hash", :string
         t.column "group_id",      :integer
         t.column "email_address", :string
+        t.column "course_id",     :integer
       end
     end
   end
   
   def see_default_data
     assert_equal 3, Group.find(:all).size, "should be three groups"
-    assert_equal 1, Group.find(:all).select { |g| g.name == "student" }.size, "should have student group"
-    assert_equal 1, Group.find(:all).select { |g| g.name == "admin" }.size, "should have admin group"
-    assert_equal 1, Group.find(:all).select { |g| g.name == "admin" }.size, "should have instructor group"
+    assert_group_exists "student"
+    assert_group_exists "admin"
+    assert_group_exists "instructor"
     
-    assert_equal 4, Privilege.find(:all).size, "should be two privileges"
-    assert_equal 1, Privilege.find(:all).select { |p| p.name == "manage_bench" }.size, "should have manage_bench privilege"
-    assert_equal 1, Privilege.find(:all).select { |p| p.name == "manage_student" }.size, "should have manage_student privilege"
-    assert_equal 1, Privilege.find(:all).select { |p| p.name == "manage_lab" }.size, "should have manage_lab privilege"
-    assert_equal 1, Privilege.find(:all).select { |p| p.name == "manage_instructor" }.size, "should have manage_instructor privilege"
+    assert_equal 4, Privilege.find(:all).size, "should be four privileges"
+    assert_privilege_exists "manage_bench"
+    assert_privilege_exists "manage_student"
+    assert_privilege_exists "manage_lab"
+    assert_privilege_exists "manage_instructor"
     
     assert_equal 5, GroupPrivilege.find(:all).size, "should be five group privilege mappings"
     assert_mapping_between "student", "manage_bench"
@@ -105,6 +112,16 @@ class FullMigrationTest < ActionController::IntegrationTest
         gp.group_id == group.id and gp.privilege_id == privilege.id
       else; false; end
     }.size, "should be mapping between #{group_name} and #{privilege_name}"
+  end
+  
+  def assert_group_exists(group_name)
+    assert_equal 1, Group.find(:all).select { |g| g.name == group_name }.size,
+        "should have #{group_name} group"
+  end
+  
+  def assert_privilege_exists(privilege_name)
+    assert_equal 1, Privilege.find(:all).select { |p| p.name == privilege_name }.size,
+        "should have #{privilege_name} privilege"
   end
   
 end

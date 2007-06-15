@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   acts_as_login_controller
   
   restrict_to :manage_student, :only => [ :list_users, :add_student, :index, :delete_user]
-  restrict_to :manage_bench, :only => [ :change_password ]
+  restrict_to :manage_student, :only => [ :change_student_password ]
   
   redirect_after_login do |controller|
     { :controller => 'users', :action => 'redirect_user' }
@@ -32,15 +32,36 @@ class UsersController < ApplicationController
   end
   
   def change_password
-    @user = current_user
-    if request.post? 
-      if User.hash_password(params[:old_password]) == @user.password_hash and 
+    if current_user
+      if request.post?
+        if User.hash_password(params[:old_password]) == current_user.password_hash and 
+            params[:user][:password] == params[:user][:password_confirmation]
+          current_user.update_attributes(params[:user])
+          flash[:notice] = "Password Changed"
+        else
+          flash[:notice] = "Try Again"
+        end
+      end
+    else
+      redirect_to :controller => "users", :action => "login"
+    end
+  end
+  
+  def change_student_password
+    @student_names_and_ids = []
+    User.find(:all, :conditions => "group_id = #{Group.find_by_name("student").id}").each do |student|
+      @student_names_and_ids << [student.username, student.id]
+    end
+    if request.post? and params[:user]
+      if User.find(params[:student_id]) and 
           params[:user][:password] == params[:user][:password_confirmation]
-        @user.update_attributes(params[:user])
+        User.find(params[:student_id]).update_attributes(params[:user])
         flash[:notice] = "Password Changed"
       else
         flash[:notice] = "Try Again"
       end
+    else
+      
     end
   end
   
@@ -58,4 +79,5 @@ class UsersController < ApplicationController
       redirect_to :controller => "users", :action => "login"
     end
   end
+  
 end

@@ -144,9 +144,50 @@ class UsersControllerTest < Test::Unit::TestCase
   end
   
   def test_change_password_fails_with_mismatched_confirmation
-    steve = users(:steve)
+    calvin = users(:calvin)
     post :change_password, { :user => { :password => 'rails', :password_confirmation => 'trains' }, 
-        :old_password => "steve_password" }, user_session(:steve)
+        :old_password => "calvin_password" }, user_session(:manage_student)
+    assert_response :success
+    assert_standard_layout
+    calvin.reload
+    assert_equal User.hash_password("calvin_password"), calvin.password_hash
+    assert_equal "Try Again", flash[:notice]
+  end
+  
+  def test_change_password_fails_when_NOT_logged_in
+    post :change_password, { :user => { :password => 'buddy', :password_confirmation => 'buddy' }, 
+        :old_password => "lab141" }
+    assert_redirected_to_login
+  end
+  
+  def test_change_password_form
+    get :change_password, { }, user_session(:manage_bench)
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "form" do
+      assert_select "p", "Old Password:"
+      assert_select "p", "Password:"
+      assert_select "p", "Password Confirmation:"
+    end
+  end
+  
+  def test_change_student_password
+    steve = users(:steve)
+    assert_equal User.hash_password("steve_password"), steve.password_hash
+    post :change_student_password, { :user => { :password => 'steve_m', 
+        :password_confirmation => 'steve_m' }, :student_id => 1 }, user_session(:manage_student)
+    assert_response :success
+    assert_standard_layout
+    steve.reload
+    assert_equal User.hash_password('steve_m'), steve.password_hash
+    assert_equal "Password Changed", flash[:notice]
+  end
+  
+  def test_change_student_password_fails_with_mismatched_confirmation
+    steve = users(:steve)
+    post :change_student_password, { :user => { :password => 'buffalo', 
+        :password_confirmation => 'prairie cow' }, :student_id => 1 }, user_session(:manage_student)
     assert_response :success
     assert_standard_layout
     steve.reload
@@ -154,22 +195,41 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_equal "Try Again", flash[:notice]
   end
   
-  def test_change_password_fails_when_NOT_logged_in_as_student
-    post :change_password, { :user => { :password => 'buddy', :password_confirmation => 'buddy' }, 
-        :old_password => "lab141" }
+  def test_change_student_password_fails_when_NOT_logged_in_as_admin
+    steve = users(:steve)
+    assert_equal User.hash_password("steve_password"), steve.password_hash
+    post :change_student_password, { :user => { :password => 'steve_m', 
+        :password_confirmation => 'steve_m' }, :student_id => 1 }
     assert_redirected_to_login
+    steve.reload
+    assert_equal User.hash_password('steve_password'), steve.password_hash
     
-    # so, i guess admins will use a different method
-    post :change_password, { :user => { :password => 'beat_hope', :password_confirmation => 'beat_hope' }, 
-        :old_password => "john" }, user_session(:manage_student)
+    steve = users(:steve)
+    assert_equal User.hash_password("steve_password"), steve.password_hash
+    post :change_student_password, { :user => { :password => 'steve_m', 
+        :password_confirmation => 'steve_m' }, :student_id => 1 }, user_session(:manage_bench_as_frens)
     assert_response 401 # access denied
+    steve.reload
+    assert_equal User.hash_password('steve_password'), steve.password_hash
+  end
+  
+  def test_change_student_password_form
+    get :change_student_password, { }, user_session(:manage_student)
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "form" do
+      assert_select "div#students_select", "Student:steve\njdfrens"
+      assert_select "p", "Password:"
+      assert_select "p", "Password Confirmation:"
+    end
   end
   
   def test_index
     post :index, {}, user_session(:manage_student)
     assert_response :success
     assert_select "ul" do
-      assert_select "li", 3
+      assert_select "li", 4
     end
   end
   

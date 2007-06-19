@@ -8,8 +8,12 @@ class Vial < ActiveRecord::Base
   validates_presence_of :label
   
   def self.collect_from_field(vial_params, number, bit_generator = RandomBitGenerator.new, allele_frequencies = {})
-    allele_frequencies.default = 0.5
     vial = Vial.new(vial_params)
+    allele_frequencies[:gender] = 0.5 unless allele_frequencies[:gender]
+    # or should we vary the gender ratios along with everything else?
+    vial.species.characters.each do |character|
+      allele_frequencies[character] = 0.13 + (rand 37) / 100.0 unless allele_frequencies[character]
+    end
     if vial.save
       vial.fill_from_field(number, bit_generator, allele_frequencies)
     end

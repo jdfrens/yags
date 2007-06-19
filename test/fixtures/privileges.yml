@@ -5,3 +5,9 @@ manage_bench:
 manage_student:
   id: 2
   name: manage_student
+manage_lab:
+  id: 3
+  name: manage_lab
+manage_instructor:
+  id: 4
+  name: manage_instructor

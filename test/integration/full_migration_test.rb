@@ -56,6 +56,12 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :row,          :string
       end
       
+      s.table :character_preferences do |t|
+        t.column :id,           :integer
+        t.column :user_id,      :integer
+        t.column :character,    :string
+      end
+      
       # authentication
       s.table "groups" do |t|
         t.column "id",          :integer

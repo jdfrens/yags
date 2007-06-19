@@ -22,3 +22,21 @@ jdfrens:
   password_hash: <%= User.hash_password('jdfrens_password') %>
   group_id: 1
   email_address: jdfrens@calvin.foo
+randy:
+  id: 4
+  username: randy
+  password_hash: <%= User.hash_password('randy_password') %>
+  group_id: 1
+  email_address: rpruim@calvin.foo
+mendel:
+  id: 5
+  username: mendel
+  password_hash: <%= User.hash_password('mendel_password') %>
+  group_id: 3
+  email_address: gardener@monastery.foo
+darwin:
+  id: 6
+  username: darwin
+  password_hash: <%= User.hash_password('darwin_password') %>
+  group_id: 3
+  email_address: theman@cdu.edu

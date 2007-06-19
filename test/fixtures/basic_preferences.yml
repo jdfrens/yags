@@ -1,6 +1,6 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+pref_for_eye_color_and_wings:
   id: 1
   user_id: 3
-  column: "eye_color"
-  row: "wings"
+  column: eye_color
+  row: wings

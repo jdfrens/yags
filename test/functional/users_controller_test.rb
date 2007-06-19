@@ -48,10 +48,13 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "div#list-users"
     assert_select "ul" do
-      assert_select "li", 3
+      assert_select "li", 6
       assert_select "li#1", "steve (student) [delete]"
       assert_select "li#2", "calvin (admin) [delete]"
       assert_select "li#3", "jdfrens (student) [delete]"
+      assert_select "li#4", "randy (student) [delete]"
+      assert_select "li#5", "mendel (instructor) [delete]"
+      assert_select "li#6", "darwin (instructor) [delete]"
     end
   end
   
@@ -219,7 +222,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "form" do
-      assert_select "div#students_select", "Student:steve\njdfrens"
+      assert_select "div#students_select", "Student:steve\njdfrens\nrandy"
       assert_select "p", "Password:"
       assert_select "p", "Password Confirmation:"
     end

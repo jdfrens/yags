@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+no_legs_frens:
+  id: 1
+  user_id: 3
+  character: legs
+no_eyes_for_pruim:
+  id: 2
+  user_id: 4
+  character: eye_color
+no_wings_for_pruim:
+  id: 3
+  user_id: 4
+  character: wings

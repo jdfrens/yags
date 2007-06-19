@@ -11,4 +11,10 @@ class UserTest < Test::Unit::TestCase
         users(:steve).vials  
   end
   
+  def test_has_basic_preference
+    assert_equal "eye_color", users(:jdfrens).basic_preference.column
+    assert_equal "wings", users(:jdfrens).basic_preference.row
+    assert_nil users(:steve).basic_preference
+  end
+  
 end

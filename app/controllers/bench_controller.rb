@@ -66,9 +66,12 @@ class BenchController < ApplicationController
       else
         @parents = false
       end
-      if session[:character_table_info]
-        @rows = session[:character_table_info][:row_title]
-        @columns = session[:character_table_info][:col_title]
+      #if session[:character_table_info]
+      if current_user.basic_preference
+#        @rows = session[:character_table_info][:row_title]
+#        @columns = session[:character_table_info][:col_title]
+        @rows = current_user.basic_preference.row.intern
+        @columns = current_user.basic_preference.column.intern
         @table = true
       else
         @table = false
@@ -106,15 +109,22 @@ class BenchController < ApplicationController
   end
 
   def update_table
-      if request.post?
-        @vial = Vial.find(params[:vial_id])
-        @columns = params[:character_col].intern
-        @rows = params[:character_row].intern
-        @column_titles = @vial.species.phenotypes(@columns)
-        @row_titles = @vial.species.phenotypes(@rows)
-        session[:character_table_info] = {:row_title => @rows, :col_title => @columns}
+    if request.post?
+      @vial = Vial.find(params[:vial_id])
+      @columns = params[:character_col].intern
+      @rows = params[:character_row].intern
+      @column_titles = @vial.species.phenotypes(@columns)
+      @row_titles = @vial.species.phenotypes(@rows)
+#        session[:character_table_info] = {:row_title => @rows, :col_title => @columns}
+      if current_user.basic_preference.nil?
+        BasicPreference.create!(:user_id => current_user.id, :row => @rows.to_s, :column => @columns.to_s)
+      else
+        current_user.basic_preference.row = @rows.to_s
+        current_user.basic_preference.column = @columns.to_s
+        current_user.basic_preference.save!
       end
-      redirect_to :action => "view_vial", :id => @vial unless request.xhr?
+    end
+    redirect_to :action => "view_vial", :id => @vial unless request.xhr?
   end
   
 end

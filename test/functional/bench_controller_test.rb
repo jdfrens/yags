@@ -96,6 +96,25 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_steve_has_no_table_preference
+    get :view_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
+    assert_response :success
+    assert_select "em#instruction" do
+      assert_select "q"
+    end
+  end
+  
+  def test_jeremy_has_table_preferences
+    get :view_vial, { :id => vials(:random_vial).id }, user_session(:manage_bench_as_frens)
+    assert_response :success
+    assert_select "table" do
+      assert_select "tr:nth-child(1) th:nth-child(2)", "white"
+      assert_select "tr:nth-child(1) th:nth-child(3)", "red"
+      assert_select "tr:nth-child(2) th:nth-child(1)", "curly"
+      assert_select "tr:nth-child(3) th:nth-child(1)", "straight"
+    end
+  end
+  
   def test_view_vial_fails_when_NOT_logged_in
     get :view_vial, { :id => vials(:vial_one).id }
     assert_redirected_to_login

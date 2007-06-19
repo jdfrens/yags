@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < Test::Unit::TestCase
 
-  fixtures :users, :vials
+  fixtures :users, :vials, :basic_preferences
   
   def test_has_many_vials
     assert_equal_set [], users(:calvin).vials

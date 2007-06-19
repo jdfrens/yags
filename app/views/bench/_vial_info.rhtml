@@ -14,10 +14,10 @@
                        :before => visual_effect(:appear, 'spinner'),
                        :complete => visual_effect(:fade, 'spinner')  do %>
                 <div id="character_cols">
-                    <label for="character_select_col">Columns:</label><%= select_tag(:character_col, options_for_select(@vial.species.characters, params[:character_col]) ) %>
+                    <label for="character_select_col">Columns:</label><%= select_tag(:character_col, options_for_select(@vial.species.characters, @columns) ) %>
                 </div>
                 <div id="character_rows">
-                    <label for="character_select_row">Rows:</label><%= select_tag(:character_row, options_for_select(@vial.species.characters, params[:character_row]) ) %>
+                    <label for="character_select_row">Rows:</label><%= select_tag(:character_row, options_for_select(@vial.species.characters, @rows) ) %>
                 </div>
                 <%= hidden_field_tag(:vial_id, @vial.id) %>
                 <%= submit_tag "Update Table" %>

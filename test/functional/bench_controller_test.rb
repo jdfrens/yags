@@ -5,7 +5,7 @@ require 'bench_controller'
 class BenchController; def rescue_action(e) raise e end; end
 
 class BenchControllerTest < Test::Unit::TestCase
-  fixtures :flies, :vials, :genotypes
+  fixtures :flies, :vials, :genotypes, :basic_preferences
   user_fixtures
   
   def setup

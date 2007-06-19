@@ -66,8 +66,15 @@ class BenchController < ApplicationController
       else
         @parents = false
       end
-      @column_titles = @vial.species.phenotypes(:gender)
-      @row_titles = @vial.species.phenotypes(:gender)
+      if session[:character_table_info]
+        @rows = session[:character_table_info][:row_title]
+        @columns = session[:character_table_info][:col_title]
+        @table = true
+      else
+        @table = false
+      end
+      @row_titles = @vial.species.phenotypes(@rows)
+      @column_titles = @vial.species.phenotypes(@columns)
       @phenotypes_to_flies = {}
       @vial.combinations_of_phenotypes.each do |combination|
         @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
@@ -105,6 +112,7 @@ class BenchController < ApplicationController
         @rows = params[:character_row].intern
         @column_titles = @vial.species.phenotypes(@columns)
         @row_titles = @vial.species.phenotypes(@rows)
+        session[:character_table_info] = {:row_title => @rows, :col_title => @columns}
       end
       redirect_to :action => "view_vial", :id => @vial unless request.xhr?
   end

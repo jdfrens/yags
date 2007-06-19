@@ -26,10 +26,13 @@
 <%= image_tag '/images/ajax-loader-red.gif', :id => 'spinner', :style => 'display: none;' %>
         <br />
         <div id="vial-table">
-            <em id="instruction">To view the table, select two characters from above.
-                <br />Then, click
-                <q>Update Table</q>
-            </em>
+				<br />
+				<% if @table %>
+					<%= render :partial => "character_table" %>
+				<% else %>
+					<em id="instruction">To update the table, select two characters from above.
+             	   <br />Then, click <q>Update Table</q></em>
+				<% end %>
         </div>
     </div>
 </div>

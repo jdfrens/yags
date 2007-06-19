@@ -1,0 +1,7 @@
+<h2>Preferences</h2>
+<% form_remote_tag do %>
+  <% @characters.each do |character| -%>
+    <%= check_box character.to_s, character, :checked => 'checked' %>
+    <%= character.to_s %> <br />
+  <% end -%>
+<% end -%>

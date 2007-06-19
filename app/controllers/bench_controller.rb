@@ -9,6 +9,14 @@ class BenchController < ApplicationController
   def index
   end
   
+  def preferences
+    @characters = ["mayo", "ketchup", "mustard", "pickles", "cheese", "onions", "bacon", "lettuce", "tomato"]
+    #@characters = Species.singleton.characters
+    if request.post?
+      # to do
+    end
+  end
+  
   def collect_field_vial
     if (params[:vial])
       params[:vial][:user_id] = current_user.id
@@ -66,10 +74,7 @@ class BenchController < ApplicationController
       else
         @parents = false
       end
-      #if session[:character_table_info]
       if current_user.basic_preference
-#        @rows = session[:character_table_info][:row_title]
-#        @columns = session[:character_table_info][:col_title]
         @rows = current_user.basic_preference.row.intern
         @columns = current_user.basic_preference.column.intern
         @table = true
@@ -115,7 +120,6 @@ class BenchController < ApplicationController
       @rows = params[:character_row].intern
       @column_titles = @vial.species.phenotypes(@columns)
       @row_titles = @vial.species.phenotypes(@rows)
-#        session[:character_table_info] = {:row_title => @rows, :col_title => @columns}
       if current_user.basic_preference.nil?
         BasicPreference.create!(:user_id => current_user.id, :row => @rows.to_s, :column => @columns.to_s)
       else

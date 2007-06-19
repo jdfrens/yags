@@ -185,7 +185,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "ul:first-of-type" do
-      assert_select "li", 4
+      assert_select "li", 5
     end
   end
   
@@ -300,9 +300,33 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_mate_flies_fails_when_NOT_logged_in
-    post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, 
-        :number => "8" }
+    post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, :number => "8" }
     assert_redirected_to_login
+  end
+  
+  def test_preferences_page
+    get :preferences, {}, user_session(:manage_bench)
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "form" do
+      assert_select "input"
+    end
+  end
+  
+  def test_change_preferences
+    # to do
+  end
+  
+  def test_change_preferences_fails_when_NOT_logged_in_as_student
+    # post later?
+    get :preferences
+    assert_redirected_to_login
+    
+    number_of_old_preferences = CharacterPreference.find(:all)
+    get :preferences, {}, user_session(:manage_student)
+    assert_response 401 # access denied
+    assert_equal number_of_old_preferences, CharacterPreference.find(:all)
   end
   
 end

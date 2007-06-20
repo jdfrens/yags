@@ -18,9 +18,27 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_has_many_character_preferences
-    assert_equal ["legs"], users(:jdfrens).character_preferences.map { |p| p.hidden_character }
-    assert_equal ["eye_color", "wings"], users(:randy).character_preferences.map { |p| p.hidden_character }
+    assert_equal [:eye_color, :wings], users(:randy).hidden_characters
+    assert_equal [:legs], users(:jdfrens).hidden_characters
     assert_equal 0, users(:steve).character_preferences.size
+  end
+  
+  def test_hidden_characters
+    assert_equal users(:randy).character_preferences.map { |p| p.hidden_character.intern }, 
+        users(:randy).hidden_characters
+  end
+  
+  def test_visible_characters
+    assert_equal [:gender, :legs], users(:randy).visible_characters
+    assert_equal [:gender, :eye_color, :wings], users(:jdfrens).visible_characters
+    assert_equal [:gender, :eye_color, :wings, :legs], users(:steve).visible_characters
+    
+    assert_equal [], users(:randy).visible_characters([])
+    assert_equal [], users(:jdfrens).visible_characters([])
+    assert_equal [], users(:steve).visible_characters([])
+    
+    assert_equal [:telekinesis, :legs], users(:randy).visible_characters([:telekinesis, :wings, :legs])
+    assert_equal [:telekinesis, :wings], users(:jdfrens).visible_characters([:telekinesis, :wings, :legs])
   end
   
 end

@@ -11,13 +11,15 @@ class BenchController < ApplicationController
   
   def preferences
     @characters = Species.singleton.characters
+    @checked_values = compute_checked(current_user.hidden_characters)
     if request.post?
       @characters.each do |character|
-        if params[character] == "is_checked"
-#          CharacterPreference.find(:all, :conditions => "user_id = #{current_user.id} and character = #{character}").destroy
-          current_user.character_preferences.select { |p| p.hidden_character == character.to_s }.each { |p| p.destroy; p.save! }
+        if params[character] == "visible"
+          CharacterPreference.find(:all, :conditions => 
+              "user_id = #{current_user.id} AND hidden_character = \'#{character}\'").each { |p| p.destroy }
+#          current_user.character_preferences.select { |p| p.hidden_character == character.to_s }.each { |p| p.destroy }
         else 
-          if current_user.character_preferences.select { |p| p.hidden_character == character.to_s }.size == 0
+          if !current_user.hidden_characters.include?(character)
             CharacterPreference.create!(:user_id => current_user.id, :hidden_character => character.to_s)
           end
         end
@@ -64,8 +66,8 @@ class BenchController < ApplicationController
       @vial = Vial.find(params[:vial])
     end
     @phenotypes_to_flies = {}
-    @vial.combinations_of_phenotypes.each do |combination|
-      @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
+    @vial.combinations_of_phenotypes(current_user.visible_characters).each do |combination|
+      @phenotypes_to_flies[combination] = @vial.flies_of_type(current_user.visible_characters, combination)
     end
     @which_vial = params[:which_vial]
     redirect_to :action => "mate_flies" unless request.xhr? 
@@ -137,6 +139,12 @@ class BenchController < ApplicationController
       end
     end
     redirect_to :action => "view_vial", :id => @vial unless request.xhr?
+  end
+  
+  def compute_checked(hidden_characters)
+    @characters.map do |character| 
+      !hidden_characters.include?(character)
+    end
   end
   
 end

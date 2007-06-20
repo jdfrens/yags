@@ -5,7 +5,7 @@ require 'bench_controller'
 class BenchController; def rescue_action(e) raise e end; end
 
 class BenchControllerTest < Test::Unit::TestCase
-  fixtures :flies, :vials, :genotypes, :basic_preferences
+  fixtures :flies, :vials, :genotypes, :basic_preferences, :character_preferences
   user_fixtures
   
   def setup
@@ -224,15 +224,39 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_show_mateable_flies
     xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }, user_session(:manage_bench)
     assert_response :success
-    assert_select "table"
-    xhr :post, :show_mateable_flies, {:vial => vials(:vial_with_many_flies) }
-    assert_response :success
-    assert_select "table"
+    assert_select "table" do
+      assert_select "th", 16 * 4
+      assert_select "td", 16
+      assert_select "th", "female", 8
+      assert_select "th", "male", 8
+      assert_select "th", "red", 8
+      assert_select "th", "white", 8
+      assert_select "th", "straight", 8
+      assert_select "th", "curly", 8
+      assert_select "th", "smooth", 8
+      assert_select "th", "hairy", 8
+    end
   end
   
-  def test_show_mateable_flies_fails_when_NOT_logged_in
+  def test_show_mateable_flies_again
+    xhr :post, :show_mateable_flies, {:vial => vials(:vial_with_many_flies) }, user_session(:pruim)
+    assert_response :success
+    assert_select "table" do
+      assert_select "th", 4 * 2
+      assert_select "td", 4
+      assert_select "th", "female", 2
+      assert_select "th", "male", 2
+      assert_select "th", "smooth", 2
+      assert_select "th", "hairy", 2
+    end
+  end
+  
+  def test_show_mateable_flies_fails_when_NOT_logged_in_as_student
     xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }
     assert_redirected_to_login
+    
+    xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }, user_session(:manage_student)
+    assert_response 401 # access denied
   end
   
   def test_list_vials
@@ -312,33 +336,49 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "input#gender"
-      assert_select "input#eye_color"
-      assert_select "input#wings"
-      assert_select "input#legs"
+      assert_select "input#gender[value=visible][checked=checked]"
+      assert_select "input#eye_color[value=visible][checked=checked]"
+      assert_select "input#wings[value=visible][checked=checked]"
+      assert_select "input#legs[value=visible][checked=checked]"
+      assert_select "input[type=checkbox][checked=checked]", 4
+    end
+  end
+  
+  def test_preferences_page_again
+    get :preferences, {}, user_session(:pruim)
+    assert_response :success
+    assert_standard_layout
+    assert_select "form" do
+      assert_select "input#gender[value=visible][type=checkbox][checked=checked]"
+      assert_select "input#eye_color[value=visible][type=checkbox][checked=checked]", 0
+      assert_select "input#wings[value=visible][type=checkbox][checked=checked]", 0
+      assert_select "input#legs[value=visible][type=checkbox][checked=checked]"
+      assert_select "input[type=checkbox][checked=checked]", 2
     end
   end
   
   def test_change_preferences
-    assert_equal 0, users(:steve).character_preferences.size
-    post :preferences, {:gender => "is_checked", :wings => "is_checked"}, user_session(:steve)
+    assert_equal 0, users(:steve).hidden_characters.size
+    post :preferences, {:gender => "visible", :wings => "visible"}, user_session(:steve)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal ["eye_color", "legs"], users(:steve).character_preferences.map { |p| p.hidden_character }
+    assert_equal [:eye_color, :legs], users(:steve).hidden_characters
+    assert_equal [:gender, :wings], users(:steve).visible_characters
     
-    post :preferences, {:gender => "is_checked", :wings => "is_checked", :legs => "is_checked"}, user_session(:steve)
+    post :preferences, {:gender => "visible", :wings => "visible", :legs => "visible"}, user_session(:steve)
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal ["eye_color"], users(:steve).character_preferences.map { |p| p.hidden_character }
+    assert_equal [:eye_color], users(:steve).hidden_characters
+    assert_equal [:gender, :wings, :legs], users(:steve).visible_characters
   end
   
   def test_change_preferences_fails_when_NOT_logged_in_as_student
-    post :preferences, {:gender => "is_checked", :wings => "is_checked"}
+    post :preferences, {:gender => "visible", :wings => "visible"}
     assert_redirected_to_login
     
     number_of_old_preferences = CharacterPreference.find(:all)
-    get :preferences, {:gender => "is_checked", :legs => "is_checked"}, user_session(:manage_student)
+    get :preferences, {:gender => "visible", :legs => "visible"}, user_session(:manage_student)
     assert_response 401 # access denied
     assert_equal number_of_old_preferences, CharacterPreference.find(:all)
   end

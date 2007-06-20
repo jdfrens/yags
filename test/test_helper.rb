@@ -61,6 +61,8 @@ class Test::Unit::TestCase
       { :current_user_id => 2 }
     when :manage_bench_as_frens
       { :current_user_id => 3 }
+    when :pruim
+      { :current_user_id => 4 }
     else
       {}
     end

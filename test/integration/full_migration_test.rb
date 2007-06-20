@@ -57,9 +57,9 @@ class FullMigrationTest < ActionController::IntegrationTest
       end
       
       s.table :character_preferences do |t|
-        t.column :id,           :integer
-        t.column :user_id,      :integer
-        t.column :character,    :string
+        t.column :id,               :integer
+        t.column :user_id,          :integer
+        t.column :hidden_character, :string
       end
       
       # authentication

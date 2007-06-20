@@ -2,12 +2,12 @@
 no_legs_frens:
   id: 1
   user_id: 3
-  character: legs
+  hidden_character: legs
 no_eyes_for_pruim:
   id: 2
   user_id: 4
-  character: eye_color
+  hidden_character: eye_color
 no_wings_for_pruim:
   id: 3
   user_id: 4
-  character: wings
+  hidden_character: wings

@@ -322,12 +322,12 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal ["eye_color", "legs"], users(:steve).character_preferences.map { |p| p.character }
+    assert_equal ["eye_color", "legs"], users(:steve).character_preferences.map { |p| p.hidden_character }
     
     post :preferences, {:gender => "is_checked", :wings => "is_checked", :legs => "is_checked"}, user_session(:steve)
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal ["eye_color"], users(:steve).character_preferences.map { |p| p.character }
+    assert_equal ["eye_color"], users(:steve).character_preferences.map { |p| p.hidden_character }
   end
   
   def test_change_preferences_fails_when_NOT_logged_in_as_student

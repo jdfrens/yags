@@ -16,10 +16,10 @@ class BenchController < ApplicationController
       @characters.each do |character|
         if params[character] == "is_checked"
 #          CharacterPreference.find(:all, :conditions => "user_id = #{current_user.id} and character = #{character}").destroy
-          current_user.character_preferences.select { |p| p.character == character.to_s }.each { |p| p.destroy; p.save! }
+          current_user.character_preferences.select { |p| p.hidden_character == character.to_s }.each { |p| p.destroy; p.save! }
         else 
-          if current_user.character_preferences.select { |p| p.character == character.to_s }.size == 0
-            CharacterPreference.create!(:user_id => current_user.id, :character => character.to_s)
+          if current_user.character_preferences.select { |p| p.hidden_character == character.to_s }.size == 0
+            CharacterPreference.create!(:user_id => current_user.id, :hidden_character => character.to_s)
           end
         end
       end

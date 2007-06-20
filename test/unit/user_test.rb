@@ -18,8 +18,8 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_has_many_character_preferences
-    assert_equal ["legs"], users(:jdfrens).character_preferences.map { |p| p.character }
-    assert_equal ["eye_color", "wings"], users(:randy).character_preferences.map { |p| p.character }
+    assert_equal ["legs"], users(:jdfrens).character_preferences.map { |p| p.hidden_character }
+    assert_equal ["eye_color", "wings"], users(:randy).character_preferences.map { |p| p.hidden_character }
     assert_equal 0, users(:steve).character_preferences.size
   end
   

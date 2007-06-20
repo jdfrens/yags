@@ -1,7 +1,8 @@
 <h2>Preferences</h2>
-<% form_remote_tag do %>
+<% form_tag :url => {:action => :index} do %>
   <% @characters.each do |character| -%>
-    <%= check_box character.to_s, character, :checked => 'checked' %>
+    <%= check_box_tag character.to_s, "is_checked", :checked => 'checked' -%>
     <%= character.to_s %> <br />
   <% end -%>
+  <%= submit_tag "Update", :class => "submit" -%>
 <% end -%>

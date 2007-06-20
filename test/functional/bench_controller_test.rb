@@ -308,23 +308,34 @@ class BenchControllerTest < Test::Unit::TestCase
     get :preferences, {}, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
-    
     assert_select "form" do
-      assert_select "input"
+      assert_select "input#gender"
+      assert_select "input#eye_color"
+      assert_select "input#wings"
+      assert_select "input#legs"
     end
   end
   
   def test_change_preferences
-    # to do
+    assert_equal 0, users(:steve).character_preferences.size
+    post :preferences, {:gender => "is_checked", :wings => "is_checked"}, user_session(:steve)
+    assert_response :redirect
+    assert_redirected_to :controller => 'bench', :action => 'index'
+    users(:steve).reload
+    assert_equal ["eye_color", "legs"], users(:steve).character_preferences.map { |p| p.character }
+    
+    post :preferences, {:gender => "is_checked", :wings => "is_checked", :legs => "is_checked"}, user_session(:steve)
+    assert_redirected_to :controller => 'bench', :action => 'index'
+    users(:steve).reload
+    assert_equal ["eye_color"], users(:steve).character_preferences.map { |p| p.character }
   end
   
   def test_change_preferences_fails_when_NOT_logged_in_as_student
-    # post later?
-    get :preferences
+    post :preferences, {:gender => "is_checked", :wings => "is_checked"}
     assert_redirected_to_login
     
     number_of_old_preferences = CharacterPreference.find(:all)
-    get :preferences, {}, user_session(:manage_student)
+    get :preferences, {:gender => "is_checked", :legs => "is_checked"}, user_session(:manage_student)
     assert_response 401 # access denied
     assert_equal number_of_old_preferences, CharacterPreference.find(:all)
   end

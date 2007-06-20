@@ -10,10 +10,20 @@ class BenchController < ApplicationController
   end
   
   def preferences
-    @characters = ["mayo", "ketchup", "mustard", "pickles", "cheese", "onions", "bacon", "lettuce", "tomato"]
-    #@characters = Species.singleton.characters
+    #@characters = ["mayo", "ketchup", "mustard", "pickles", "cheese", "onions", "bacon", "lettuce", "tomato"]
+    @characters = Species.singleton.characters
     if request.post?
-      # to do
+      @characters.each do |character|
+        if params[character] == "is_checked"
+#          CharacterPreference.find(:all, :conditions => "user_id = #{current_user.id} and character = #{character}").destroy
+          current_user.character_preferences.select { |p| p.character == character.to_s }.each { |p| p.destroy; p.save! }
+        else 
+          if current_user.character_preferences.select { |p| p.character == character.to_s }.size == 0
+            CharacterPreference.create!(:user_id => current_user.id, :character => character.to_s)
+          end
+        end
+      end
+      redirect_to :action => "index"
     end
   end
   

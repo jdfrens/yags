@@ -10,7 +10,6 @@ class BenchController < ApplicationController
   end
   
   def preferences
-    #@characters = ["mayo", "ketchup", "mustard", "pickles", "cheese", "onions", "bacon", "lettuce", "tomato"]
     @characters = Species.singleton.characters
     if request.post?
       @characters.each do |character|
@@ -106,12 +105,11 @@ class BenchController < ApplicationController
     @vials = current_user.vials
   end
   
-  # future: confirm deletetion of vial
-  #   through a flash[]
   def destroy_vial
     if params[:id] && request.post?
-      Vial.find(params[:id]).destroy      
+      @vial = Vial.find(params[:id]).destroy      
     end
+    flash[:notice] = "#{@vial.label} has been deleted"
     redirect_to :action => :list_vials
   end
   

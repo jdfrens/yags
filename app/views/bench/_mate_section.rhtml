@@ -9,7 +9,7 @@
             <%= hidden_field_tag 'which_vial', '1' %>
         </div>
         <%= submit_tag "Show Flies" %>
-    <% end %>
+    <% end -%>
     
     <br />
     
@@ -21,7 +21,7 @@
             <%= hidden_field_tag 'which_vial', '2' %>
         </div>
         <%= submit_tag "Show Flies" %>
-    <% end %>
+    <% end -%>
     
     <%= image_tag '/images/ajax-loader-red.gif', :id => 'spinner', :style => 'display: none;' %>
     
@@ -52,8 +52,8 @@
         <p>
             <label for="number_of_flies">Number of Desired Flies:</label><%= text_field_tag :number %>
         </p>
-        <%= submit_tag "Mate", :class => "submit" -%>
-    <% end %>
+        <%= submit_tag "Mate", :class => "submit" %>
+    <% end -%>
 
     <br />
 </div>

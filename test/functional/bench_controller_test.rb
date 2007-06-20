@@ -166,6 +166,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert logged_in?, "should be logged in"
     assert_nil Vial.find_by_id(vials(:vial_one).id)
     assert_equal number_of_old_vials - 1, Vial.find(:all).size
+    assert !flash.empty?
+    assert_equal "First vial has been deleted",  flash[:notice]
     assert_response :redirect
     assert_redirected_to :action => "list_vials"
   end
@@ -173,6 +175,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_delete_vial_fails_when_NOT_logged_in
     post :destroy_vial, { :id => vials(:vial_one).id }
     assert_not_nil Vial.find_by_id(vials(:vial_one).id)
+    assert flash.empty?
     assert_redirected_to_login
     
     post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:manage_student)

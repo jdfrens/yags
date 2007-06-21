@@ -94,6 +94,7 @@ class BenchController < ApplicationController
       end
       @row_titles = @vial.species.phenotypes(@rows)
       @column_titles = @vial.species.phenotypes(@columns)
+      @visible_characters = current_user.visible_characters
       @phenotypes_to_flies = {}
       @vial.combinations_of_phenotypes.each do |combination|
         @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination

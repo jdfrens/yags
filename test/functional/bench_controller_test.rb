@@ -115,6 +115,23 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_visible_characters_in_select_boxes_for_table
+    get :view_vial, {:id => vials(:random_vial).id }, user_session(:manage_bench_as_frens)
+    assert_response :success
+    assert_select "div#character_cols" do
+      assert_select "select[name=character_col]"
+      assert_select "option[value=gender]"
+      assert_select "option[value=eye_color]"
+      assert_select "option[value=wings]"
+    end
+    assert_select "div#character_rows" do
+      assert_select "select[name=character_row]"
+      assert_select "option[value=gender]"
+      assert_select "option[value=eye_color]"
+      assert_select "option[value=wings]"
+    end
+  end
+  
   def test_view_vial_fails_when_NOT_logged_in
     get :view_vial, { :id => vials(:vial_one).id }
     assert_redirected_to_login

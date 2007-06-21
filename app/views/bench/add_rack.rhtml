@@ -1,0 +1,12 @@
+<%= error_messages_for 'rack' %>
+
+<h1>Add Rack</h1>
+
+<% form_for :rack do |form| %>
+    <p>
+        <label for="label">Label:</label>
+        <%= form.text_field :label, :size => 40 %>
+    </p>
+    
+    <%= submit_tag "Add Rack", :class => "submit" %>
+<% end %>

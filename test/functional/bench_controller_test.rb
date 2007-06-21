@@ -44,7 +44,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
 
-  def test_collect_field_vial_data
+  def test_collect_field_vial_page
     post :collect_field_vial, {}, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
@@ -54,6 +54,33 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "label"
       assert_select "p", "Number of Flies:"
       assert_select "input"
+    end
+  end
+  
+  def test_add_rack
+    number_of_old_racks =  Rack.find(:all).size
+    post :add_rack, { :rack => { :label => "super storage unit"} }, user_session(:manage_bench)
+    new_rack = Rack.find_by_label("super storage unit")
+    assert_not_nil new_rack
+    assert_equal number_of_old_racks + 1, Rack.find(:all).size
+    assert_equal 1, new_rack.user_id
+    assert_response :redirect
+    assert_redirected_to :action => "list_vials"
+  end
+  
+  def test_add_rack_fails_when_NOT_logged_in
+    post :add_rack, { :rack => { :label => "super duper unit"} }
+    assert_redirected_to_login
+  end
+
+  def test_add_rack_page
+    post :add_rack, {}, user_session(:manage_bench)
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "form" do
+      assert_select "p", "Label:"
+      assert_select "label"
     end
   end
   
@@ -205,7 +232,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "ul:first-of-type" do
-      assert_select "li", 5
+      assert_select "li", 6
     end
   end
   

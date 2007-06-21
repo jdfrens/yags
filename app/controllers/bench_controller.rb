@@ -142,6 +142,19 @@ class BenchController < ApplicationController
     redirect_to :action => "view_vial", :id => @vial unless request.xhr?
   end
   
+  def add_rack
+    if params[:rack]
+      params[:rack][:user_id] = current_user.id
+      @rack = Rack.new params[:rack]
+      @rack.save!
+      redirect_to :action => "list_vials"
+    else
+      render
+    end
+    rescue ActiveRecord::RecordInvalid
+    render
+  end
+  
   def compute_checked(hidden_characters)
     @characters.map do |character| 
       !hidden_characters.include?(character)

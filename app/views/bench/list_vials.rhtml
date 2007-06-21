@@ -5,9 +5,12 @@
 <h1>Listing Your Vials</h1>
 
 <div id="list-vials">
-    <ul>
-        <% for vial in @vials %>
-            <li id=<%= vial.id %> ><%= link_to vial.label, :action => :view_vial, :id => vial %></li>
-        <% end %>
-    </ul>
+		<% for rack in @racks -%>
+			<h4 id=<%= rack.id %> ><%= rack.label %></h4>
+			<ul>
+        		<% for vial in @vials -%>
+            	<li id=<%= vial.id %> ><%= link_to vial.label, :action => :view_vial, :id => vial %></li>
+    			<% end -%>
+    		</ul>
+		<% end -%>
 </div>

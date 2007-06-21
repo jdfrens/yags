@@ -1,5 +1,5 @@
 require "erb"
-  include ERB::Util
+include ERB::Util
 
 class BenchController < ApplicationController
   in_place_edit_for :vial, :label
@@ -17,7 +17,7 @@ class BenchController < ApplicationController
         if params[character] == "visible"
           CharacterPreference.find(:all, :conditions => 
               "user_id = #{current_user.id} AND hidden_character = \'#{character}\'").each { |p| p.destroy }
-#          current_user.character_preferences.select { |p| p.hidden_character == character.to_s }.each { |p| p.destroy }
+          #          current_user.character_preferences.select { |p| p.hidden_character == character.to_s }.each { |p| p.destroy }
         else 
           if !current_user.hidden_characters.include?(character)
             CharacterPreference.create!(:user_id => current_user.id, :hidden_character => character.to_s)
@@ -37,7 +37,7 @@ class BenchController < ApplicationController
     else
       render
     end
-  rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid
     render
   end
   
@@ -52,7 +52,7 @@ class BenchController < ApplicationController
     end
     if (params[:vial])
       if Fly.find(params[:vial][:mom_id]).vial.user_id == current_user.id and 
-          Fly.find(params[:vial][:dad_id]).vial.user_id == current_user.id
+        Fly.find(params[:vial][:dad_id]).vial.user_id == current_user.id
         params[:vial][:rack_id] = params[:rack_id]
         @vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)
         @vial.save!
@@ -79,6 +79,7 @@ class BenchController < ApplicationController
   
   def view_vial
     @vial = Vial.find(params[:id])
+    @rack = Rack.find(@vial.rack_id)
     if @vial.user_id == current_user.id
       if @vial.mom_id && @vial.dad_id
         @parents = true
@@ -109,6 +110,7 @@ class BenchController < ApplicationController
   end
   
   def list_vials
+    @racks = current_user.racks
     @vials = current_user.vials
   end
   
@@ -127,7 +129,7 @@ class BenchController < ApplicationController
     @vial.label = previous_label unless @vial.save
     render :text => h(@vial.label)
   end
-
+  
   def update_table
     if request.post?
       @vial = Vial.find(params[:vial_id])

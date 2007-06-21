@@ -89,6 +89,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "span#vial_label_3_in_place_editor", vials(:vial_with_a_fly).label
+    assert_select "p", "Rack: steve rack"
         
     assert_select "div#vial-table"
     assert_select "div#parent-info"
@@ -102,6 +103,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "span#vial_label_4_in_place_editor", vials(:vial_with_many_flies).label
+    assert_select "p", "Rack: steve rack"
     
     assert_select "div#vial-table"
     assert_select "div#parent-info"
@@ -115,7 +117,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "span#vial_label_1_in_place_editor", vials(:vial_one).label
-
+    assert_select "p", "Rack: steve rack"
+    
     assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do

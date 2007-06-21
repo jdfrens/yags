@@ -4,10 +4,9 @@
         <div class="vial-title">
             <strong>Label:</strong><%= in_place_editor_field :vial, 'label', {} %>
         </div>
+		<p><strong>Rack:</strong> <%= @rack.label %></p>
 
-        <p>
-            <strong>Total number of flies:</strong><%= @vial.flies.size %>
-        </p>
+        <p><strong>Total number of flies:</strong><%= @vial.flies.size %></p>
 
         <div>
             <% form_remote_tag :url => {:action => :update_table},

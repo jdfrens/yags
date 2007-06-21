@@ -17,7 +17,6 @@ class BenchController < ApplicationController
         if params[character] == "visible"
           CharacterPreference.find(:all, :conditions => 
               "user_id = #{current_user.id} AND hidden_character = \'#{character}\'").each { |p| p.destroy }
-          #          current_user.character_preferences.select { |p| p.hidden_character == character.to_s }.each { |p| p.destroy }
         else 
           if !current_user.hidden_characters.include?(character)
             CharacterPreference.create!(:user_id => current_user.id, :hidden_character => character.to_s)
@@ -159,6 +158,24 @@ class BenchController < ApplicationController
     end
     rescue ActiveRecord::RecordInvalid
     render
+  end
+  
+  def move_vial_to_another_rack
+    @vial = Vial.find(params[:id])
+    @rack_labels_and_ids = []
+    current_user.racks.each do |rack|
+      @rack_labels_and_ids << [rack.label, rack.id]
+    end
+    if request.post?
+      if @vial.user == current_user and current_user.racks.include? Rack.find(params[:rack_id])
+        @vial.rack_id = params[:rack_id]
+        @vial.save!
+        redirect_to :action => "view_vial", :id => @vial.id
+      else
+        # flash[:notice] = "Action failed - bad parameters" # or something
+        redirect_to :action => "list_vials"
+      end
+    end
   end
   
   def compute_checked(hidden_characters)

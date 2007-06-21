@@ -2,28 +2,28 @@
 vial_one:
   id: 1
   label: First vial
-  rack_id: 1
+  rack_id: 2
 vial_empty:
   id: 2
   label: Empty vial
-  rack_id: 1
+  rack_id: 2
 vial_with_a_fly:
   id: 3
   label: Single fly vial
-  rack_id: 1
+  rack_id: 2
 vial_with_many_flies:
   id: 4
   label: Multiple fly vial
-  rack_id: 1
+  rack_id: 2
 parents_vial:
   id: 5
   label: Parents vial
-  rack_id: 1
+  rack_id: 2
 destroyable_vial:
   id: 6
   label: Destroyable vial
-  rack_id: 2
+  rack_id: 4
 random_vial:
   id: 7
   label: Another vial
-  rack_id: 2
+  rack_id: 4

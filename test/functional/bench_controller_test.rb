@@ -74,7 +74,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
 
   def test_add_rack_page
-    post :add_rack, {}, user_session(:manage_bench)
+    get :add_rack, {}, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
     
@@ -84,12 +84,48 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_move_vial_to_another_rack
+    number_of_old_vials_in_rack = Rack.find(1).vials.size
+    post :move_vial_to_another_rack, { :id => 5, :rack_id => 1 }, user_session(:steve)
+    assert_equal number_of_old_vials_in_rack + 1, Rack.find(1).vials.size
+    assert_equal 1, Vial.find(5).rack_id
+    assert_response :redirect
+    assert_redirected_to :action => "view_vial", :id => 5
+  end
+  
+  def test_move_vial_to_another_rack_fails_when_NOT_logged_in
+    post :move_vial_to_another_rack, { :id => 4, :rack_id => 1 }
+    assert_redirected_to_login
+  end
+  
+  def test_move_vial_to_another_rack_fails_when_NOT_owner_of_vial
+    post :move_vial_to_another_rack, { :id => 7, :rack_id => 1 }, user_session(:steve)
+    assert_redirected_to :action => "list_vials"
+  end
+  
+  def test_move_vial_to_another_rack_fails_when_NOT_owner_of_rack
+    post :move_vial_to_another_rack, { :id => 3, :rack_id => 5 }, user_session(:steve)
+    assert_redirected_to :action => "list_vials"
+  end
+
+  def test_move_vial_to_another_rack_page
+    get :move_vial_to_another_rack, { :id => 5 }, user_session(:steve)
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "form" do
+      assert_select "select#rack_id" do
+        assert_select "option", 2
+      end
+    end
+  end
+  
   def test_view_vial_with_a_fly
     get :view_vial, { :id => vials(:vial_with_a_fly).id }, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
     assert_select "span#vial_label_3_in_place_editor", vials(:vial_with_a_fly).label
-    assert_select "p", "Rack: steve rack"
+    assert_select "p", "Rack: steve bench"
         
     assert_select "div#vial-table"
     assert_select "div#parent-info"
@@ -103,7 +139,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "span#vial_label_4_in_place_editor", vials(:vial_with_many_flies).label
-    assert_select "p", "Rack: steve rack"
+    assert_select "p", "Rack: steve bench"
     
     assert_select "div#vial-table"
     assert_select "div#parent-info"
@@ -117,7 +153,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "span#vial_label_1_in_place_editor", vials(:vial_one).label
-    assert_select "p", "Rack: steve rack"
+    assert_select "p", "Rack: steve bench"
     
     assert_select "div#vial-table"
     assert_select "div#parent-info"
@@ -349,7 +385,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_equal [:white] * 8, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
-    assert_equal 3, new_vial.user_id
+    assert_equal 1, new_vial.user_id
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
   end
     

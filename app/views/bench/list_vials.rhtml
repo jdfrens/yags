@@ -9,7 +9,9 @@
 			<h4 id=<%= rack.id %> ><%= rack.label %></h4>
 			<ul>
         		<% for vial in @vials -%>
-            	<li id=<%= vial.id %> ><%= link_to vial.label, :action => :view_vial, :id => vial %></li>
+        		  <% if vial.rack_id == rack.id %> <!-- too much logic in the view.  but ok for right now. -->
+                    <li id=<%= vial.id %> ><%= link_to vial.label, :action => :view_vial, :id => vial %></li>
+            	  <% end -%>
     			<% end -%>
     		</ul>
 		<% end -%>

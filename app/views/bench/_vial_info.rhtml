@@ -4,7 +4,7 @@
         <div class="vial-title">
             <strong>Label:</strong><%= in_place_editor_field :vial, 'label', {} %>
         </div>
-		<p><strong>Rack:</strong> <%= @rack.label %></p>
+		<p><strong>Rack:</strong> <%= link_to @rack.label, :action => :move_vial_to_another_rack, :id => @vial %></p>
 
         <p><strong>Total number of flies:</strong><%= @vial.flies.size %></p>
 

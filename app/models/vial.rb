@@ -37,6 +37,14 @@ class Vial < ActiveRecord::Base
     Species.singleton
   end
   
+  def user_id
+    Rack.find(self.rack_id).user_id
+  end
+  
+  def user
+    User.find(self.user_id)
+  end
+  
   def combinations_of_phenotypes(characters = species.characters)
     cartesian_product( characters.collect do |character| 
       phenotypes = species.phenotypes(character)

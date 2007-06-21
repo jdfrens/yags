@@ -30,7 +30,7 @@ class BenchController < ApplicationController
   
   def collect_field_vial
     if (params[:vial])
-      params[:vial][:user_id] = current_user.id
+      params[:vial][:rack_id] = current_user.racks.first
       @vial = Vial.collect_from_field(params[:vial], params[:number].to_i)
       @vial.save!
       redirect_to :action => "view_vial", :id => @vial.id
@@ -49,7 +49,7 @@ class BenchController < ApplicationController
     if (params[:vial])
       if Fly.find(params[:vial][:mom_id]).vial.user_id == current_user.id and 
           Fly.find(params[:vial][:dad_id]).vial.user_id == current_user.id
-        params[:vial][:user_id] = current_user.id
+        params[:vial][:rack_id] = current_user.racks.first
         @vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)
         @vial.save!
         redirect_to :action => "view_vial", :id => @vial.id

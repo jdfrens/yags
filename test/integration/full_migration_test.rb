@@ -32,7 +32,7 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :label,        :string
         t.column :mom_id,       :integer
         t.column :dad_id,       :integer
-        t.column :user_id,      :integer
+        t.column :rack_id,      :integer
       end
       
       s.table :genotypes do |t|
@@ -60,6 +60,12 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :id,               :integer
         t.column :user_id,          :integer
         t.column :hidden_character, :string
+      end
+      
+      s.table :racks do |t|
+        t.column :id,          :integer
+        t.column :user_id,     :integer
+        t.column :label,       :string
       end
       
       # authentication

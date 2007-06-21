@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+steve_rack:
+  id: 1
+  user_id: 1
+  label: "steve rack"
+jdfrens_rack:
+  id: 2
+  user_id: 3
+  label: "frens rack"
+randy_rack:
+  id: 3
+  user_id: 4
+  label: "randy rack"

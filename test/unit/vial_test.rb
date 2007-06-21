@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class VialTest < Test::Unit::TestCase
 
-  fixtures :vials, :flies, :genotypes, :users
+  fixtures :vials, :flies, :genotypes, :users, :racks
   
   include CartesianProduct
   
@@ -155,6 +155,12 @@ class VialTest < Test::Unit::TestCase
     assert_equal users(:steve), vials(:parents_vial).user
     assert_equal users(:steve), vials(:vial_one).user
     assert_equal users(:jdfrens), vials(:destroyable_vial).user
+  end
+  
+  def test_can_give_user_id
+    assert_equal users(:steve).id, vials(:parents_vial).user_id
+    assert_equal users(:steve).id, vials(:vial_one).user_id
+    assert_equal users(:jdfrens).id, vials(:destroyable_vial).user_id
   end
   
 end

@@ -33,8 +33,9 @@ class UsersController < ApplicationController
   
   def delete_user
     if params[:id] and request.post?
-      User.find(params[:id]).destroy
+      @user = User.find(params[:id]).destroy
     end
+    flash[:notice] = "#{@user.username} has been deleted"
     redirect_to :action => :list_users
   end
   

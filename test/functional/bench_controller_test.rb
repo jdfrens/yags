@@ -340,19 +340,19 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_mate_flies
     number_of_old_vials = Vial.find(:all).size
     post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, 
-        :number => "8" }, user_session(:manage_bench)
+        :number => "8", :rack_id => "2"}, user_session(:manage_bench)
     new_vial = Vial.find_by_label("children vial")
     assert_not_nil new_vial
     assert_equal [:white] * 8, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
-    assert_equal 1, new_vial.user_id
+    assert_equal 3, new_vial.user_id
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
   end
     
   def test_mate_flies_again  
     post :mate_flies, { :vial => { :label => "children 2", :mom_id => "4", :dad_id => "3" }, 
-        :number => "3" }, user_session(:manage_bench)
+        :number => "3", :rack_id => "1" }, user_session(:manage_bench)
     new_vial = Vial.find_by_label("children 2")
     assert_not_nil new_vial
     assert_equal [:red] * 3, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
@@ -364,14 +364,14 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_mate_flies_fails_when_NOT_owned_by_current_user
     number_of_old_vials = Vial.find(:all).size
     post :mate_flies, { :vial => { :label => "stolen children", :mom_id => "4", :dad_id => "3" }, 
-        :number => "2" }, user_session(:manage_bench_as_frens)
+        :number => "2", :rack_id => "2"  }, user_session(:manage_bench_as_frens)
     assert_nil Vial.find_by_label("stolen children")
     assert_redirected_to :controller => 'bench', :action => 'list_vials'
     assert_equal number_of_old_vials, Vial.find(:all).size
   end
   
   def test_mate_flies_fails_when_NOT_logged_in
-    post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, :number => "8" }
+    post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, :number => "8", :rack_id => "3"  }
     assert_redirected_to_login
   end
   

@@ -46,10 +46,14 @@ class BenchController < ApplicationController
     current_user.vials.each do |vial|
       @vial_labels_and_ids << [vial.label, vial.id]
     end
+    @rack_labels_and_ids = []
+    current_user.racks.each do |rack|
+      @rack_labels_and_ids << [rack.label, rack.id]
+    end
     if (params[:vial])
       if Fly.find(params[:vial][:mom_id]).vial.user_id == current_user.id and 
           Fly.find(params[:vial][:dad_id]).vial.user_id == current_user.id
-        params[:vial][:rack_id] = current_user.racks.first.id
+        params[:vial][:rack_id] = params[:rack_id]
         @vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)
         @vial.save!
         redirect_to :action => "view_vial", :id => @vial.id

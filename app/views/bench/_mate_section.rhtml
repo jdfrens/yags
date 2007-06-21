@@ -52,6 +52,9 @@
         <p>
             <label for="number_of_flies">Number of Desired Flies:</label><%= text_field_tag :number %>
         </p>
+		<p>
+			<label for="rack_id">Destination: </label><%= select_tag(:rack_id, options_for_select(@rack_labels_and_ids) )%>
+		</p>
         <%= submit_tag "Mate", :class => "submit" %>
     <% end -%>
 

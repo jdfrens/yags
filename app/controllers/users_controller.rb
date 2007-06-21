@@ -19,8 +19,10 @@ class UsersController < ApplicationController
   def add_student
     if params[:user]
       params[:user][:group] = Group.find_by_name('student')
-      @user = User.new(params[:user])
-      @user.save!
+      user = User.new(params[:user])
+      user.save!
+      Rack.create! :user_id => user.id, :label => 'bench'
+      Rack.create! :user_id => user.id, :label => 'stock'
       redirect_to :action => "list_users"
     else
       render

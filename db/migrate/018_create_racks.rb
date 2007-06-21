@@ -8,8 +8,9 @@ class CreateRacks < ActiveRecord::Migration
     add_column :vials, :rack_id, :integer
     
     User.find(:all).each do |user|
-      primary_rack = Rack.create! :user_id => user.id, :label => ( user.username + "'s primary rack" )
-      user.vials.each do |vial|
+      primary_rack = Rack.create! :user_id => user.id, :label => "bench"
+      Rack.create! :user_id => user.id, :label => "stock"
+      Vial.find(:all, :conditions => "user_id = #{user.id}").each do |vial|
         vial.rack_id = primary_rack.id
         vial.save!
       end
@@ -22,6 +23,7 @@ class CreateRacks < ActiveRecord::Migration
     add_column :vials, :user_id, :integer
     Vial.find(:all).each do |vial|
       vial.user_id = Rack.find(vial.rack_id).user_id
+      vial.save!
     end
     
     drop_table :racks

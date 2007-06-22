@@ -131,6 +131,17 @@ class VialTest < Test::Unit::TestCase
     assert_equal 16, strange_male_vial.number_of_flies([:gender],[:male])
   end
   
+  def test_sex_linkage_in_field_vials
+    antenna_flies_vial = Vial.collect_from_field({ :label => "flies with antenna"}, 11, 
+        RandomBitGenerator.new, { :gender => 0.0 })
+    antenna_flies_vial.flies.each do |fly|
+      fly_dad_allele = fly.genotypes.select do |g| 
+        g.gene_number == fly.species.gene_number_of(:antenna) 
+      end.first.dad_allele
+      assert_equal 0, fly_dad_allele
+    end
+  end
+  
   def test_making_three_babies_and_a_vial
     new_vial = Vial.make_babies_and_vial({ :label => "three fly syblings", 
         :mom_id => "6", :dad_id => "1" }, 3, CookedBitGenerator.new([0]))
@@ -151,7 +162,7 @@ class VialTest < Test::Unit::TestCase
         new_vial.flies.map {|fly| fly.phenotype(:wings)}
     assert_equal_unordered ([:hairy] * 5 + [:smooth] * 2),
         new_vial.flies.map {|fly| fly.phenotype(:legs)}
-    assert_equal_unordered ([:long] * 2 + [:short] * 5),
+    assert_equal_unordered ([:long] * 7 + [:short] * 0),
         new_vial.flies.map {|fly| fly.phenotype(:antenna)}
     assert_equal 2, new_vial.flies_of_type([:wings, :legs],[:curly, :smooth]).size
   end

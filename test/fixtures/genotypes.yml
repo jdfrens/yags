@@ -26,7 +26,7 @@ fly_00_legs:
 fly_00_antenna:
   id: 201
   fly_id: 1
-  mom_allele: 0
+  mom_allele: 1
   dad_allele: 0
   gene_number: 144
 fly_01_eye_color:
@@ -86,8 +86,8 @@ fly_10_legs:
 fly_10_antenna:
   id: 203
   fly_id: 3
-  mom_allele: 0
-  dad_allele: 1
+  mom_allele: 1
+  dad_allele: 0
   gene_number: 144
 fly_11_eye_color:
   id: 7
@@ -117,7 +117,7 @@ fly_11_antenna:
   id: 204
   fly_id: 4
   mom_allele: 1
-  dad_allele: 0
+  dad_allele: 1
   gene_number: 144
 bob_eye_color:
   id: 9

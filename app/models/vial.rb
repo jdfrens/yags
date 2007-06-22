@@ -83,6 +83,11 @@ class Vial < ActiveRecord::Base
                :dad_allele => bit_generator.random_bit(allele_frequencies[character]))
          end
        end
+       species.characters.each do |character|
+         if species.is_sex_linked?(character) and new_fly.male?
+           new_fly.genotypes.select { |g| g.gene_number == species.gene_number_of(character) }.first.dad_allele = 0
+         end                          # this assumes that 0 represents recessiveness... and some other things
+       end
        flies << new_fly
     end
     self

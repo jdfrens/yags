@@ -44,31 +44,14 @@ class FlyTest < Test::Unit::TestCase
   end
   
   def test_mate_with
-    s = Species.singleton
-    s.order(flies(:child_one).genotypes).zip(flies(:fly_mom).mate_with(flies(:fly_dad), 
-        CookedBitGenerator.new([0])).genotypes) do |pair|
-      assert_equal pair[0].gene_number, pair[1].gene_number
-      assert_equal pair[0].mom_allele, pair[1].mom_allele
-      assert_equal pair[0].dad_allele, pair[1].dad_allele
-    end
-    s.order(flies(:child_one).genotypes).zip(flies(:fly_dad).mate_with(flies(:fly_mom), 
-        CookedBitGenerator.new([0])).genotypes) do |pair|
-      assert_equal pair[0].gene_number, pair[1].gene_number
-      assert_equal pair[0].mom_allele, pair[1].mom_allele
-      assert_equal pair[0].dad_allele, pair[1].dad_allele
-    end
-    s.order(flies(:child_two).genotypes).zip(flies(:fly_mom).mate_with(flies(:fly_dad), 
-        CookedBitGenerator.new([1,0,0,0,0])).genotypes) do |pair|
-      assert_equal pair[0].gene_number, pair[1].gene_number
-      assert_equal pair[0].mom_allele, pair[1].mom_allele
-      assert_equal pair[0].dad_allele, pair[1].dad_allele
-    end
-    s.order(flies(:child_two).genotypes).zip(flies(:fly_dad).mate_with(flies(:fly_mom), 
-        CookedBitGenerator.new([1,0,0,0,0])).genotypes) do |pair|
-      assert_equal pair[0].gene_number, pair[1].gene_number
-      assert_equal pair[0].mom_allele, pair[1].mom_allele
-      assert_equal pair[0].dad_allele, pair[1].dad_allele
-    end
+    assert_basically_the_same_fly flies(:child_one), 
+        flies(:fly_mom).mate_with(flies(:fly_dad), CookedBitGenerator.new([0]))
+    assert_basically_the_same_fly flies(:child_one), 
+        flies(:fly_dad).mate_with(flies(:fly_mom), CookedBitGenerator.new([0]))
+    assert_basically_the_same_fly flies(:child_two), 
+        flies(:fly_mom).mate_with(flies(:fly_dad), CookedBitGenerator.new([1,0,0,0,0]))
+    assert_basically_the_same_fly flies(:child_two), 
+        flies(:fly_dad).mate_with(flies(:fly_mom), CookedBitGenerator.new([1,0,0,0,0]))
   end
   
   def test_mate_with_same_sex
@@ -108,6 +91,17 @@ class FlyTest < Test::Unit::TestCase
           g.gene_number == fly.species.gene_number_of(character)
         }.size
       end
+    end
+  end
+  
+  # helpers
+  
+  def assert_basically_the_same_fly(fly1, fly2)
+    assert_equal fly1.species.characters, fly2.species.characters
+    fly1.species.order(fly1.genotypes).zup(fly2.genotypes) do |fly1_genotype, fly2_genotype|
+      assert_equal fly1_genotype.gene_number, fly2_genotype.gene_number
+      assert_equal fly1_genotype.mom_allele, fly2_genotype.mom_allele
+      assert_equal fly1_genotype.dad_allele, fly2_genotype.dad_allele
     end
   end
   

@@ -18,7 +18,7 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_has_many_character_preferences
-    assert_equal [:eye_color, :wings], users(:randy).hidden_characters
+    assert_equal [:eye_color, :wings, :antenna], users(:randy).hidden_characters
     assert_equal [:legs], users(:jdfrens).hidden_characters
     assert_equal 0, users(:steve).character_preferences.size
   end
@@ -30,8 +30,8 @@ class UserTest < Test::Unit::TestCase
   
   def test_visible_characters
     assert_equal [:gender, :legs], users(:randy).visible_characters
-    assert_equal [:gender, :eye_color, :wings], users(:jdfrens).visible_characters
-    assert_equal [:gender, :eye_color, :wings, :legs], users(:steve).visible_characters
+    assert_equal [:gender, :eye_color, :wings, :antenna], users(:jdfrens).visible_characters
+    assert_equal [:gender, :eye_color, :wings, :legs, :antenna], users(:steve).visible_characters
     
     assert_equal [], users(:randy).visible_characters([])
     assert_equal [], users(:jdfrens).visible_characters([])

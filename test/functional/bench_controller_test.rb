@@ -308,16 +308,18 @@ class BenchControllerTest < Test::Unit::TestCase
     xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }, user_session(:manage_bench)
     assert_response :success
     assert_select "table" do
-      assert_select "th", 16 * 4
-      assert_select "td", 16
-      assert_select "th", "female", 8
-      assert_select "th", "male", 8
-      assert_select "th", "red", 8
-      assert_select "th", "white", 8
-      assert_select "th", "straight", 8
-      assert_select "th", "curly", 8
-      assert_select "th", "smooth", 8
-      assert_select "th", "hairy", 8
+      assert_select "th", 32 * 5
+      assert_select "td", 32
+      assert_select "th", "female", 16
+      assert_select "th", "male", 16
+      assert_select "th", "red", 16
+      assert_select "th", "white", 16
+      assert_select "th", "straight", 16
+      assert_select "th", "curly", 16
+      assert_select "th", "smooth", 16
+      assert_select "th", "hairy", 16
+      assert_select "th", "short", 16
+      assert_select "th", "long", 16
     end
   end
   
@@ -382,7 +384,7 @@ class BenchControllerTest < Test::Unit::TestCase
         :number => "8", :rack_id => "2"}, user_session(:manage_bench)
     new_vial = Vial.find_by_label("children vial")
     assert_not_nil new_vial
-    assert_equal [:white] * 8, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
+    assert_equal [:white] * 8, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
     assert_equal 1, new_vial.user_id
@@ -394,7 +396,7 @@ class BenchControllerTest < Test::Unit::TestCase
         :number => "3", :rack_id => "1" }, user_session(:manage_bench)
     new_vial = Vial.find_by_label("children 2")
     assert_not_nil new_vial
-    assert_equal [:red] * 3, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}.sort_by { |p| p.to_s }
+    assert_equal [:red] * 3, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
     assert_equal 1, new_vial.user_id
@@ -423,7 +425,8 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "input#eye_color[value=visible][checked=checked]"
       assert_select "input#wings[value=visible][checked=checked]"
       assert_select "input#legs[value=visible][checked=checked]"
-      assert_select "input[type=checkbox][checked=checked]", 4
+      assert_select "input#antenna[value=visible][checked=checked]"
+      assert_select "input[type=checkbox][checked=checked]", 5
     end
   end
   
@@ -436,23 +439,24 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "input#eye_color[value=visible][type=checkbox][checked=checked]", 0
       assert_select "input#wings[value=visible][type=checkbox][checked=checked]", 0
       assert_select "input#legs[value=visible][type=checkbox][checked=checked]"
+      assert_select "input#antenna[value=visible][type=checkbox][checked=checked]", 0
       assert_select "input[type=checkbox][checked=checked]", 2
     end
   end
   
   def test_change_preferences
     assert_equal 0, users(:steve).hidden_characters.size
-    post :preferences, {:gender => "visible", :wings => "visible"}, user_session(:steve)
+    post :preferences, {:gender => "visible", :wings => "visible", :antenna => "visible"}, user_session(:steve)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
     assert_equal [:eye_color, :legs], users(:steve).hidden_characters
-    assert_equal [:gender, :wings], users(:steve).visible_characters
+    assert_equal [:gender, :wings, :antenna], users(:steve).visible_characters
     
     post :preferences, {:gender => "visible", :wings => "visible", :legs => "visible"}, user_session(:steve)
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal [:eye_color], users(:steve).hidden_characters
+    assert_equal [:eye_color, :antenna], users(:steve).hidden_characters
     assert_equal [:gender, :wings, :legs], users(:steve).visible_characters
   end
   

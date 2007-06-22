@@ -11,3 +11,7 @@ no_wings_for_pruim:
   id: 3
   user_id: 4
   hidden_character: wings
+no_antenna_for_pruim:
+  id: 4
+  user_id: 4
+  hidden_character: antenna

@@ -23,6 +23,12 @@ fly_00_legs:
   mom_allele: 0
   dad_allele: 1
   gene_number: 7
+fly_00_antenna:
+  id: 201
+  fly_id: 1
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 144
 fly_01_eye_color:
   id: 3
   fly_id: 2
@@ -47,6 +53,12 @@ fly_01_legs:
   mom_allele: 1
   dad_allele: 0
   gene_number: 7
+fly_01_antenna:
+  id: 202
+  fly_id: 2
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 144
 fly_10_eye_color:
   id: 5
   fly_id: 3
@@ -71,6 +83,12 @@ fly_10_legs:
   mom_allele: 1
   dad_allele: 0
   gene_number: 7
+fly_10_antenna:
+  id: 203
+  fly_id: 3
+  mom_allele: 0
+  dad_allele: 1
+  gene_number: 144
 fly_11_eye_color:
   id: 7
   fly_id: 4
@@ -95,6 +113,12 @@ fly_11_legs:
   mom_allele: 0
   dad_allele: 0
   gene_number: 7
+fly_11_antenna:
+  id: 204
+  fly_id: 4
+  mom_allele: 1
+  dad_allele: 0
+  gene_number: 144
 bob_eye_color:
   id: 9
   fly_id: 5
@@ -119,10 +143,10 @@ bob_legs:
   mom_allele: 1
   dad_allele: 1
   gene_number: 7
-bobs_secret_sex_linked_char:
-  id: 99
-  fly_id: nil
-  mom_allele: 1
+bob_antenna:
+  id: 205
+  fly_id: 5
+  mom_allele: 0
   dad_allele: 0
   gene_number: 144
 fly_mom_eye_color:
@@ -149,6 +173,12 @@ fly_mom_legs:
   mom_allele: 0
   dad_allele: 0
   gene_number: 7
+fly_mom_antenna:
+  id: 206
+  fly_id: 6
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 144
 fly_dad_eye_color:
   id: 13
   fly_id: 7
@@ -173,6 +203,12 @@ fly_dad_legs:
   mom_allele: 1
   dad_allele: 0
   gene_number: 7
+fly_dad_antenna:
+  id: 207
+  fly_id: 7
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 144
 child_one_eye_color:
   id: 15
   fly_id: 8
@@ -197,6 +233,12 @@ child_one_legs:
   mom_allele: 0
   dad_allele: 1
   gene_number: 7
+child_one_antenna:
+  id: 208
+  fly_id: 8
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 144
 child_two_eye_color:
   id: 17
   fly_id: 9
@@ -221,27 +263,39 @@ child_two_legs:
   mom_allele: 0
   dad_allele: 0
   gene_number: 7
+child_two_antenna:
+  id: 209
+  fly_id: 9
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 144
 gamete_maker_color:
   id: 19
   fly_id: 10
-  mom_allele: 0
-  dad_allele: 1
+  mom_allele: 1
+  dad_allele: 0
   gene_number: 52
 gamete_maker_gender:
   id: 20
   fly_id: 10
-  mom_allele: 0
-  dad_allele: 1
+  mom_allele: 1
+  dad_allele: 0
   gene_number: 137
 gamete_maker_wings:
   id: 119
   fly_id: 10
-  mom_allele: 0
-  dad_allele: 1
+  mom_allele: 1
+  dad_allele: 0
   gene_number: 163
 gamete_maker_legs:
   id: 120
   fly_id: 10
-  mom_allele: 0
-  dad_allele: 1
+  mom_allele: 1
+  dad_allele: 0
   gene_number: 7
+gemete_maker_antenna:
+  id: 210
+  fly_id: 10
+  mom_allele: 1
+  dad_allele: 0
+  gene_number: 144

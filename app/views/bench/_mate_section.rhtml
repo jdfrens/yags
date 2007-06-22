@@ -5,7 +5,7 @@
                        :before => visual_effect(:appear, 'spinner'),
                        :complete => visual_effect(:fade, 'spinner') do -%>
         <div id="first-vial">
-            <label for="first-vial">First Vial:</label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
+            <label for="first-vial"><strong>First Vial:</strong> </label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
             <%= hidden_field_tag 'which_vial', '1' %>
         </div>
         <%= submit_tag "Show Flies" %>
@@ -17,7 +17,7 @@
                        :before => visual_effect(:appear, 'spinner'),
                        :complete => visual_effect(:fade, 'spinner') do -%>
         <div id="second-vial">
-            <label for="second-vial">Second Vial:</label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
+            <label for="second-vial"><strong>Second Vial:</strong> </label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
             <%= hidden_field_tag 'which_vial', '2' %>
         </div>
         <%= submit_tag "Show Flies" %>
@@ -47,13 +47,13 @@
         </div>
 
         <p>
-            <label for="label">Label for Offspring Vial:</label><%= form.text_field :label, :size => 30, :value => "" %>
+            <label for="label"><strong>Label for Offspring Vial: </strong></label><%= form.text_field :label, :size => 30, :value => "" %>
         </p>
         <p>
-            <label for="number_of_flies">Number of Desired Flies:</label><%= text_field_tag :number %>
+            <label for="number_of_flies"><strong>Number of Desired Flies: </strong></label><%= text_field_tag :number %>
         </p>
 		<p>
-			<label for="rack_id">Destination: </label><%= select_tag(:rack_id, options_for_select(@rack_labels_and_ids) )%>
+			<label for="rack_id"><strong>Destination: </strong></label><%= select_tag(:rack_id, options_for_select(@rack_labels_and_ids) )%>
 		</p>
         <%= submit_tag "Mate", :class => "submit" %>
     <% end -%>

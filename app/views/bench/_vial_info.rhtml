@@ -2,21 +2,21 @@
     <div class="section_header" onclick="toggle_section(this.parentNode)">Vial Information</div>
     <div class="section_content">
         <div class="vial-title">
-            <strong>Label:</strong><%= in_place_editor_field :vial, 'label', {} %>
+            <strong>Label: </strong><%= in_place_editor_field :vial, 'label', {} %>
         </div>
-		<p><strong>Rack:</strong> <%= link_to @rack.label, :action => :move_vial_to_another_rack, :id => @vial %></p>
+		<p><strong>Rack: </strong><%= link_to @rack.label, :action => :move_vial_to_another_rack, :id => @vial %></p>
 
-        <p><strong>Total number of flies:</strong><%= @vial.flies.size %></p>
+        <p><strong>Total number of flies: </strong><%= @vial.flies.size %></p>
 
         <div>
             <% form_remote_tag :url => {:action => :update_table},
                        :before => visual_effect(:appear, 'spinner'),
                        :complete => visual_effect(:fade, 'spinner')  do %>
                 <div id="character_cols">
-                    <label for="character_select_col">Columns:</label><%= select_tag(:character_col, options_for_select(@visible_characters , @columns) ) %>
+                    <label for="character_select_col"><strong>Columns: </strong></label><%= select_tag(:character_col, options_for_select(@visible_characters , @columns) ) %>
                 </div>
                 <div id="character_rows">
-                    <label for="character_select_row">Rows:</label><%= select_tag(:character_row, options_for_select(@visible_characters, @rows) ) %>
+                    <label for="character_select_row"><strong>Rows: </strong></label><%= select_tag(:character_row, options_for_select(@visible_characters, @rows) ) %>
                 </div>
                 <%= hidden_field_tag(:vial_id, @vial.id) %>
                 <%= submit_tag "Update Table" %>

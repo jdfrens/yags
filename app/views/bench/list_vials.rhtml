@@ -5,14 +5,14 @@
 <h1>Listing Your Vials</h1>
 
 <div id="list-vials">
-		<% for rack in @racks -%>
-			<h4 id=<%= rack.id %> ><%= rack.label %></h4>
-			<ul>
-        		<% for vial in @vials -%>
-        		  <% if vial.rack_id == rack.id %> <!-- too much logic in the view.  but ok for right now. -->
-                    <li id=<%= vial.id %> ><%= link_to vial.label, :action => :view_vial, :id => vial %></li>
-            	  <% end -%>
-    			<% end -%>
-    		</ul>
-		<% end -%>
+	<% for rack in @racks -%>
+		<h4 id=<%= rack.id %> ><%= rack.label %></h4>
+		<ul>
+    		<% for vial in @vials -%>
+    		  <% if vial.rack_id == rack.id %> <!-- too much logic in the view.  but ok for right now. -->
+                <li id=<%= vial.id %> ><%= link_to vial.label, :action => :view_vial, :id => vial %></li>
+        	  <% end -%>
+			<% end -%>
+		</ul>
+	<% end -%>
 </div>

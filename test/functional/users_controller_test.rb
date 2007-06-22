@@ -230,7 +230,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "form" do
-      assert_select "div#students_select", "Student:steve\njdfrens\nrandy"
+      assert_select "div#students_select", "Student: steve\njdfrens\nrandy"
       assert_select "p", "Password:"
       assert_select "p", "Password Confirmation:"
     end

@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
   acts_as_login_controller
   
-  restrict_to :manage_student, :only => [ :list_users, :add_student, :index, :delete_user]
+  restrict_to :manage_student, :only => [ :list_users, :add_student, :delete_user]
   restrict_to :manage_student, :only => [ :change_student_password ]
+  restrict_to :manage_instructor, :only => [ :add_instructor, :index ]
   
   redirect_after_login do |controller|
     { :controller => 'users', :action => 'redirect_user' }
@@ -23,6 +24,20 @@ class UsersController < ApplicationController
       @user.save!
       Rack.create! :user_id => @user.id, :label => 'bench'
       Rack.create! :user_id => @user.id, :label => 'stock'
+      redirect_to :action => "list_users"
+    else
+      render
+    end
+  rescue ActiveRecord::RecordInvalid
+    render
+  end
+  
+  # this isn't very DRY.  maybe it could be combined with the above method somehow
+  def add_instructor
+    if params[:user]
+      params[:user][:group] = Group.find_by_name('instructor')
+      @user = User.new(params[:user])
+      @user.save!
       redirect_to :action => "list_users"
     else
       render
@@ -80,6 +95,9 @@ class UsersController < ApplicationController
         redirect_to :controller => "bench", :action => "index"
       when "admin"
         redirect_to :controller => "users", :action => "index"
+      when "instructor"
+        redirect_to :controller => "lab", :action => "index"
+        # right now that isn't even a controller.  when it is this should be tested.
       else
         redirect_to :controller => "users", :action => "logout" # because we don't know who they are.
       end

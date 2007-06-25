@@ -63,6 +63,10 @@ class Test::Unit::TestCase
       { :current_user_id => 3 }
     when :pruim
       { :current_user_id => 4 }
+    when :mendel
+      { :current_user_id => 5 }
+    when :calvin
+      { :current_user_id => 2 }
     else
       {}
     end

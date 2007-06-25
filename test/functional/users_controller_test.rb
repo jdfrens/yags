@@ -58,6 +58,8 @@ class UsersControllerTest < Test::Unit::TestCase
     end
   end
   
+  # should list_users only let instructors see the students in their courses?
+  
   def test_list_users_fails_when_NOT_logged_in_as_admin
     get :list_users
     assert_redirected_to_login
@@ -67,7 +69,7 @@ class UsersControllerTest < Test::Unit::TestCase
   end
   
   def test_add_student_form
-    post :add_student, {}, user_session(:manage_student)
+    get :add_student, {}, user_session(:mendel)
     assert_response :success
     assert_standard_layout
     assert_select "form" do
@@ -82,7 +84,7 @@ class UsersControllerTest < Test::Unit::TestCase
   def test_add_student
     number_of_old_users =  User.find(:all).size
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
-        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_student)
+        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:mendel)
     new_user = User.find_by_username("david hansson")
     assert_not_nil new_user
     assert_equal number_of_old_users + 1, User.find(:all).size
@@ -91,7 +93,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "list_users"
   end
   
-  def test_add_student_fails_when_NOT_logged_in_as_admin
+  def test_add_student_fails_when_NOT_logged_in_with_manage_student
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
         :password => 'rails', :password_confirmation => 'rails' } }
     assert_redirected_to_login
@@ -108,6 +110,47 @@ class UsersControllerTest < Test::Unit::TestCase
     new_student = User.find_by_username("david hansson")
     assert_not_nil new_student
     assert_equal 2, new_student.racks.size
+  end
+  
+  def test_add_instructor_form
+    get :add_instructor, {}, user_session(:calvin)
+    assert_response :success
+    assert_standard_layout
+    assert_select "form" do
+      assert_select "p", "Username:"
+      assert_select "p", "Email Address:"
+      assert_select "p", "Password:"
+      assert_select "p", "Password Confirmation:"
+      assert_select "label", 4
+    end
+  end
+  
+  def test_add_instructor
+    number_of_old_users =  User.find(:all).size
+    post :add_instructor, { :user => { :username => "a prof", :email_address => 'acp@calvin.ude', 
+        :password => 'fly', :password_confirmation => 'fly' } }, user_session(:calvin)
+    new_user = User.find_by_username("a prof")
+    assert_not_nil new_user
+    assert_equal number_of_old_users + 1, User.find(:all).size
+    assert_equal "instructor", new_user.group.name
+    assert_response :redirect
+    assert_redirected_to :action => "list_users"
+  end
+  
+  def test_add_instructor_fails_when_NOT_logged_as_admin
+    post :add_instructor, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
+        :password => 'rails', :password_confirmation => 'rails' } }
+    assert_redirected_to_login
+    
+    post :add_instructor, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
+        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_bench)
+    assert_nil User.find_by_username("david hansson")
+    assert_response 401 # access denied
+    
+    post :add_instructor, { :user => { :username => "monk 1", :email_address => 'monk1@the.church', 
+        :password => 'green', :password_confirmation => 'green' } }, user_session(:mendel)
+    assert_nil User.find_by_username("monk 1")
+    assert_response 401 # access denied
   end
   
   def test_delete_user
@@ -195,6 +238,8 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_equal "Password Changed", flash[:notice]
   end
   
+  # should change_student_password only let instructors change the passwords of students in their courses?
+  
   def test_change_student_password_fails_with_mismatched_confirmation
     steve = users(:steve)
     post :change_student_password, { :user => { :password => 'buffalo', 
@@ -240,7 +285,7 @@ class UsersControllerTest < Test::Unit::TestCase
     post :index, {}, user_session(:manage_student)
     assert_response :success
     assert_select "ul" do
-      assert_select "li", 4
+      assert_select "li", 5
     end
   end
   
@@ -249,6 +294,9 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
     
     post :index, {}, user_session(:manage_bench)
+    assert_response 401 # access denied
+    
+    post :index, {}, user_session(:mendel)
     assert_response 401 # access denied
   end
   

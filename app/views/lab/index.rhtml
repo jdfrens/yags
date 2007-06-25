@@ -1,0 +1,8 @@
+<p>Welcome <%= h(@username) -%></p>
+<h2>Current Lab Fucntionality</h2>
+<ul>
+  <li><%= link_to "List Users", :controller => :users, :action => :list_users %></li>
+  <li><%= link_to "Add a Student", :controller => :users, :action => :add_student %></li>
+  <li><%= link_to "Change Your Password", :controller => :users, :action => :change_password %></li>
+  <li><%= link_to "Change Student Password", :controller => :users, :action => :change_student_password %></li>
+</ul>

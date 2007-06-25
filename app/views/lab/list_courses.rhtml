@@ -1,0 +1,13 @@
+<% if flash[:notice] -%>
+	<div class="notice"><%= flash[:notice] %></div>
+<% end -%>
+
+<h1>Listing Your Courses</h1>
+
+<div id="list-courses">
+	<ul>
+		<% for course in @courses -%>
+            <li id=<%= course.id %> ><%= link_to course.name, :action => :view_course, :id => course %></li>
+		<% end -%>
+	</ul>
+</div>

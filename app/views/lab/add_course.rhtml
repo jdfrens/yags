@@ -1,0 +1,12 @@
+<%= error_messages_for 'course' %>
+
+<h1>Add Course</h1>
+
+<% form_for :course do |form| %>
+    <p>
+        <label for="name"><strong>Course Name: </strong></label>
+        <%= form.text_field :name, :size => 40 %>
+    </p>
+    
+    <%= submit_tag "Add Course", :class => "submit" %>
+<% end %>

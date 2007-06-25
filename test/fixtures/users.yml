@@ -10,6 +10,7 @@ steve:
   password_hash: <%= User.hash_password('steve_password') %>
   group_id: 1
   email_address: steve@calvin.foo
+  course_id: 3
 calvin:
   id: 2
   username: calvin
@@ -22,12 +23,14 @@ jdfrens:
   password_hash: <%= User.hash_password('jdfrens_password') %>
   group_id: 1
   email_address: jdfrens@calvin.foo
+  course_id: 1
 randy:
   id: 4
   username: randy
   password_hash: <%= User.hash_password('randy_password') %>
   group_id: 1
   email_address: rpruim@calvin.foo
+  course_id: 1
 mendel:
   id: 5
   username: mendel

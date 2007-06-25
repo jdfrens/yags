@@ -30,6 +30,13 @@ class Test::Unit::TestCase
     fixtures :users, :groups, :privileges, :groups_privileges
   end
   
+  # eh, i think this might make our lives a bit easier
+  def self.all_fixtures
+    fixtures :users, :groups, :privileges, :groups_privileges, 
+        :flies, :vials, :genotypes, :basic_preferences, :character_preferences, 
+        :racks, :courses
+  end
+  
   def assert_standard_layout
     assert_select "h1", "YAGS"
     assert_select "div#session-info" do
@@ -65,6 +72,8 @@ class Test::Unit::TestCase
       { :current_user_id => 4 }
     when :mendel
       { :current_user_id => 5 }
+    when :darwin
+      { :current_user_id => 6 }
     when :calvin
       { :current_user_id => 2 }
     else

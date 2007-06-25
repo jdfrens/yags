@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_many :racks
   has_many :character_preferences
   has_one  :basic_preference 
+  has_many :courses, :foreign_key => "instructor_id"
   
   def hidden_characters
     character_preferences.map { |p| p.hidden_character.intern }

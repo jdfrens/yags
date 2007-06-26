@@ -1,0 +1,5 @@
+if @sex == "dad"
+page.replace_html 'dad', :partial => 'hidden_parent_ids', :locals => { :parent => "dad" }
+elsif @sex == "mom"
+page.replace_html 'mom', :partial => 'hidden_parent_ids', :locals => { :parent => "mom" }
+end

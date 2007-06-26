@@ -147,6 +147,11 @@ class BenchController < ApplicationController
     redirect_to :action => "view_vial", :id => @vial unless request.xhr?
   end
   
+  def update_parent_div
+    @fly = params[:id]
+    @sex = params[:sex]
+  end
+  
   def add_rack
     if params[:rack]
       params[:rack][:user_id] = current_user.id

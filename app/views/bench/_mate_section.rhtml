@@ -1,62 +1,29 @@
 <div class="section_header">Select Flies to Mate</div>
 <div class="section_content">
 
-    <% form_remote_tag :url => {:action => :show_mateable_flies},
-                       :before => visual_effect(:appear, 'spinner'),
-                       :complete => visual_effect(:fade, 'spinner') do -%>
-        <div id="first-vial">
-            <label for="first-vial"><strong>First Vial:</strong> </label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
-            <%= hidden_field_tag 'which_vial', '1' %>
-        </div>
-        <%= submit_tag "Show Flies" %>
-    <% end -%>
-    
-    <br />
-    
-    <% form_remote_tag :url => {:action => :show_mateable_flies},
-                       :before => visual_effect(:appear, 'spinner'),
-                       :complete => visual_effect(:fade, 'spinner') do -%>
-        <div id="second-vial">
-            <label for="second-vial"><strong>Second Vial:</strong> </label><%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
-            <%= hidden_field_tag 'which_vial', '2' %>
-        </div>
-        <%= submit_tag "Show Flies" %>
-    <% end -%>
-    
-    <%= image_tag '/images/ajax-loader-red.gif', :id => 'spinner', :style => 'display: none;' %>
-    
-    <% form_for :vial, :url => { :action => :mate_flies} do |form| -%>
-        <br />
-        <div class="section_open">
-            <div class="section_header" onclick="toggle_section(this.parentNode)">First Vial</div>
-            <div class="section_content">
-                <div id="big-table-1">
-                    <em id="instruction">A list of flies will be shown here.</em>
-                </div>
-            </div>
-        </div>
-        <br />
-        <hr />
-        <div class="section_open">
-            <div class="section_header" onclick="toggle_section(this.parentNode)">Second Vial</div>
-            <div class="section_content">
-                <div id="big-table-2">
-                    <em id="instruction">A list of flies will be shown here.</em>
-                </div>
-            </div>
-        </div>
+<table width="100%">
 
-        <p>
-            <label for="label"><strong>Label for Offspring Vial: </strong></label><%= form.text_field :label, :size => 30, :value => "" %>
-        </p>
-        <p>
-            <label for="number_of_flies"><strong>Number of Desired Flies: </strong></label><%= text_field_tag :number %>
-        </p>
-		<p>
-			<label for="rack_id"><strong>Destination: </strong></label><%= select_tag(:rack_id, options_for_select(@rack_labels_and_ids) )%>
-		</p>
-        <%= submit_tag "Mate", :class => "submit" %>
-    <% end -%>
+<tr>
+	<td width="50%">
+	<%= render :partial => 'vial_selector', :locals => { :number => 1 } %>
+	</td>
+	<td width="50%">
+	<%= render :partial => 'vial_selector', :locals => { :number => 2 } %>
+	</td>
+</tr>
+<tr>
+	<td>
+	<%= render :partial => 'vial_listing', :locals => { :number => 1 } %>
+	</td>
+	<td>
+	<%= render :partial => 'vial_listing', :locals => { :number => 2 } %>
+	</td>
+</tr>
+<tr>
+<td colspan="2">
+	<%= render :partial => 'mate_flies_form' %>
+</td>
+</tr>
+</table>	
 
-    <br />
 </div>

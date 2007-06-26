@@ -1,0 +1,14 @@
+    <% form_for :vial, :url => { :action => :mate_flies } do |form| -%>
+        <p>
+            <label for="label"><strong>Label for Offspring Vial: </strong></label><%= form.text_field :label, :size => 30, :value => "" %>
+        </p>
+        <p>
+            <label for="number_of_flies"><strong>Number of Desired Flies: </strong></label><%= text_field_tag :number %>
+        </p>
+		<p>
+			<label for="rack_id"><strong>Destination: </strong></label><%= select_tag(:rack_id, options_for_select(@rack_labels_and_ids) )%>
+		</p>
+		<div id="dad"></div>
+		<div id="mom"></div>
+        <%= submit_tag "Mate", :class => "submit" %>
+    <% end -%>

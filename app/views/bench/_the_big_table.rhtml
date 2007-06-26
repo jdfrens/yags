@@ -2,14 +2,16 @@
     <% @phenotypes_to_flies.sort { |a, b| a.to_s <=> b.to_s }.each do |entry| -%>
         <% phenotypes, flies = entry[0], entry[1] -%>
         <tr>
-            <% phenotypes.each do |phenotype| %>
+            <% phenotypes.each do |phenotype| -%>
                 <th><%= phenotype.to_s %></th>
-            <% end %>
+            <% end -%>
             <td>
                 <% flies.each do |fly| %>
-                    <%= radio_button_tag( (fly.male? ? "vial[dad_id]" : "vial[mom_id]"), fly.id ) -%>
-                <% end %>
+                    <%= radio_button_tag( (fly.male? ? "vial[dad_id]" : "vial[mom_id]"), fly.id, false, 
+										:onclick => remote_function(
+    									:url => { :action => 'update_parent_div', :id => fly.id, :sex => (fly.male? ? "dad" : "mom") } ) ) -%>
+                <% end -%>
             </td>
         </tr>
-    <% end %>
+    <% end -%>
 </table>

@@ -243,6 +243,23 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
+  def test_update_parent_div
+    xhr :post, :update_parent_div, {:id => flies(:fly_dad).id, :sex => "dad" }, user_session(:manage_bench)
+    assert_response :success
+    
+    assert_select "input[type=hidden][value=7]"
+    
+    xhr :post, :update_parent_div, {:id => flies(:fly_mom).id, :sex => "mom" }, user_session(:manage_bench)
+    assert_response :success
+    
+    assert_select "input[type=hidden][value=6]"
+  end
+  
+  def test_update_parent_div_fails_when_NOT_logged_in
+    xhr :post, :update_parent_div, {:id => flies(:fly_mom).id, :sex => "mom" }
+    assert_redirected_to_login
+  end
+  
     def test_delete_vial
     number_of_old_vials =  Vial.find(:all).size
     post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
@@ -279,15 +296,21 @@ class BenchControllerTest < Test::Unit::TestCase
     get :mate_flies, {}, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
-    assert_select "div#first-vial" do
+    assert_select "div#vial_selector_1" do
       assert_select "select[name=vial]"
+      assert_select "strong", "First Vial:"
       assert_select "input[name=which_vial][value=1]"
+      assert_select "img#spinner_1[src^=/images/ajax-loader-red.gif]"
     end
-    assert_select "div#second-vial" do
+    assert_select "div#vial_selector_2" do
       assert_select "select[name=vial]"
+      assert_select "strong", "Second Vial:"
       assert_select "input[name=which_vial][value=2]"
+      assert_select "img#spinner_2[src^=/images/ajax-loader-red.gif]"
     end
+    assert_select "div.section_header", "First Vial"
     assert_select "div#big-table-1"
+    assert_select "div.section_header", "Second Vial"
     assert_select "div#big-table-2"
   end
   
@@ -349,13 +372,14 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "div#list-vials" do
-      assert_select "ul" do
+      assert_select "h4", "steve bench"
+      assert_select "ul#2" do
         assert_select "li", 5
-        assert_select "li#1", "First vial"
-        assert_select "li#2", "Empty vial"
-        assert_select "li#3", "Single fly vial"
-        assert_select "li#4", "Multiple fly vial"
-        assert_select "li#5", "Parents vial"
+        assert_select "li#vial_1", "First vial"
+        assert_select "li#vial_2", "Empty vial"
+        assert_select "li#vial_3", "Single fly vial"
+        assert_select "li#vial_4", "Multiple fly vial"
+        assert_select "li#vial_5", "Parents vial"
       end
     end
   end
@@ -365,10 +389,11 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "div#list-vials" do
-      assert_select "ul" do
+      assert_select "h4", "frens bench"
+      assert_select "ul#4" do
         assert_select "li", 2
-        assert_select "li#6", "Destroyable vial"
-        assert_select "li#7", "Another vial"
+        assert_select "li#vial_6", "Destroyable vial"
+        assert_select "li#vial_7", "Another vial"
       end
     end
   end

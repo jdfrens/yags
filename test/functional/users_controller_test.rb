@@ -167,10 +167,11 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_not_nil User.find_by_username("steve")
     post :delete_user, { :id => 1 }
     assert_redirected_to_login
+    assert_not_nil User.find_by_username("steve")
     
-    assert_not_nil User.find_by_username("steve")
+    assert_not_nil User.find_by_username("randy")
     post :delete_user, { :id => 1 }, user_session(:manage_bench)
-    assert_not_nil User.find_by_username("steve")
+    assert_not_nil User.find_by_username("randy")
     assert_response 401 # access denied
   end
   

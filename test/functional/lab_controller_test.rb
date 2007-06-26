@@ -111,7 +111,12 @@ class LabControllerTest < Test::Unit::TestCase
   end
   
   def test_view_course_fails_when_NOT_instructors_course
-    # TODO
+    get :view_course, {:id => 3 }, user_session(:mendel)
+    assert_redirected_to :action => "list_courses"
+    # or should this lead to a 401 access denied?
+    
+    get :view_course, {:id => 1000 }, user_session(:darwin)
+    assert_redirected_to :action => "list_courses"
   end
   
 end

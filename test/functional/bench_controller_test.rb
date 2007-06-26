@@ -162,6 +162,19 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_view_vial_fails_when_NOT_logged_in
+    get :view_vial, { :id => vials(:vial_one).id }
+    assert_redirected_to_login
+  end
+  
+  def test_view_vial_fails_when_NOT_users_vial
+    get :view_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench_as_frens)
+    assert_redirected_to :action => "list_vials"
+    
+    get :view_vial, { :id => 123123 }, user_session(:manage_bench)
+    assert_redirected_to :action => "list_vials"
+  end
+  
   def test_steve_has_no_table_preference
     get :view_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
     assert_response :success
@@ -196,17 +209,6 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "option[value=eye_color]"
       assert_select "option[value=wings]"
     end
-  end
-  
-  def test_view_vial_fails_when_NOT_logged_in
-    get :view_vial, { :id => vials(:vial_one).id }
-    assert_redirected_to_login
-  end
-  
-  def test_view_vial_fails_when_NOT_users_vial
-    get :view_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench_as_frens)
-    assert_response :redirect
-    assert_redirected_to :action => "list_vials"
   end
   
   def test_set_vial_label

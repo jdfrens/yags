@@ -24,9 +24,11 @@ class LabController < ApplicationController
   end
   
   def view_course
-    if params[:id] and Course.find(params[:id])
+    if params[:id] and Course.find_by_id(params[:id]) and Course.find(params[:id]).instructor == current_user
       @course = Course.find(params[:id])
       @students = @course.students
+    else
+      redirect_to :action => "list_courses"
     end
   end
 

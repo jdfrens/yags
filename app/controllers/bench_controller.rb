@@ -77,32 +77,20 @@ class BenchController < ApplicationController
   end
   
   def view_vial
-    @vial = Vial.find(params[:id])
-    @rack = Rack.find(@vial.rack_id)
-    if @vial.user_id == current_user.id
-      if @vial.mom_id && @vial.dad_id
-        @parents = true
-        @mom = Fly.find @vial.mom_id
-        @dad = Fly.find @vial.dad_id
+    if params[:id] and @vial = Vial.find_by_id(params[:id]) and @vial.user_id == current_user.id
+      @rack = Rack.find(@vial.rack_id)
+      if @parents = (@vial.mom_id && @vial.dad_id)
+        @mom, @dad = Fly.find(@vial.mom_id), Fly.find(@vial.dad_id)
         @mom_vial = Vial.find @mom.vial_id
         @dad_vial = Vial.find @dad.vial_id
-      else
-        @parents = false
       end
-      if current_user.basic_preference
+      if @table = current_user.basic_preference
         @rows = current_user.basic_preference.row.intern
         @columns = current_user.basic_preference.column.intern
-        @table = true
-      else
-        @table = false
       end
       @row_titles = @vial.species.phenotypes(@rows)
       @column_titles = @vial.species.phenotypes(@columns)
       @visible_characters = current_user.visible_characters
-      @phenotypes_to_flies = {}
-      @vial.combinations_of_phenotypes.each do |combination|
-        @phenotypes_to_flies[combination] = @vial.flies_of_type @vial.species.characters, combination
-      end
     else
       redirect_to :action => "list_vials"
     end

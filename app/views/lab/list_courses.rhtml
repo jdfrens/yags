@@ -7,7 +7,9 @@
 <div id="list-courses">
 	<ul>
 		<% for course in @courses -%>
-            <li id=<%= course.id %> ><%= link_to course.name, :action => :view_course, :id => course %></li>
+            <li id=<%= course.id %> >
+              <%= link_to course.name, :action => :view_course, :id => course %>[<%= link_to "delete", { :action => "delete_course", :id => course.id }, :confirm => "Are you sure?", :method => :post -%>]
+            </li>
 		<% end -%>
 	</ul>
 </div>

@@ -2,13 +2,13 @@
 mendels_course:
   id: 1
   instructor_id: 5
-  name: "Peas pay attention"
+  name: Peas pay attention
 darwins_first_course:
   id: 2
   instructor_id: 6
-  name: "Natural selection"
+  name: Natural selection
 darwins_second_course:
   id: 3
   instructor_id: 6
-  name: "Interim to the Galapagos Islands"
+  name: Interim to the Galapagos Islands
   

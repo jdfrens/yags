@@ -73,33 +73,35 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "p", "Username:"
-      assert_select "p", "Email Address:"
-      assert_select "p", "Password:"
-      assert_select "p", "Password Confirmation:"
-      assert_select "label", 4
+      assert_select "label[for=username]"
+      assert_select "label[for=email address]"
+      assert_select "label[for=password]"
+      assert_select "label[for=password confirmation]"
+      assert_select "label[for=course_id]"
+      assert_select "label", 5
     end
   end
   
   def test_add_student
     number_of_old_users =  User.find(:all).size
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
-        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:mendel)
+        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1 }, user_session(:mendel)
     new_user = User.find_by_username("david hansson")
     assert_not_nil new_user
     assert_equal number_of_old_users + 1, User.find(:all).size
     assert_equal "student", new_user.group.name
+    assert_equal "Peas pay attention", new_user.course.name
     assert_response :redirect
     assert_redirected_to :action => "list_users"
   end
   
   def test_add_student_fails_when_NOT_logged_in_with_manage_student
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
-        :password => 'rails', :password_confirmation => 'rails' } }
+        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1 }
     assert_redirected_to_login
     
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
-        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_bench)
+        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1 }, user_session(:manage_bench)
     assert_nil User.find_by_username("david hansson")
     assert_response 401 # access denied
   end

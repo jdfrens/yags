@@ -36,7 +36,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "ul" do
-      assert_select "li", "Peas pay attention"
+      assert_select "li", "Peas pay attention[delete]"
     end
   end
   
@@ -45,8 +45,8 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "ul" do
-      assert_select "li", "Natural selection"
-      assert_select "li", "Interim to the Galapagos Islands"
+      assert_select "li", "Natural selection[delete]"
+      assert_select "li", "Interim to the Galapagos Islands[delete]"
     end
   end
   
@@ -116,6 +116,39 @@ class LabControllerTest < Test::Unit::TestCase
     # or should this lead to a 401 access denied?
     
     get :view_course, {:id => 1000 }, user_session(:darwin)
+    assert_redirected_to :action => "list_courses"
+  end
+  
+  def test_delete_course
+    assert_not_nil Course.find_by_id(2) # "Natural selection"
+    post :delete_course, { :id => 2 }, user_session(:darwin)
+    assert_redirected_to :action => :list_courses
+    assert_nil Course.find_by_id(2)
+    
+    # should all students in the course be removed then too?
+  end
+  
+  def test_delete_course_fails_when_NOT_logged_in_as_instructor
+    post :delete_course, { :id => 1 }
+    assert_redirected_to_login
+    
+    post :delete_course, { :id => 3 }, user_session(:calvin)
+    assert_response 401 # access denied
+    
+    get :delete_course, { :id => 3 }, user_session(:manage_bench)
+    assert_response 401 # access denied
+    
+    assert_not_nil Course.find_by_id(1) # "Peas pay attention"
+    assert_not_nil Course.find_by_id(3) # "Interim to the Galapagos Islands"
+  end
+  
+  def test_delete_course_fails_when_NOT_instructors_course
+    get :delete_course, {:id => 3 }, user_session(:mendel)
+    assert_redirected_to :action => "list_courses"
+    # or should this lead to a 401 access denied?
+    assert_not_nil Course.find_by_id(3)
+    
+    get :delete_course, {:id => 1234 }, user_session(:darwin)
     assert_redirected_to :action => "list_courses"
   end
   

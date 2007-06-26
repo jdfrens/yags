@@ -18,8 +18,14 @@ class UsersController < ApplicationController
   end
   
   def add_student
+    @course_names_and_ids = []
+    courses = (current_user.group.name == "instructor" ? current_user.courses : Course.find(:all))
+    courses.each do |course|
+      @course_names_and_ids << [course.name, course.id]
+    end
     if params[:user]
       params[:user][:group] = Group.find_by_name('student')
+      params[:user][:course_id] = params[:course_id] # this line is annoying to need
       @user = User.new(params[:user])
       @user.save!
       Rack.create! :user_id => @user.id, :label => 'bench'

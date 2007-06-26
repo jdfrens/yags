@@ -6,6 +6,9 @@ class User < ActiveRecord::Base
   has_many :character_preferences
   has_one  :basic_preference 
   has_many :courses, :foreign_key => "instructor_id"
+  belongs_to :course # this scares me because the above is only one letter different.
+                     # they are used in different places...
+                     # but still, should we go witout this last belongs_to line?
   
   def hidden_characters
     character_preferences.map { |p| p.hidden_character.intern }

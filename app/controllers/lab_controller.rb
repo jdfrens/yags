@@ -1,6 +1,6 @@
 class LabController < ApplicationController
 
-  restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course ]
+  restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course, :delete_course ]
 
   def index 
     @username = current_user.username
@@ -30,6 +30,13 @@ class LabController < ApplicationController
     else
       redirect_to :action => "list_courses"
     end
+  end
+  
+  def delete_course
+    if params[:id] and Course.find_by_id(params[:id]) and Course.find(params[:id]).instructor == current_user
+      Course.find(params[:id]).destroy
+    end
+    redirect_to :action => "list_courses"
   end
 
 end

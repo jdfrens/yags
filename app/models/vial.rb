@@ -1,6 +1,7 @@
 class Vial < ActiveRecord::Base
 
   has_many :flies, :dependent => :destroy
+  has_one :solution
   belongs_to :rack
   
   include CartesianProduct

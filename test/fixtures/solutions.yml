@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+solution_one:
+  id: 1
+  vial_id: 4
+  number: 1
+solution_two:
+  id: 2
+  vial_id: 5
+  number: 2

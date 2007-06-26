@@ -68,6 +68,12 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :label,       :string
       end
       
+      s.table :solutions do |t|
+        t.column :id,           :integer
+        t.column :vial_id,      :integer
+        t.column :number,       :integer
+      end
+      
       # authentication
       s.table "groups" do |t|
         t.column "id",          :integer

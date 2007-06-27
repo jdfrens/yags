@@ -2,7 +2,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < Test::Unit::TestCase
 
-  fixtures :users, :vials, :basic_preferences, :character_preferences
+#  fixtures :users, :vials, :basic_preferences, :character_preferences
+  all_fixtures
   
   def test_has_many_vials
     assert_equal_set [], users(:calvin).vials
@@ -39,6 +40,20 @@ class UserTest < Test::Unit::TestCase
     
     assert_equal [:telekinesis, :legs], users(:randy).visible_characters([:telekinesis, :wings, :legs])
     assert_equal [:telekinesis, :wings], users(:jdfrens).visible_characters([:telekinesis, :wings, :legs])
+  end
+  
+  def test_destruction_of_courses_along_with_instructor
+    number_of_old_users = User.find(:all).size
+    number_of_old_courses = Course.find(:all).size
+    number_of_students = User.find(:all).select { |s| s.course and s.course.instructor_id == 6 }.size
+    assert_equal 1, User.find(:all, :conditions => "id = 6").size
+    assert_equal 2, Course.find(:all, :conditions => "instructor_id = 6").size
+    
+    users(:darwin).destroy
+    assert_equal number_of_old_users - 1 - number_of_students, User.find(:all).size
+    assert_equal 0, User.find(:all, :conditions => "id = 6").size
+    assert_equal 0, Course.find(:all, :conditions => "instructor_id = 6").size
+    assert_equal number_of_old_courses - 2, Course.find(:all).size
   end
   
 end

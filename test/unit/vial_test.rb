@@ -60,16 +60,17 @@ class VialTest < Test::Unit::TestCase
     assert_equal flies(:fly_10), vials(:vial_with_many_flies).first_of_type([:eye_color, :gender], [:red, :male])
   end
   
-  def test_destroying_of_vial
+  def test_destroying_a_vial
     number_of_old_vials = Vial.find(:all).size
     number_of_old_flies = Fly.find(:all).size
-    assert_equal 1, destroyable_vial = Vial.find(:all, :conditions => "id = 6").size
+    assert_equal 1, Vial.find(:all, :conditions => "id = 6").size
     assert_equal 2, Fly.find(:all, :conditions => "vial_id = 6").size
     
     vials(:destroyable_vial).destroy
     assert_equal number_of_old_vials - 1, Vial.find(:all).size
     assert_equal 0, Vial.find(:all, :conditions => "id = 6").size
     assert_equal 0, Fly.find(:all, :conditions => "vial_id = 6").size
+    assert_equal number_of_old_flies - 2, Fly.find(:all).size
   end
   
   def test_combinations_of_phenotypes

@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   has_many :racks
   has_many :character_preferences
   has_one  :basic_preference 
-  has_many :courses, :foreign_key => "instructor_id"
+  has_many :courses, :foreign_key => "instructor_id", :dependent => :destroy # TEST THIS!!!!
   belongs_to :course # this scares me because the above is only one letter different.
                      # they are used in different places...
                      # but still, should we go witout this last belongs_to line?

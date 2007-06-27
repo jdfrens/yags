@@ -34,7 +34,7 @@ class Test::Unit::TestCase
   def self.all_fixtures
     fixtures :users, :groups, :privileges, :groups_privileges, 
         :flies, :vials, :genotypes, :basic_preferences, :character_preferences, 
-        :racks, :courses, :solutions
+        :racks, :courses, :solutions, :scenarios, :scenario_preferences
   end
   
   def assert_standard_layout

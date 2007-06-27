@@ -56,4 +56,43 @@ class UserTest < Test::Unit::TestCase
     assert_equal number_of_old_courses - 2, Course.find(:all).size
   end
   
+  def test_destruction_of_racks_along_with_student
+    number_of_old_users = User.find(:all).size
+    number_of_old_racks = Rack.find(:all).size
+    assert_equal 1, User.find(:all, :conditions => "id = 3").size
+    assert_equal 2, Rack.find(:all, :conditions => "user_id = 3").size
+    
+    users(:jdfrens).destroy
+    assert_equal number_of_old_users - 1, User.find(:all).size
+    assert_equal 0, User.find(:all, :conditions => "id = 3").size
+    assert_equal 0, Rack.find(:all, :conditions => "user_id = 3").size
+    assert_equal number_of_old_racks - 2, Rack.find(:all).size
+  end
+  
+  def test_destruction_of_basic_preference_along_with_student
+    number_of_old_users = User.find(:all).size
+    number_of_old_basic_preferences = BasicPreference.find(:all).size
+    assert_equal 1, User.find(:all, :conditions => "id = 3").size
+    assert_equal 1, BasicPreference.find(:all, :conditions => "user_id = 3").size
+    
+    users(:jdfrens).destroy
+    assert_equal number_of_old_users - 1, User.find(:all).size
+    assert_equal 0, User.find(:all, :conditions => "id = 3").size
+    assert_equal 0, BasicPreference.find(:all, :conditions => "user_id = 3").size
+    assert_equal number_of_old_basic_preferences - 1, BasicPreference.find(:all).size
+  end
+  
+  def test_destruction_of_character_preferences_along_with_student
+    number_of_old_users = User.find(:all).size
+    number_of_old_character_preferences = CharacterPreference.find(:all).size
+    assert_equal 1, User.find(:all, :conditions => "id = 4").size
+    assert_equal 3, CharacterPreference.find(:all, :conditions => "user_id = 4").size
+    
+    users(:randy).destroy
+    assert_equal number_of_old_users - 1, User.find(:all).size
+    assert_equal 0, User.find(:all, :conditions => "id = 4").size
+    assert_equal 0, CharacterPreference.find(:all, :conditions => "user_id = 4").size
+    assert_equal number_of_old_character_preferences - 3, CharacterPreference.find(:all).size
+  end
+  
 end

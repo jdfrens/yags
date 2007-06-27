@@ -2,10 +2,10 @@ class User < ActiveRecord::Base
   
   acts_as_login_model
   
-  has_many :racks
-  has_many :character_preferences
-  has_one  :basic_preference 
-  has_many :courses, :foreign_key => "instructor_id", :dependent => :destroy # TEST THIS!!!!
+  has_many :racks, :dependent => :destroy
+  has_many :character_preferences, :dependent => :destroy
+  has_one  :basic_preference, :dependent => :destroy
+  has_many :courses, :foreign_key => "instructor_id", :dependent => :destroy
   belongs_to :course # this scares me because the above is only one letter different.
                      # they are used in different places...
                      # but still, should we go witout this last belongs_to line?

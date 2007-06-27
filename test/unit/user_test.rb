@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < Test::Unit::TestCase
-
-#  fixtures :users, :vials, :basic_preferences, :character_preferences
   all_fixtures
   
   def test_has_many_vials
@@ -40,6 +38,16 @@ class UserTest < Test::Unit::TestCase
     
     assert_equal [:telekinesis, :legs], users(:randy).visible_characters([:telekinesis, :wings, :legs])
     assert_equal [:telekinesis, :wings], users(:jdfrens).visible_characters([:telekinesis, :wings, :legs])
+  end
+  
+  def test_is_visible
+    assert users(:randy).is_visible(:gender)
+    assert !users(:randy).is_visible(:wings)
+    assert !users(:randy).is_visible(:devil_and_angel_on_shoulders)
+    
+    assert users(:jdfrens).is_visible(:wings)
+    assert !users(:jdfrens).is_visible(:legs)
+    assert !users(:jdfrens).is_visible(:internal_bleeding)
   end
   
   def test_destruction_of_courses_along_with_instructor

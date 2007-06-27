@@ -1,0 +1,13 @@
+<% if flash[:notice] -%>
+	<div class="notice"><%= flash[:notice] %></div>
+<% end -%>
+
+<h1>Scenario: <%= h(@scenario.title) -%></h1>
+
+<div id="list-characters">
+	<ul>
+		<% for character in @scenario.visible_characters -%>
+          <li id=<%= character %>> <%= h(character.to_s) -%> </li>
+		<% end -%>
+	</ul>
+</div>

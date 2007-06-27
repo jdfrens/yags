@@ -2,8 +2,8 @@
 first_scenario_preference_one:
   id: 1
   scenario_id: 1
-  character: eye_color
+  hidden_character: eye_color
 first_scenario_preference_two:
   id: 2
   scenario_id: 1
-  character: antenna
+  hidden_character: antenna

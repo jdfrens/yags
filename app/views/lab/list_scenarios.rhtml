@@ -1,0 +1,15 @@
+<% if flash[:notice] -%>
+	<div class="notice"><%= flash[:notice] %></div>
+<% end -%>
+
+<h1>Listing All Scenarios</h1>
+
+<div id="list-scenarios">
+	<ul>
+		<% for scenario in @scenarios -%>
+            <li id=<%= scenario.id %> >
+              <%= link_to scenario.title, :action => :view_scenario, :id => scenario %>[<%= link_to "delete", { :action => "delete_scenario", :id => scenario.id }, :confirm => "Are you sure?", :method => :post -%>]
+            </li>
+		<% end -%>
+	</ul>
+</div>

@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   acts_as_login_controller
   
-  restrict_to :manage_student, :only => [ :list_users, :add_student, :delete_user]
-  restrict_to :manage_student, :only => [ :change_student_password ]
+  restrict_to :manage_student, :only => [ :list_users, :add_student, :delete_user, 
+      :change_student_password ]
   restrict_to :manage_instructor, :only => [ :add_instructor, :index ]
   
   redirect_after_login do |controller|
@@ -89,8 +89,6 @@ class UsersController < ApplicationController
       else
         flash[:notice] = "Try Again"
       end
-    else
-      
     end
   end
   

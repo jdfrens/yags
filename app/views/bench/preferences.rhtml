@@ -4,8 +4,8 @@
 <br /><br />
 
 <% form_tag :url => {:action => :index} do %>
-  <% @characters.zup(@checked_values) do |character, checked| -%>
-    <%= check_box_tag character.to_s, "visible", checked  -%>
+  <% @characters.each do |character| -%>
+    <%= check_box_tag character.to_s, "visible", @user.is_visible(character)  -%>
     <%= character.to_s %> <br />
   <% end -%>
   <%= submit_tag "Update", :class => "submit" -%>

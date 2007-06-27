@@ -1,0 +1,22 @@
+<%= error_messages_for 'scenario' %>
+
+<h1>Add Scenario</h1>
+
+<% form_for :scenario do |form| %>
+    <p>
+        <label for="species"><strong>Species: </strong></label>
+        Drosophila melanogaster
+    </p>
+    <p>
+        <label for="title"><strong>Title: </strong></label>
+        <%= form.text_field :title, :size => 40 %>
+    </p>
+    
+    <!-- could this part become a partial that changes once we have multiple species? -->
+    <% @characters.each do |character| -%>
+        <%= check_box_tag character.to_s, "visible", true -%>
+        <%= character.to_s %> <br />
+    <% end -%>
+    
+    <%= submit_tag "Add Scenario", :class => "submit" %>
+<% end %>

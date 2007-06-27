@@ -19,7 +19,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "ul" do
-      assert_select "li", 6
+      assert_select "li", 8
     end
   end
   
@@ -86,7 +86,7 @@ class LabControllerTest < Test::Unit::TestCase
     post :add_course, { :course => { :name => "Byker's Bio Course" } }, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :add_course, { :course => { :name => "The art of jean selection" } }, user_session(:manage_bench)
+    post :add_course, { :course => { :name => "The art of jean selection" } }, user_session(:manage_bench)
     assert_response 401 # access denied
   end
   
@@ -124,8 +124,6 @@ class LabControllerTest < Test::Unit::TestCase
     post :delete_course, { :id => 2 }, user_session(:darwin)
     assert_redirected_to :action => :list_courses
     assert_nil Course.find_by_id(2)
-    
-    # should all students in the course be removed then too?
   end
   
   def test_delete_course_fails_when_NOT_logged_in_as_instructor
@@ -135,7 +133,7 @@ class LabControllerTest < Test::Unit::TestCase
     post :delete_course, { :id => 3 }, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :delete_course, { :id => 3 }, user_session(:manage_bench)
+    post :delete_course, { :id => 3 }, user_session(:manage_bench)
     assert_response 401 # access denied
     
     assert_not_nil Course.find_by_id(1) # "Peas pay attention"
@@ -143,13 +141,129 @@ class LabControllerTest < Test::Unit::TestCase
   end
   
   def test_delete_course_fails_when_NOT_instructors_course
-    get :delete_course, {:id => 3 }, user_session(:mendel)
+    post :delete_course, {:id => 3 }, user_session(:mendel)
     assert_redirected_to :action => "list_courses"
     # or should this lead to a 401 access denied?
     assert_not_nil Course.find_by_id(3)
     
-    get :delete_course, {:id => 1234 }, user_session(:darwin)
+    post :delete_course, {:id => 1234 }, user_session(:darwin)
     assert_redirected_to :action => "list_courses"
+  end
+  
+  def test_list_scenarios
+    get :list_scenarios, {}, user_session(:mendel)
+    assert_response :success
+    assert_standard_layout
+    assert_select "ul" do
+      assert_select "li", "forgetful instructor[delete]"
+    end
+  end
+  
+  def test_list_scenarios_fails_when_NOT_logged_in_as_instructor
+    get :list_scenarios
+    assert_redirected_to_login
+    
+    get :list_scenarios, {}, user_session(:calvin)
+    assert_response 401 # access denied
+    
+    get :list_scenarios, {}, user_session(:steve)
+    assert_response 401 # access denied
+  end
+  
+  def test_add_scenario_page
+    get :add_scenario, {}, user_session(:mendel)
+    assert_response :success
+    assert_standard_layout
+    assert_select "form" do
+      assert_select "label[for=species]"
+      assert_select "label[for=title]"
+      
+      # these tests might not belong here later when the check boxes are moved to a partial
+      assert_select "input#gender[value=visible][checked=checked]"
+      assert_select "input#eye_color[value=visible][checked=checked]"
+      assert_select "input#wings[value=visible][checked=checked]"
+      assert_select "input#legs[value=visible][checked=checked]"
+      assert_select "input#antenna[value=visible][checked=checked]"
+      assert_select "input[type=checkbox][checked=checked]", 5
+    end
+  end
+  
+  def test_add_scenario_works
+    number_of_old_scenarios = Scenario.find(:all).size
+    post :add_scenario, { :scenario => { :title => "Final Exam" } }, user_session(:darwin)
+    assert_redirected_to :action => "list_scenarios"
+    assert_not_nil scenario = Scenario.find_by_title("Final Exam")
+    assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
+    assert_equal [:gender, :eye_color, :wings, :legs, :antenna], scenario.hidden_characters
+  end 
+  
+  def test_add_scenario_works_again
+    number_of_old_scenarios = Scenario.find(:all).size
+    post :add_scenario, { :scenario => { :title => "Intro to Dominance" }, 
+        :gender => "visible", :wings => "visible" }, user_session(:mendel)
+    assert_redirected_to :action => "list_scenarios"
+    assert_not_nil scenario = Scenario.find_by_title("Intro to Dominance")
+    assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
+    assert_equal [:eye_color, :legs, :antenna], scenario.hidden_characters
+  end 
+  
+  def test_add_scenario_fails_when_NOT_logged_in_as_instructor
+    number_of_old_scenarios = Scenario.find(:all)
+    post :add_scenario, { :course => { :name => "The Martians have come to Earth" } }
+    assert_redirected_to_login
+    
+    post :add_scenario, { :course => { :name => "Byker's Bio Scenario" } }, user_session(:calvin)
+    assert_response 401 # access denied
+    
+    post :add_scenario, { :course => { :name => "Easy full credit" } }, user_session(:manage_bench)
+    assert_response 401 # access denied
+    assert_equal number_of_old_scenarios, Scenario.find(:all)
+  end
+  
+  def test_view_scenario
+    get :view_scenario, {:id => 1 }, user_session(:mendel)
+    assert_response :success
+    assert_select "ul" do
+      assert_select "li", "gender"
+      assert_select "li", "wings"
+      assert_select "li", "legs"
+    end
+  end
+  
+  def test_view_scenario_fails_when_NOT_logged_in_as_instructor
+    get :view_scenario, {:id => 1 }
+    assert_redirected_to_login
+    
+    get :view_scenario, {:id => 1 }, user_session(:calvin)
+    assert_response 401 # access denied
+    
+    get :view_scenario, {:id => 1 }, user_session(:manage_bench)
+    assert_response 401 # access denied
+  end
+  
+  def test_view_scenario_fails_when_scenario_DOESNT_exist
+    get :view_scenario, {:id => 1111 }, user_session(:mendel)
+    assert_redirected_to :action => "list_scenarios"
+  end
+  
+  def test_delete_scenario
+    assert_not_nil Scenario.find_by_id(1) # "Forgetful Instructor"
+    post :delete_scenario, { :id => 1 }, user_session(:darwin)
+    assert_redirected_to :action => :list_scenarios
+    assert_nil Scenario.find_by_id(1)
+  end
+  
+  def test_delete_scenario_fails_when_NOT_logged_in_as_instructor
+    post :delete_scenario, { :id => 1 }
+    assert_redirected_to_login
+    
+    post :delete_scenario, { :id => 1 }, user_session(:calvin)
+    assert_response 401 # access denied
+    
+    post :delete_scenario, { :id => 1 }, user_session(:manage_bench)
+    assert_response 401 # access denied
+    
+    assert_not_nil Scenario.find_by_id(1)
   end
   
 end

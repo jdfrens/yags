@@ -15,11 +15,16 @@ class User < ActiveRecord::Base
   end
   
   def visible_characters(characters = Species.singleton.characters)
-    characters - (hidden_characters + [:crazy_value_that_is_always_ignored])
+    characters - hidden_characters
   end
   
   def vials
     racks.map { |r| r.vials }.flatten
+  end
+  
+  def is_visible(character)
+    # this seems like not the best way to do
+    visible_characters.include? character
   end
   
 end

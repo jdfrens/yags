@@ -10,8 +10,8 @@ class BenchController < ApplicationController
   end
   
   def preferences
+    @user = current_user
     @characters = Species.singleton.characters
-    @checked_values = compute_checked(current_user.hidden_characters)
     if request.post?
       @characters.each do |character|
         if params[character] == "visible"
@@ -175,12 +175,6 @@ class BenchController < ApplicationController
         # flash[:notice] = "Action failed - bad parameters" # or something
         redirect_to :action => "list_vials"
       end
-    end
-  end
-  
-  def compute_checked(hidden_characters)
-    @characters.map do |character| 
-      !hidden_characters.include?(character)
     end
   end
   

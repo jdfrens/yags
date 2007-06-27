@@ -11,16 +11,15 @@
         <div>
             <% form_remote_tag :url => {:action => :update_table},
                        :before => visual_effect(:appear, 'spinner'),
-                       :complete => visual_effect(:fade, 'spinner')  do %>
+                       :complete => visual_effect(:fade, 'spinner')  do -%>
                 <div id="character_rows">
-                    <label for="character_select_row"><strong>Rows: </strong></label><%= select_tag(:character_row, options_for_select(@visible_characters, @rows) ) %>
+                    <label for="character_select_row"><strong>Rows: </strong></label><%= select_tag(:character_row, options_for_select(@visible_characters, @rows), :onchange => "onsubmit()"  ) %>
                 </div>
                 <div id="character_cols">
-                    <label for="character_select_col"><strong>Columns: </strong></label><%= select_tag(:character_col, options_for_select(@visible_characters , @columns) ) %>
+                    <label for="character_select_col"><strong>Columns: </strong></label><%= select_tag(:character_col, options_for_select(@visible_characters , @columns), :onchange => "onsubmit()"  ) %>
                 </div>
                 <%= hidden_field_tag(:vial_id, @vial.id) %>
-                <%= submit_tag "Update Table" %>
-            <% end %>
+            <% end -%>
         </div>
 <%= image_tag '/images/ajax-loader-red.gif', :id => 'spinner', :style => 'display: none;' %>
         <br />

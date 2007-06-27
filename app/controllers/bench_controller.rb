@@ -117,6 +117,13 @@ class BenchController < ApplicationController
     render :text => h(@vial.label)
   end
   
+  def set_as_solution
+    if request.post?
+      solution = Solution.new params[:solutions]
+      solution.save!
+    end
+  end
+  
   def update_table
     if request.post?
       @vial = Vial.find(params[:vial_id])

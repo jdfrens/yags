@@ -1,27 +1,27 @@
-<div class="section_closed">
+<div class="section_open">
     <div class="section_header" onclick="toggle_section(this.parentNode)">Parental Information</div>
     <div class="section_content">
         <table id="parent-table">
             <% if @parents %>
                 <tr>
                     <th></th>
-                    <% @vial.species.characters.each do |ch| %>
+                    <% @visible_characters.each do |ch| -%>
                         <th><%= ch %></th>
-                    <% end %>
+                    <% end -%>
                     <th>source vial</th>
                 </tr>
                 <tr>
                     <th>Mom</th>
-                    <% @vial.species.characters.each do |ch| %>
+                    <% @visible_characters.each do |ch| -%>
                         <td><%= @mom.phenotype(ch) %></td>
-                    <% end %>
+                    <% end -%>
                     <td><%= link_to @mom_vial.label, :action => :view_vial, :id => @mom_vial %></td>
                 </tr>
                 <tr>
                     <th>Dad</th>
-                    <% @vial.species.characters.each do |ch| %>
+                    <% @visible_characters.each do |ch| -%>
                         <td><%= @dad.phenotype(ch) %></td>
-                    <% end %>
+                    <% end -%>
                     <td><%= link_to @dad_vial.label, :action => :view_vial, :id => @dad_vial %></td>
                 </tr>
             <% else %>
@@ -29,7 +29,4 @@
             <% end %>
         </table>
     </div>
-    <br />
-    <div id="destroy-vial"><%= button_to "Destroy this vial!", { :action => :destroy_vial, :id => @vial.id }, :confirm => "Are you sure?" %></div>
-    <br />
 </div>

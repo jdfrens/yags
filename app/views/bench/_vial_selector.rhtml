@@ -2,9 +2,8 @@
     <% form_remote_tag :url => {:action => :show_mateable_flies},
                        :before => visual_effect(:appear, "spinner_#{number}"),
                        :complete => visual_effect(:fade, "spinner_#{number}") do -%>
-        <strong><%= ["", "First", "Second"][number] %> Vial:</strong> <%= select_tag(:vial, options_for_select(@vial_labels_and_ids) ) %>
+        <strong><%= ["", "First", "Second"][number] %> Vial:</strong> <%= select_tag(:vial, options_for_select(@vial_labels_and_ids), :onchange => "onsubmit()" ) %>
         <%= hidden_field_tag 'which_vial', number %>
-        <%= submit_tag "Show Flies" %>
     <% end -%>
     
     <%= image_tag '/images/ajax-loader-red.gif', :id => "spinner_#{number}", :style => 'display: none;' %>

@@ -50,6 +50,38 @@ class UserTest < Test::Unit::TestCase
     assert !users(:jdfrens).is_visible(:internal_bleeding)
   end
   
+  def test_instructor?
+    assert users(:mendel).instructor?
+    assert !users(:calvin).instructor?
+    assert !users(:steve).instructor?
+  end
+  
+  def test_students
+    # these tests could use some more fixture entries to make them more rigorous
+    assert_equal [users(:jdfrens), users(:randy)], users(:mendel).students
+    assert_equal [users(:steve)], users(:darwin).students
+    assert_equal [], users(:calvin).students
+    assert_equal [], users(:steve).students
+  end
+  
+  def test_has_authority_over
+    assert users(:mendel).has_authority_over(users(:jdfrens))
+    assert users(:mendel).has_authority_over(users(:randy))
+    assert users(:darwin).has_authority_over(users(:steve))
+    assert users(:calvin).has_authority_over(users(:darwin))
+    assert users(:calvin).has_authority_over(users(:steve))
+    assert users(:steve).has_authority_over(users(:steve))
+    assert users(:mendel).has_authority_over(users(:mendel))
+    assert users(:calvin).has_authority_over(users(:calvin))
+    
+    assert !users(:mendel).has_authority_over(users(:steve))
+    assert !users(:darwin).has_authority_over(users(:randy))
+    assert !users(:darwin).has_authority_over(users(:mendel))
+    assert !users(:steve).has_authority_over(users(:darwin))
+    assert !users(:randy).has_authority_over(users(:jdfrens))
+    assert !users(:mendel).has_authority_over(users(:calvin))
+  end
+  
   def test_destruction_of_courses_along_with_instructor
     number_of_old_users = User.find(:all).size
     number_of_old_courses = Course.find(:all).size

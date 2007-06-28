@@ -53,10 +53,11 @@ class UsersController < ApplicationController
   end
   
   def delete_user
-    if params[:id] and request.post?
+    if params[:id] and request.post? and 
+        current_user.has_authority_over(User.find(params[:id]))
       @user = User.find(params[:id]).destroy
+      flash[:notice] = "#{@user.username} has been deleted"
     end
-    flash[:notice] = "#{@user.username} has been deleted"
     redirect_to :action => :list_users
   end
   
@@ -82,9 +83,10 @@ class UsersController < ApplicationController
       @student_names_and_ids << [student.username, student.id]
     end
     if request.post? and params[:user]
-      if User.find(params[:student_id]) and 
+      student = User.find_by_id(params[:student_id])
+      if student and current_user.has_authority_over(student) and
           params[:user][:password] == params[:user][:password_confirmation]
-        User.find(params[:student_id]).update_attributes(params[:user])
+        student.update_attributes(params[:user])
         flash[:notice] = "Password Changed"
       else
         flash[:notice] = "Try Again"
@@ -101,7 +103,6 @@ class UsersController < ApplicationController
         redirect_to :controller => "users", :action => "index"
       when "instructor"
         redirect_to :controller => "lab", :action => "index"
-        # right now that isn't even a controller.  when it is this should be tested.
       else
         redirect_to :controller => "users", :action => "logout" # because we don't know who they are.
       end

@@ -158,11 +158,15 @@ class UsersControllerTest < Test::Unit::TestCase
   def test_delete_user
     number_of_old_users = User.find(:all).size
     assert_not_nil User.find_by_username("steve")
-    post :delete_user, { :id => 1 }, user_session(:manage_student)
+    post :delete_user, { :id => 1 }, user_session(:calvin)
     assert_nil User.find_by_username("steve")
     assert_equal number_of_old_users - 1, User.find(:all).size
     assert_response :redirect
     assert_redirected_to :action => "list_users"
+         
+    post :delete_user, { :id => 4 }, user_session(:mendel)
+    assert_redirected_to :action => "list_users"
+    assert_nil User.find_by_id(4) # randy
   end
   
   def test_delete_user_fails_when_NOT_logged_in_as_admin
@@ -177,6 +181,24 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response 401 # access denied
   end
   
+  def test_delete_user_fails_when_NOT_instructors_student
+    post :delete_user, { :id => 1 }, user_session(:mendel)
+    assert_redirected_to :action => "list_users"
+    assert_not_nil User.find_by_id(1) # steve
+  end
+  
+  def test_change_password_form
+    get :change_password, { }, user_session(:manage_bench)
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "form" do
+      assert_select "p", "Old Password:"
+      assert_select "p", "Password:"
+      assert_select "p", "Password Confirmation:"
+    end
+  end
+  
   def test_change_password
     steve = users(:steve)
     assert_equal User.hash_password("steve_password"), steve.password_hash
@@ -189,7 +211,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_equal "Password Changed", flash[:notice]
   end
   
-  def test_change_password_fails_with_wrong_old_password
+  def test_change_password_fails_with_WRONG_old_password
     steve = users(:steve)
     post :change_password, { :user => { :password => 'rails', :password_confirmation => 'rails' }, 
         :old_password => "not_steve_password" }, user_session(:steve)
@@ -200,7 +222,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_equal "Try Again", flash[:notice]
   end
   
-  def test_change_password_fails_with_mismatched_confirmation
+  def test_change_password_fails_with_MISMATCHED_confirmation
     calvin = users(:calvin)
     post :change_password, { :user => { :password => 'rails', :password_confirmation => 'trains' }, 
         :old_password => "calvin_password" }, user_session(:manage_student)
@@ -217,13 +239,13 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
-  def test_change_password_form
-    get :change_password, { }, user_session(:manage_bench)
+  def test_change_student_password_form
+    get :change_student_password, { }, user_session(:manage_student)
     assert_response :success
     assert_standard_layout
     
     assert_select "form" do
-      assert_select "p", "Old Password:"
+      assert_select "div#students_select", "Student: steve\njdfrens\nrandy"
       assert_select "p", "Password:"
       assert_select "p", "Password Confirmation:"
     end
@@ -233,7 +255,7 @@ class UsersControllerTest < Test::Unit::TestCase
     steve = users(:steve)
     assert_equal User.hash_password("steve_password"), steve.password_hash
     post :change_student_password, { :user => { :password => 'steve_m', 
-        :password_confirmation => 'steve_m' }, :student_id => 1 }, user_session(:manage_student)
+        :password_confirmation => 'steve_m' }, :student_id => 1 }, user_session(:calvin)
     assert_response :success
     assert_standard_layout
     steve.reload
@@ -241,12 +263,10 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_equal "Password Changed", flash[:notice]
   end
   
-  # should change_student_password only let instructors change the passwords of students in their courses?
-  
   def test_change_student_password_fails_with_mismatched_confirmation
     steve = users(:steve)
     post :change_student_password, { :user => { :password => 'buffalo', 
-        :password_confirmation => 'prairie cow' }, :student_id => 1 }, user_session(:manage_student)
+        :password_confirmation => 'prairie cow' }, :student_id => 1 }, user_session(:calvin)
     assert_response :success
     assert_standard_layout
     steve.reload
@@ -266,22 +286,24 @@ class UsersControllerTest < Test::Unit::TestCase
     steve = users(:steve)
     assert_equal User.hash_password("steve_password"), steve.password_hash
     post :change_student_password, { :user => { :password => 'steve_m', 
-        :password_confirmation => 'steve_m' }, :student_id => 1 }, user_session(:manage_bench_as_frens)
+        :password_confirmation => 'steve_m' }, :student_id => 1 }, user_session(:jeremy)
     assert_response 401 # access denied
     steve.reload
     assert_equal User.hash_password('steve_password'), steve.password_hash
   end
   
-  def test_change_student_password_form
-    get :change_student_password, { }, user_session(:manage_student)
-    assert_response :success
-    assert_standard_layout
-    
-    assert_select "form" do
-      assert_select "div#students_select", "Student: steve\njdfrens\nrandy"
-      assert_select "p", "Password:"
-      assert_select "p", "Password Confirmation:"
-    end
+  def test_change_student_password_fails_when_NOT_instructors_student
+    old_password_hash = User.find_by_id(3).password_hash # frens
+    post :change_student_password, { :user => { :password => 'ninja', 
+        :password_confirmation => 'ninja' }, :student_id => 3 }, user_session(:darwin)
+    assert_equal "Try Again", flash[:notice]
+    assert_equal old_password_hash, User.find_by_id(3).password_hash
+  end
+  
+  def test_change_student_password_fails_when_NOT_valid_student_id
+    post :change_student_password, { :user => { :password => 'samurai', 
+        :password_confirmation => 'samurai' }, :student_id => 3000 }, user_session(:darwin)
+    assert_equal "Try Again", flash[:notice]
   end
   
   def test_index
@@ -307,8 +329,11 @@ class UsersControllerTest < Test::Unit::TestCase
     get :redirect_user, {}, user_session(:manage_bench)
     assert_redirected_to :controller => "bench", :action => "index"
     
-    get :redirect_user, {}, user_session(:manage_student)
+    get :redirect_user, {}, user_session(:calvin)
     assert_redirected_to :controller => "users", :action => "index"
+    
+    get :redirect_user, {}, user_session(:mendel)
+    assert_redirected_to :controller => "lab", :action => "index"
   end
   
   def test_redirect_user_when_NOT_logged_in

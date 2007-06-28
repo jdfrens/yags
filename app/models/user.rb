@@ -27,4 +27,24 @@ class User < ActiveRecord::Base
     visible_characters.include? character
   end
   
+  def instructor?
+    group.name == "instructor"
+  end
+  
+  def students
+    if instructor?
+      courses.map { |c| c.students }.flatten
+    else
+     []
+    end
+  end
+  
+  def has_authority_over(other_user)
+    if group.name == "admin" or self == other_user or students.include?(other_user)
+      true
+    else
+      false
+    end
+  end
+  
 end

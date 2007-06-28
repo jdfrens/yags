@@ -64,8 +64,8 @@ class Test::Unit::TestCase
       { :current_user_id => 1 }
     when :steve
       { :current_user_id => 1 }
-    when :manage_student
-      { :current_user_id => 2 }
+    when :jeremy
+      { :current_user_id => 3 }
     when :manage_bench_as_frens
       { :current_user_id => 3 }
     when :pruim
@@ -74,6 +74,8 @@ class Test::Unit::TestCase
       { :current_user_id => 5 }
     when :darwin
       { :current_user_id => 6 }
+      when :manage_student
+      { :current_user_id => 2 }
     when :calvin
       { :current_user_id => 2 }
     else

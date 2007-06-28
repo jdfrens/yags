@@ -11,7 +11,12 @@ class BenchController < ApplicationController
   
   def preferences
     @user = current_user
-    @characters = Species.singleton.characters
+    if current_user.current_scenario
+      @characters = current_user.current_scenario.visible_characters
+    else
+      @characters = Species.singleton.characters
+      # it would be nice if every user had a basic_preference...
+    end
     if request.post?
       @characters.each do |character|
         if params[character] == "visible"
@@ -23,6 +28,22 @@ class BenchController < ApplicationController
           end
         end
       end
+      redirect_to :action => "index"
+    end
+  end
+  
+  def choose_scenario
+    if current_user.current_scenario
+      @current_scenario_title = current_user.current_scenario.title
+    else
+      @current_scenario_title = "None Selected"
+    end
+    @scenario_titles_and_ids = [["None", nil]]
+    Scenario.find(:all).each do |scenario|
+      @scenario_titles_and_ids << [scenario.title, scenario.id]
+    end
+    if request.post? and params[:scenario_id]
+      current_user.current_scenario_id = params[:scenario_id]
       redirect_to :action => "index"
     end
   end
@@ -49,7 +70,7 @@ class BenchController < ApplicationController
     current_user.racks.each do |rack|
       @rack_labels_and_ids << [rack.label, rack.id]
     end
-    if (params[:vial])
+    if params[:vial]
       if Fly.find(params[:vial][:mom_id]).vial.user_id == current_user.id and 
         Fly.find(params[:vial][:dad_id]).vial.user_id == current_user.id
         params[:vial][:rack_id] = params[:rack_id]

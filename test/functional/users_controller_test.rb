@@ -240,12 +240,22 @@ class UsersControllerTest < Test::Unit::TestCase
   end
   
   def test_change_student_password_form
-    get :change_student_password, { }, user_session(:manage_student)
+    get :change_student_password, { }, user_session(:calvin)
     assert_response :success
     assert_standard_layout
-    
     assert_select "form" do
       assert_select "div#students_select", "Student: steve\njdfrens\nrandy"
+      assert_select "p", "Password:"
+      assert_select "p", "Password Confirmation:"
+    end
+  end
+  
+  def test_change_student_password_form_as_instructor
+    get :change_student_password, { }, user_session(:mendel)
+    assert_response :success
+    assert_standard_layout
+    assert_select "form" do
+      assert_select "div#students_select", "Student: jdfrens\nrandy" # note: no steve
       assert_select "p", "Password:"
       assert_select "p", "Password Confirmation:"
     end

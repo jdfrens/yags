@@ -17,19 +17,22 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_has_many_character_preferences
-    assert_equal [:eye_color, :wings, :antenna], users(:randy).hidden_characters
-    assert_equal [:legs], users(:jdfrens).hidden_characters
+    assert_equal [:eye_color, :wings, :antenna], 
+        users(:randy).character_preferences.map { |p| p.hidden_character.intern }
+    assert_equal [:legs], 
+        users(:jdfrens).character_preferences.map { |p| p.hidden_character.intern }
     assert_equal 0, users(:steve).character_preferences.size
   end
   
   def test_hidden_characters
-    assert_equal users(:randy).character_preferences.map { |p| p.hidden_character.intern }, 
-        users(:randy).hidden_characters
+    assert_equal [:eye_color, :wings, :antenna], users(:randy).hidden_characters
+    assert_equal [:legs, :antenna], users(:jdfrens).hidden_characters
+    assert_equal [], users(:steve).hidden_characters
   end
   
   def test_visible_characters
     assert_equal [:gender, :legs], users(:randy).visible_characters
-    assert_equal [:gender, :eye_color, :wings, :antenna], users(:jdfrens).visible_characters
+    assert_equal [:gender, :eye_color, :wings], users(:jdfrens).visible_characters
     assert_equal [:gender, :eye_color, :wings, :legs, :antenna], users(:steve).visible_characters
     
     assert_equal [], users(:randy).visible_characters([])
@@ -80,6 +83,22 @@ class UserTest < Test::Unit::TestCase
     assert !users(:steve).has_authority_over(users(:darwin))
     assert !users(:randy).has_authority_over(users(:jdfrens))
     assert !users(:mendel).has_authority_over(users(:calvin))
+  end
+  
+  def test_current_scenario
+    assert_equal scenarios(:another_scenario), users(:jdfrens).current_scenario
+    assert_nil users(:steve).current_scenario
+    assert_nil users(:mendel).current_scenario
+    assert_nil users(:calvin).current_scenario
+  end
+  
+  def test_current_scenario_id=
+    users(:steve).current_scenario_id = 2
+    users(:steve).reload
+    assert_equal Scenario.find(2), users(:steve).current_scenario
+    users(:steve).current_scenario_id = 1
+    users(:steve).reload
+    assert_equal Scenario.find(1), users(:steve).current_scenario
   end
   
   def test_destruction_of_courses_along_with_instructor

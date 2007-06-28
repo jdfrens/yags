@@ -11,7 +11,11 @@ class User < ActiveRecord::Base
                      # but still, should we go witout this last belongs_to line?
   
   def hidden_characters
-    character_preferences.map { |p| p.hidden_character.intern }
+    if self.current_scenario
+      character_preferences.map { |p| p.hidden_character.intern } + current_scenario.hidden_characters
+    else
+      character_preferences.map { |p| p.hidden_character.intern }
+    end
   end
   
   def visible_characters(characters = Species.singleton.characters)
@@ -27,6 +31,7 @@ class User < ActiveRecord::Base
     visible_characters.include? character
   end
   
+  # may not be necessary anymore (besides 6 lines down)
   def instructor?
     group.name == "instructor"
   end
@@ -44,6 +49,27 @@ class User < ActiveRecord::Base
       true
     else
       false
+    end
+  end
+  
+  # i wish we could generate these next two methods.  but i didn't know how
+  def current_scenario
+    if self.group.name == "student" and self.basic_preference
+      Scenario.find_by_id basic_preference.scenario_id
+      # change if a basic_preference belongs_to :senario relationship is set up
+    else
+      nil
+    end
+  end
+  
+  # hmm, the other method ^ doesn't have "_id" in it's name...
+  def current_scenario_id=(new_id)
+    if self.basic_preference
+      self.basic_preference.scenario_id = new_id
+      self.basic_preference.save!
+    else
+      new_bp = BasicPreference.new(:user_id => self.id, :scenario_id => new_id)
+      new_bp.save!
     end
   end
   

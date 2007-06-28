@@ -5,8 +5,7 @@ require 'bench_controller'
 class BenchController; def rescue_action(e) raise e end; end
 
 class BenchControllerTest < Test::Unit::TestCase
-  fixtures :flies, :vials, :genotypes, :basic_preferences, :character_preferences, :racks, :solutions
-  user_fixtures
+  all_fixtures
   
   def setup
     @controller = BenchController.new
@@ -84,6 +83,18 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_move_vial_to_another_rack_page
+    get :move_vial_to_another_rack, { :id => 5 }, user_session(:steve)
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "form" do
+      assert_select "select#rack_id" do
+        assert_select "option", 2
+      end
+    end
+  end
+  
   def test_move_vial_to_another_rack
     number_of_old_vials_in_rack = Rack.find(1).vials.size
     post :move_vial_to_another_rack, { :id => 5, :rack_id => 1 }, user_session(:steve)
@@ -106,18 +117,6 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_move_vial_to_another_rack_fails_when_NOT_owner_of_rack
     post :move_vial_to_another_rack, { :id => 3, :rack_id => 5 }, user_session(:steve)
     assert_redirected_to :action => "list_vials"
-  end
-
-  def test_move_vial_to_another_rack_page
-    get :move_vial_to_another_rack, { :id => 5 }, user_session(:steve)
-    assert_response :success
-    assert_standard_layout
-    
-    assert_select "form" do
-      assert_select "select#rack_id" do
-        assert_select "option", 2
-      end
-    end
   end
   
   def test_view_vial_with_a_fly
@@ -300,7 +299,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "ul:first-of-type" do
-      assert_select "li", 6
+      assert_select "li", 7
     end
   end
   
@@ -481,6 +480,20 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_preferences_page_again_with_scenario
+    get :preferences, {}, user_session(:jeremy)
+    assert_response :success
+    assert_standard_layout
+    assert_select "form" do
+      assert_select "input#gender[value=visible][type=checkbox][checked=checked]"
+      assert_select "input#eye_color[value=visible][type=checkbox][checked=checked]"
+      assert_select "input#wings[value=visible][type=checkbox][checked=checked]"
+      assert_select "input#legs[value=visible][type=checkbox][checked=checked]", 0
+      assert_select "input[type=checkbox][checked=checked]", 3
+      assert_select "input[type=checkbox]", 4
+    end
+  end
+  
   def test_change_preferences
     assert_equal 0, users(:steve).hidden_characters.size
     post :preferences, {:gender => "visible", :wings => "visible", :antenna => "visible"}, user_session(:steve)
@@ -502,9 +515,51 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
     
     number_of_old_preferences = CharacterPreference.find(:all)
-    get :preferences, {:gender => "visible", :legs => "visible"}, user_session(:manage_student)
+    post :preferences, {:gender => "visible", :legs => "visible"}, user_session(:manage_student)
     assert_response 401 # access denied
     assert_equal number_of_old_preferences, CharacterPreference.find(:all)
+  end
+  
+  def test_choose_scenario_page
+    get :choose_scenario, {}, user_session(:pruim)
+    assert_response :success
+    assert_standard_layout
+    assert_select "form" do
+      assert_select "select#scenario_id" do
+        assert_select "option[value=]", "None"
+        assert_select "option[value=1]", "forgetful instructor"
+        assert_select "option[value=2]", "party day"
+        assert_select "option", 3
+      end
+    end
+  end
+  
+  def test_choose_scenario
+    assert_nil users(:steve).current_scenario
+    post :choose_scenario, { :scenario_id => 1 }, user_session(:steve)
+    assert_response :redirect
+    assert_redirected_to :controller => 'bench', :action => 'index'
+    users(:steve).reload
+    assert_equal scenarios(:first_scenario), users(:steve).current_scenario
+  end
+  
+  def test_choose_scenario_fails_when_NOT_logged_in_as_student
+    post :choose_scenario, { :scenario_id => 1 }
+    assert_redirected_to_login
+    
+    post :choose_scenario, { :scenario_id => 1 }, user_session(:mendel)
+    assert_response 401 # access denied
+    
+    post :choose_scenario, { :scenario_id => 1 }, user_session(:calvin)
+    assert_response 401 # access denied
+  end
+  
+  def test_choose_scenario_fails_when_NOT_valid_scenario_id
+    old_scenario = users(:steve).current_scenario
+    post :choose_scenario, { :scenario_id => 99999999999 }, user_session(:steve)
+    assert_response :redirect
+    assert_redirected_to :controller => 'bench', :action => 'index' # or something
+    assert_equal old_scenario, users(:steve).current_scenario
   end
   
 end

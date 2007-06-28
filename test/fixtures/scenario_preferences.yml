@@ -7,3 +7,7 @@ first_scenario_preference_two:
   id: 2
   scenario_id: 1
   hidden_character: antenna
+second_scenario_preference_one:
+  id: 3
+  scenario_id: 2
+  hidden_character: antenna

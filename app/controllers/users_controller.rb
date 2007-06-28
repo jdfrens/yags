@@ -79,7 +79,9 @@ class UsersController < ApplicationController
   
   def change_student_password
     @student_names_and_ids = []
-    User.find(:all, :conditions => "group_id = #{Group.find_by_name("student").id}").each do |student|
+    students = (current_user.group.name == "instructor" ? current_user.students : 
+        User.find(:all, :conditions => "group_id = #{Group.find_by_name("student").id}"))
+    students.each do |student|
       @student_names_and_ids << [student.username, student.id]
     end
     if request.post? and params[:user]

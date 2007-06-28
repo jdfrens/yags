@@ -5,10 +5,12 @@ class ScenarioTest < Test::Unit::TestCase
   
   def test_hidden_characters
     assert_equal [:eye_color, :antenna], scenarios(:first_scenario).hidden_characters
+    assert_equal [:antenna], scenarios(:another_scenario).hidden_characters
   end
   
   def test_visible_characters
     assert_equal [:gender, :wings, :legs], scenarios(:first_scenario).visible_characters
+    assert_equal [:gender, :eye_color, :wings, :legs], scenarios(:another_scenario).visible_characters
   end
 
   def test_destruction_of_preferences_along_with_scenario

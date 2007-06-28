@@ -1,0 +1,16 @@
+<h2>Scenarios</h2>
+
+<p>
+    <em id="instruction">Select which scenario to use</em>
+</p>
+<p>
+    Current Scenario: <%= h(@current_scenario_title) %>
+</p>
+
+<% form_tag :url => {:action => :index} do %>
+    <p>
+		<label for="scenario_id"><strong>Scenario:</strong> </label>
+		<%= select_tag(:scenario_id, options_for_select(@scenario_titles_and_ids) )%>
+	</p>
+  <%= submit_tag "Update", :class => "submit" -%>
+<% end -%>

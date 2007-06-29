@@ -19,7 +19,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "ul" do
-      assert_select "li", 8
+      assert_select "li", 9
     end
   end
   
@@ -272,6 +272,28 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response 401 # access denied
     
     assert_not_nil Scenario.find_by_id(1)
+  end
+  
+  def test_view_cheat_sheet
+    post :view_cheat_sheet, {}, user_session(:mendel)
+    assert_response :success
+    assert_standard_layout
+    assert_select "table" do
+      assert_select "tr", 6
+      assert_select "th", 10
+      assert_select "td", 20
+    end
+  end
+  
+    def test_view_cheat_sheet_fails_when_NOT_logged_in_as_instructor
+    post :view_cheat_sheet
+    assert_redirected_to_login
+    
+    post :view_cheat_sheet, { }, user_session(:calvin)
+    assert_response 401 # access denied
+    
+    post :view_cheat_sheet, { }, user_session(:manage_bench)
+    assert_response 401 # access denied
   end
   
 end

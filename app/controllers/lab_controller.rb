@@ -1,7 +1,8 @@
 class LabController < ApplicationController
 
   restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course, 
-      :delete_course, :list_scenarios, :add_scenario, :delete_scenario, :view_scenario ]
+      :delete_course, :list_scenarios, :add_scenario, :delete_scenario, :view_scenario,
+      :view_cheat_sheet ]
 
   def index 
     @username = current_user.username
@@ -79,6 +80,19 @@ class LabController < ApplicationController
       Scenario.find(params[:id]).destroy
     end
     redirect_to :action => "list_scenarios"
+  end
+  
+  def view_cheat_sheet
+    @species = Species.singleton
+    @species_name = "Virtual Fruit Fly"
+    # later that should be chosen in a drop down list or something
+    @characters = [] 
+    @species.characters.each do |character|
+      @characters << {:name => character.to_s, :hom_dom => @species.phenotype_from(character, 1,1).to_s, 
+          :het => @species.phenotype_from(character, 1,0).to_s, :rec => @species.phenotype_from(character, 0,0).to_s,
+          :location => @species.position_of(@species.gene_number_of(character)) }
+      # use .map instead?
+    end
   end
 
 end

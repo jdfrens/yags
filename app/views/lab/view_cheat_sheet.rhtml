@@ -1,0 +1,26 @@
+<h1>Instructor Cheat Sheet</h1>
+
+<div id="cheat-sheet">
+	<h3>Species: <%= h(@species_name) %></h3>
+	<table>
+		<tr>
+			<th style="width:50px">Character</th>
+			<th style="width:50px">Homozygous Recessive</th>
+			<th style="width:50px">Heterozygous</th>
+			<th style="width:50px">Homozygous Dominant</th>
+			<th style="width:50px">Alelle Location</th>
+		</tr>
+		<% for character in @characters -%>
+		<tr>
+			<th><%= h(character[:name]) %></th>
+			<td><%= h(character[:rec]) %></td>
+			<td><%= h(character[:het]) %></td>
+			<td><%= h(character[:hom_dom]) %></td>
+			<td><%= h(character[:location]) %></td>
+		</tr>
+		<% end -%>
+	</table>
+	<p> <!-- maybe this should be id="note" later... or maybe it won't be around anyway -->
+		<em id="instruction">Note: characters with locations closer than 0.5 from each other are linked.</em>
+	</p>
+</div>

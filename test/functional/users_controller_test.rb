@@ -51,7 +51,7 @@ class UsersControllerTest < Test::Unit::TestCase
       assert_select "li", 6
       assert_select "li#1", "steve (student) [delete]"
       assert_select "li#2", "calvin (admin) [delete]"
-      assert_select "li#3", "jdfrens (student) [delete]"
+      assert_select "li#3", "jeremy (student) [delete]"
       assert_select "li#4", "randy (student) [delete]"
       assert_select "li#5", "mendel (instructor) [delete]"
       assert_select "li#6", "darwin (instructor) [delete]"
@@ -65,7 +65,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
     
     get :list_users, {}, user_session(:manage_bench)
-    assert_response 401 # access denied
+    assert_response 401, "HTTP response should be access denied"
   end
   
   def test_add_student_form
@@ -90,7 +90,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_not_nil new_user
     assert_equal number_of_old_users + 1, User.find(:all).size
     assert_equal "student", new_user.group.name
-    assert_equal "Peas pay attention", new_user.course.name
+    assert_equal Course.find(1), new_user.enrolled_in
     assert_response :redirect
     assert_redirected_to :action => "list_users"
   end
@@ -244,7 +244,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "div#students_select", "Student: steve\njdfrens\nrandy"
+      assert_select "div#students_select", "Student: steve\njeremy\nrandy"
       assert_select "p", "Password:"
       assert_select "p", "Password Confirmation:"
     end
@@ -255,7 +255,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "div#students_select", "Student: jdfrens\nrandy" # note: no steve
+      assert_select "div#students_select", "Student: jeremy\nrandy", "shouldn't have steve"
       assert_select "p", "Password:"
       assert_select "p", "Password Confirmation:"
     end

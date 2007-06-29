@@ -5,14 +5,14 @@ class UserTest < Test::Unit::TestCase
   
   def test_has_many_vials
     assert_equal_set [], users(:calvin).vials
-    assert_equal_set [vials(:destroyable_vial), vials(:random_vial)], users(:jdfrens).vials
+    assert_equal_set [vials(:destroyable_vial), vials(:random_vial)], users(:jeremy).vials
     assert_equal_set [:vial_one, :vial_empty, :vial_with_a_fly, :vial_with_many_flies, :parents_vial].map { |s| vials(s) },
         users(:steve).vials  
   end
   
   def test_has_basic_preference
-    assert_equal "eye_color", users(:jdfrens).basic_preference.column
-    assert_equal "wings", users(:jdfrens).basic_preference.row
+    assert_equal "eye_color", users(:jeremy).basic_preference.column
+    assert_equal "wings", users(:jeremy).basic_preference.row
     assert_nil users(:steve).basic_preference
   end
   
@@ -20,37 +20,43 @@ class UserTest < Test::Unit::TestCase
     assert_equal [:eye_color, :wings, :antenna], 
         users(:randy).character_preferences.map { |p| p.hidden_character.intern }
     assert_equal [:legs], 
-        users(:jdfrens).character_preferences.map { |p| p.hidden_character.intern }
+        users(:jeremy).character_preferences.map { |p| p.hidden_character.intern }
     assert_equal 0, users(:steve).character_preferences.size
+  end
+  
+  def test_solutions
+    assert_equal_set [], users(:randy).solutions
+    assert_equal_set [solutions(:jeremy_solves_2)], users(:jeremy).solutions
+    assert_equal_set [solutions(:steve_solves_1), solutions(:steve_solves_8)], users(:steve).solutions
   end
   
   def test_hidden_characters
     assert_equal [:eye_color, :wings, :antenna], users(:randy).hidden_characters
-    assert_equal [:legs, :antenna], users(:jdfrens).hidden_characters
+    assert_equal [:legs, :antenna], users(:jeremy).hidden_characters
     assert_equal [], users(:steve).hidden_characters
   end
   
   def test_visible_characters
     assert_equal [:gender, :legs], users(:randy).visible_characters
-    assert_equal [:gender, :eye_color, :wings], users(:jdfrens).visible_characters
+    assert_equal [:gender, :eye_color, :wings], users(:jeremy).visible_characters
     assert_equal [:gender, :eye_color, :wings, :legs, :antenna], users(:steve).visible_characters
     
     assert_equal [], users(:randy).visible_characters([])
-    assert_equal [], users(:jdfrens).visible_characters([])
+    assert_equal [], users(:jeremy).visible_characters([])
     assert_equal [], users(:steve).visible_characters([])
     
     assert_equal [:telekinesis, :legs], users(:randy).visible_characters([:telekinesis, :wings, :legs])
-    assert_equal [:telekinesis, :wings], users(:jdfrens).visible_characters([:telekinesis, :wings, :legs])
+    assert_equal [:telekinesis, :wings], users(:jeremy).visible_characters([:telekinesis, :wings, :legs])
   end
   
-  def test_is_visible
-    assert users(:randy).is_visible(:gender)
-    assert !users(:randy).is_visible(:wings)
-    assert !users(:randy).is_visible(:devil_and_angel_on_shoulders)
+  def test_visible_huh
+    assert users(:randy).visible?(:gender)
+    assert !users(:randy).visible?(:wings)
+    assert !users(:randy).visible?(:devil_and_angel_on_shoulders)
     
-    assert users(:jdfrens).is_visible(:wings)
-    assert !users(:jdfrens).is_visible(:legs)
-    assert !users(:jdfrens).is_visible(:internal_bleeding)
+    assert users(:jeremy).visible?(:wings)
+    assert !users(:jeremy).visible?(:legs)
+    assert !users(:jeremy).visible?(:internal_bleeding)
   end
   
   def test_instructor?
@@ -61,14 +67,14 @@ class UserTest < Test::Unit::TestCase
   
   def test_students
     # these tests could use some more fixture entries to make them more rigorous
-    assert_equal [users(:jdfrens), users(:randy)], users(:mendel).students
+    assert_equal [users(:jeremy), users(:randy)], users(:mendel).students
     assert_equal [users(:steve)], users(:darwin).students
     assert_equal [], users(:calvin).students
     assert_equal [], users(:steve).students
   end
   
   def test_has_authority_over
-    assert users(:mendel).has_authority_over(users(:jdfrens))
+    assert users(:mendel).has_authority_over(users(:jeremy))
     assert users(:mendel).has_authority_over(users(:randy))
     assert users(:darwin).has_authority_over(users(:steve))
     assert users(:calvin).has_authority_over(users(:darwin))
@@ -81,12 +87,12 @@ class UserTest < Test::Unit::TestCase
     assert !users(:darwin).has_authority_over(users(:randy))
     assert !users(:darwin).has_authority_over(users(:mendel))
     assert !users(:steve).has_authority_over(users(:darwin))
-    assert !users(:randy).has_authority_over(users(:jdfrens))
+    assert !users(:randy).has_authority_over(users(:jeremy))
     assert !users(:mendel).has_authority_over(users(:calvin))
   end
   
   def test_current_scenario
-    assert_equal scenarios(:another_scenario), users(:jdfrens).current_scenario
+    assert_equal scenarios(:another_scenario), users(:jeremy).current_scenario
     assert_nil users(:steve).current_scenario
     assert_nil users(:mendel).current_scenario
     assert_nil users(:calvin).current_scenario
@@ -104,7 +110,7 @@ class UserTest < Test::Unit::TestCase
   def test_destruction_of_courses_along_with_instructor
     number_of_old_users = User.find(:all).size
     number_of_old_courses = Course.find(:all).size
-    number_of_students = User.find(:all).select { |s| s.course and s.course.instructor_id == 6 }.size
+    number_of_students = User.find(:all).select { |s| s.enrolled_in and s.enrolled_in.instructor_id == 6 }.size
     assert_equal 1, User.find(:all, :conditions => "id = 6").size
     assert_equal 2, Course.find(:all, :conditions => "instructor_id = 6").size
     
@@ -121,7 +127,7 @@ class UserTest < Test::Unit::TestCase
     assert_equal 1, User.find(:all, :conditions => "id = 3").size
     assert_equal 2, Rack.find(:all, :conditions => "user_id = 3").size
     
-    users(:jdfrens).destroy
+    users(:jeremy).destroy
     assert_equal number_of_old_users - 1, User.find(:all).size
     assert_equal 0, User.find(:all, :conditions => "id = 3").size
     assert_equal 0, Rack.find(:all, :conditions => "user_id = 3").size
@@ -134,7 +140,7 @@ class UserTest < Test::Unit::TestCase
     assert_equal 1, User.find(:all, :conditions => "id = 3").size
     assert_equal 1, BasicPreference.find(:all, :conditions => "user_id = 3").size
     
-    users(:jdfrens).destroy
+    users(:jeremy).destroy
     assert_equal number_of_old_users - 1, User.find(:all).size
     assert_equal 0, User.find(:all, :conditions => "id = 3").size
     assert_equal 0, BasicPreference.find(:all, :conditions => "user_id = 3").size

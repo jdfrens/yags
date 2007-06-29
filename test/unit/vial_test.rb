@@ -100,16 +100,16 @@ class VialTest < Test::Unit::TestCase
   def test_collect_nine_flies_from_field
     new_vial = Vial.collect_from_field({ :label => "nine fly vial"}, 9, 
         CookedBitGenerator.new([0, 1, 0, 0]))
-    assert_equal_unordered ([:male] * 7 + [:female] * 2), 
-        new_vial.flies.map {|fly| fly.phenotype(:gender)}
-    assert_equal_unordered ([:red] * 5 + [:white] * 4),
-        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}
-    assert_equal_unordered ([:straight] * 4 + [:curly] * 5),
-        new_vial.flies.map {|fly| fly.phenotype(:wings)}
-    assert_equal_unordered ([:hairy] * 5 + [:smooth] * 4),
-        new_vial.flies.map {|fly| fly.phenotype(:legs)}
-    assert_equal_unordered ([:long] * 4 + [:short] * 5),
-        new_vial.flies.map {|fly| fly.phenotype(:antenna)}
+    assert_equal_set(([:male] * 7 + [:female] * 2), 
+        new_vial.flies.map {|fly| fly.phenotype(:gender)})
+    assert_equal_set(([:red] * 5 + [:white] * 4),
+        new_vial.flies.map {|fly| fly.phenotype(:eye_color)})
+    assert_equal_set(([:straight] * 4 + [:curly] * 5),
+        new_vial.flies.map {|fly| fly.phenotype(:wings)})
+    assert_equal_set(([:hairy] * 5 + [:smooth] * 4),
+        new_vial.flies.map {|fly| fly.phenotype(:legs)})
+    assert_equal_set(([:long] * 4 + [:short] * 5),
+        new_vial.flies.map {|fly| fly.phenotype(:antenna)})
     assert_equal 2, new_vial.flies_of_type([:gender, :legs],[:female, :smooth]).size
   end
   
@@ -155,16 +155,16 @@ class VialTest < Test::Unit::TestCase
   def test_making_seven_babies_and_a_vial
     new_vial = Vial.make_babies_and_vial({ :label => "seven fly syblings", 
         :mom_id => "4", :dad_id => "3" }, 7, CookedBitGenerator.new([0, 1, 1, 0, 0, 0]))
-    assert_equal_unordered ([:male] * 2 + [:female] * 5), 
-        new_vial.flies.map {|fly| fly.phenotype(:gender)}
-    assert_equal_unordered ([:red] * 7 + [:white] * 0),
-        new_vial.flies.map {|fly| fly.phenotype(:eye_color)}
-    assert_equal_unordered ([:straight] * 3 + [:curly] * 4),
-        new_vial.flies.map {|fly| fly.phenotype(:wings)}
-    assert_equal_unordered ([:hairy] * 5 + [:smooth] * 2),
-        new_vial.flies.map {|fly| fly.phenotype(:legs)}
-    assert_equal_unordered ([:long] * 7 + [:short] * 0),
-        new_vial.flies.map {|fly| fly.phenotype(:antenna)}
+    assert_equal_set(([:male] * 2 + [:female] * 5), 
+        new_vial.flies.map {|fly| fly.phenotype(:gender)})
+    assert_equal_set(([:red] * 7 + [:white] * 0),
+        new_vial.flies.map {|fly| fly.phenotype(:eye_color)})
+    assert_equal_set(([:straight] * 3 + [:curly] * 4),
+        new_vial.flies.map {|fly| fly.phenotype(:wings)})
+    assert_equal_set(([:hairy] * 5 + [:smooth] * 2),
+        new_vial.flies.map {|fly| fly.phenotype(:legs)})
+    assert_equal_set(([:long] * 7 + [:short] * 0),
+        new_vial.flies.map {|fly| fly.phenotype(:antenna)})
     assert_equal 2, new_vial.flies_of_type([:wings, :legs],[:curly, :smooth]).size
   end
   
@@ -187,21 +187,17 @@ class VialTest < Test::Unit::TestCase
   def test_belongs_to_user
     assert_equal users(:steve), vials(:parents_vial).user
     assert_equal users(:steve), vials(:vial_one).user
-    assert_equal users(:jdfrens), vials(:destroyable_vial).user
+    assert_equal users(:jeremy), vials(:destroyable_vial).user
   end
   
   def test_can_give_user_id
     assert_equal users(:steve).id, vials(:parents_vial).user_id
     assert_equal users(:steve).id, vials(:vial_one).user_id
-    assert_equal users(:jdfrens).id, vials(:destroyable_vial).user_id
+    assert_equal users(:jeremy).id, vials(:destroyable_vial).user_id
   end
   
   # helpers
   private
-  
-  def assert_equal_unordered(array1, array2)
-    assert_equal array1.sort_by { |p| p.to_s }, array2.sort_by { |p| p.to_s }
-  end
   
   # maybe should this be a full fledged method in the Fly class instead of a helper?
   def dad_allele_for(fly, character)

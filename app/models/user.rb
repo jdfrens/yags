@@ -3,12 +3,15 @@ class User < ActiveRecord::Base
   acts_as_login_model
   
   has_many :racks, :dependent => :destroy
+  has_many :vials, :through => :racks
   has_many :character_preferences, :dependent => :destroy
   has_one  :basic_preference, :dependent => :destroy
-  has_many :courses, :foreign_key => "instructor_id", :dependent => :destroy
-  belongs_to :course # this scares me because the above is only one letter different.
-                     # they are used in different places...
-                     # but still, should we go witout this last belongs_to line?
+  has_many :instructs, :class_name => "Course", :foreign_key => "instructor_id", :dependent => :destroy
+  belongs_to :enrolled_in, :class_name => "Course", :foreign_key => "course_id"
+  
+  def solutions
+    Solution.find_all_by_vial_id(vials.map { |v| v.id })
+  end
   
   def hidden_characters
     if self.current_scenario
@@ -22,23 +25,18 @@ class User < ActiveRecord::Base
     characters - hidden_characters
   end
   
-  def vials
-    racks.map { |r| r.vials }.flatten
-  end
-  
-  def is_visible(character)
+  def visible?(character)
     # this seems like not the best way to do
     visible_characters.include? character
   end
   
-  # may not be necessary anymore (besides 6 lines down)
   def instructor?
     group.name == "instructor"
   end
   
   def students
     if instructor?
-      courses.map { |c| c.students }.flatten
+      instructs.map { |c| c.students }.flatten
     else
      []
     end

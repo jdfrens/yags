@@ -5,7 +5,7 @@
 
 <% form_tag :url => {:action => :index} do %>
   <% @characters.each do |character| -%>
-    <%= check_box_tag character.to_s, "visible", @user.is_visible(character)  -%>
+    <%= check_box_tag character.to_s, "visible", @user.visible?(character)  -%>
     <%= character.to_s %> <br />
   <% end -%>
   <%= submit_tag "Update", :class => "submit" -%>

@@ -161,15 +161,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
     end
-    assert_select "div#solution_notice", ""
-  end
-  
-  def test_view_random_vial_has_solution_notice
-    get :view_vial, { :id => vials(:random_vial).id }, user_session(:jeremy)
-    assert_response :success
-    assert_standard_layout
-
-    assert_select "div#solution_notice", "This is a solution to Problem #2."
+    assert_select "div#solution_notice", "This is a solution to Problem #8."
   end
   
   def test_view_vial_fails_when_NOT_logged_in

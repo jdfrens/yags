@@ -94,14 +94,14 @@ class LabControllerTest < Test::Unit::TestCase
     get :view_course, {:id => 1 }, user_session(:mendel)
     assert_response :success
     assert_select "ul" do
-      assert_select "li", "jdfrens"
+      assert_select "li", "jeremy"
       assert_select "li", "randy"
     end
     assert_select "div#table_of_student_solutions"
     assert_select "table" do
       assert_select "tr th", "Students"
       assert_select "tr th:nth-child(2)", "Solutions"
-      assert_select "tr:nth-child(2) th", "jdfrens"
+      assert_select "tr:nth-child(2) th", "jeremy"
       assert_select "tr:nth-child(2) td:nth-child(2)", "2"
       assert_select "tr:nth-child(3) th", "randy"
     end

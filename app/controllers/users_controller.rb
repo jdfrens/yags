@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   
   def add_student
     @course_names_and_ids = []
-    courses = (current_user.group.name == "instructor" ? current_user.courses : Course.find(:all))
+    courses = (current_user.instructor? ? current_user.instructs : Course.find(:all))
     courses.each do |course|
       @course_names_and_ids << [course.name, course.id]
     end

@@ -17,12 +17,12 @@ calvin:
   password_hash: <%= User.hash_password('calvin_password') %>
   group_id: 2
   email_address: john@calvin.foo
-jdfrens:
+jeremy:
   id: 3
-  username: jdfrens
-  password_hash: <%= User.hash_password('jdfrens_password') %>
+  username: jeremy
+  password_hash: <%= User.hash_password('jeremy_password') %>
   group_id: 1
-  email_address: jdfrens@calvin.foo
+  email_address: jeremy@calvin.foo
   course_id: 1
 randy:
   id: 4

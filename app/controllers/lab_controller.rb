@@ -9,7 +9,7 @@ class LabController < ApplicationController
   end
   
   def list_courses
-    @courses = current_user.courses
+    @courses = current_user.instructs
   end
   
   def add_course

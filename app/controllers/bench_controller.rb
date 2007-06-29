@@ -112,6 +112,7 @@ class BenchController < ApplicationController
       @row_titles = @vial.species.phenotypes(@rows)
       @column_titles = @vial.species.phenotypes(@columns)
       @visible_characters = current_user.visible_characters
+      @solution_vial = Solution.find(:all)
     else
       redirect_to :action => "list_vials"
     end
@@ -142,7 +143,11 @@ class BenchController < ApplicationController
     if request.post?
       solution = Solution.new params[:solutions]
       solution.save!
+    else
+      render
     end
+    rescue ActiveRecord::RecordInvalid
+    render
   end
   
   def update_table

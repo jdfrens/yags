@@ -5,9 +5,27 @@
 <h1>Course: <%= h(@course.name) -%></h1>
 
 <div id="list-students">
+	<h3>Students</h3>
 	<ul>
 		<% for student in @students -%>
           <li id=<%= student.id %>> <%= h(student.username) -%> </li>
 		<% end -%>
 	</ul>
+</div>
+
+<div id="table_of_student_solutions">
+	<table>
+		<tr>
+			<th>Students</th>
+			<th colspan=<%= @solutions.size %> >Solutions</th>
+		</tr>
+		<% for student in @students %>
+		<tr>
+			<th><%= student.username %></th>
+			
+			<td><% for solution in @solutions %><%= solution.number if Vial.find(solution.vial_id).user == student %><% end %></td>		
+			
+		</tr>
+		<% end -%>
+	</table>
 </div>

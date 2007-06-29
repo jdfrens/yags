@@ -1,5 +1,28 @@
+body {
+	background: #fff url(/images/body_bg.png) repeat-x;
+	font-family: Tahoma;
+}
+
+img {
+	border: 0px;
+}
+
+img.centered {
+	display: block;
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+.centered {
+	text-align: center
+}
+
+img.right {
+	float: right;
+}
 .vial-title {
 }
+
 #vial-info {
 	width: 700px; 
 }
@@ -122,9 +145,6 @@ table {
 	background-color: #fff;
 }
 
-body {
-	background-color: #ccc;
-}
 
 .fieldWithErrors {
   padding: 2px;
@@ -162,3 +182,14 @@ body {
   list-style: square;
 }
 
+div #table_of_student_solutions td {
+	text-align: right;
+	border-bottom: 1px dotted #aaa;
+	border-right: 1px dotted #aaa;
+}
+
+div #table_of_student_solutions th {
+	text-align: justify;
+	border-bottom: 1px dotted #aaa;
+	border-right: 1px dotted #aaa;	
+}

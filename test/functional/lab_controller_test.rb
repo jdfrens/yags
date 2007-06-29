@@ -97,6 +97,14 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "li", "jdfrens"
       assert_select "li", "randy"
     end
+    assert_select "div#table_of_student_solutions"
+    assert_select "table" do
+      assert_select "tr th", "Students"
+      assert_select "tr th:nth-child(2)", "Solutions"
+      assert_select "tr:nth-child(2) th", "jdfrens"
+      assert_select "tr:nth-child(2) td:nth-child(2)", "12"   
+      assert_select "tr:nth-child(3) th", "randy"
+    end
   end
   
   def test_view_course_fails_when_NOT_logged_in_as_instructor

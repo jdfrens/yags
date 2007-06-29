@@ -230,10 +230,15 @@ class BenchControllerTest < Test::Unit::TestCase
     xhr :post, :set_as_solution, {:number => 1, :vial_id => vials(:vial_with_many_flies).id }, user_session(:manage_bench)
     assert_response :success
     
-    assert_equal 4, solutions(:solution_one).vial_id
+    assert_equal 6, solutions(:solution_one).vial_id
     assert_equal 1, solutions(:solution_one).number
-    assert_equal 5, solutions(:solution_two).vial_id
+    assert_equal 7, solutions(:solution_two).vial_id
     assert_equal 2, solutions(:solution_two).number
+  end
+  
+  def test_set_as_solution_fails_when_NOT_logged_in
+    xhr :post, :set_as_solution, {:number => 1, :vial_id => vials(:vial_with_many_flies).id }
+    assert_redirected_to_login
   end
   
   def test_update_table

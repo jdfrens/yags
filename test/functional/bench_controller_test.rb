@@ -131,6 +131,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
     end
+    assert_select "div#solution_notice", ""
   end
   
   def test_view_vial_with_many_flies
@@ -145,6 +146,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
     end
+    assert_select "div#solution_notice", ""
   end
   
   def test_view_vial_one
@@ -159,6 +161,15 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
     end
+    assert_select "div#solution_notice", ""
+  end
+  
+  def test_view_random_vial_has_solution_notice
+    get :view_vial, { :id => vials(:random_vial).id }, user_session(:jeremy)
+    assert_response :success
+    assert_standard_layout
+
+    assert_select "div#solution_notice", "This is a solution to Problem #2."
   end
   
   def test_view_vial_fails_when_NOT_logged_in
@@ -227,13 +238,51 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_set_as_solution
-    xhr :post, :set_as_solution, {:number => 1, :vial_id => vials(:vial_with_many_flies).id }, user_session(:manage_bench)
+    vial = vials(:vial_with_many_flies)
+    
+    xhr :post, :set_as_solution, { :solution => { :number => 1, :vial_id => vial.id } }, user_session(:manage_bench)
     assert_response :success
     
-    assert_equal 6, solutions(:solution_one).vial_id
-    assert_equal 1, solutions(:solution_one).number
-    assert_equal 7, solutions(:solution_two).vial_id
-    assert_equal 2, solutions(:solution_two).number
+    vial.reload
+    assert_not_nil vial.solution
+    assert_equal 1, vial.solution.number
+
+    # TODO: test the RJS
+  end
+  
+  def test_set_as_solution_resets_problem_of_vial
+    vial = vials(:random_vial)
+    original_2_count = Solution.find_all_by_number(2).size
+    original_9_count = Solution.find_all_by_number(9).size
+    
+    xhr :post, :set_as_solution, { :solution => { :number => 9, :vial_id => vial.id } }, user_session(:jeremy)
+    assert_response :success
+    
+    vial.reload
+    assert_not_nil vial.solution
+    assert_equal 9, vial.solution.number
+    assert_equal original_2_count - 1, Solution.find_all_by_number(2).size
+    assert_equal original_9_count + 1, Solution.find_all_by_number(9).size
+
+    # TODO: test the RJS
+  end
+  
+  def test_set_as_solution_replacement_vial_for_problem_which_already_has_a_solution
+    original_vial = vials(:random_vial)
+    replacement_vial = vials(:destroyable_vial)
+    assert_not_nil original_vial.solution
+    assert_nil replacement_vial.solution
+    
+    xhr :post, :set_as_solution, { :solution => { :number => 2, :vial_id => replacement_vial.id } }, user_session(:jeremy)
+    assert_response :success
+    
+    original_vial.reload
+    replacement_vial.reload
+    assert_nil original_vial.solution
+    assert_not_nil replacement_vial.solution
+    assert_equal 2, replacement_vial.solution.number
+
+    # TODO: test the RJS
   end
   
   def test_set_as_solution_fails_when_NOT_logged_in

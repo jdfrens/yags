@@ -112,7 +112,6 @@ class BenchController < ApplicationController
       @row_titles = @vial.species.phenotypes(@rows)
       @column_titles = @vial.species.phenotypes(@columns)
       @visible_characters = current_user.visible_characters
-      @solution_vial = Solution.find(:all)
     else
       redirect_to :action => "list_vials"
     end
@@ -141,10 +140,17 @@ class BenchController < ApplicationController
   
   def set_as_solution
     if request.post?
-      solution = Solution.new params[:solutions]
-      solution.save!
+      vials_old_solutions = Solution.find_all_by_vial_id(params[:solution][:vial_id]).select { |s| s.vial.user == current_user }
+      numbers_old_solutions = Solution.find_all_by_number(params[:solution][:number]).select { |s| s.vial.user == current_user }
+      if vials_old_solutions.empty? && numbers_old_solutions.empty?
+        solution = Solution.new params[:solution]
+        solution.save!
+      else
+        solution = (vials_old_solutions + numbers_old_solutions)[0]
+        solution.update_attributes(params[:solution])
+      end
     else
-      render
+      render :nothing => true
     end
     rescue ActiveRecord::RecordInvalid
     render

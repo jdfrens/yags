@@ -13,11 +13,11 @@
 </div>
 <br />
 <div id="submit_as_solution">
-	<% remote_form_for :solutions, :url => {:action => :set_as_solution } do |form| -%>
-	    <label for="solutions_number"><strong>Submit as a solution to: </strong></label>
+	<% remote_form_for :solution, @vial.solution, :url => {:action => :set_as_solution } do |form| -%>
+	    <label for="solution_number"><strong>Submit as a solution to: </strong></label>
 		<%= form.select('number', 1..9, {:include_blank => true}, :onchange => "onsubmit()" ) %>
 		<%= form.hidden_field(:vial_id, :value => @vial.id) %>
 	<% end -%>
 </div>
 
-<div id="solution_notice"><% if @solution_vial %><img src='/images/star.png' /> This vial has been set as a solution.<% end %></div>
+<div id="solution_notice"><% if @vial.solution %><img src='/images/star.png' /> This is a solution to Problem #<%= @vial.solution.number %>.<% end %></div>

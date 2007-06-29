@@ -1,4 +1,4 @@
 class Solution < ActiveRecord::Base
-  has_many :vials
+  belongs_to :vial
   
 end

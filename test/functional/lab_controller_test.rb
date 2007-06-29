@@ -102,7 +102,7 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "tr th", "Students"
       assert_select "tr th:nth-child(2)", "Solutions"
       assert_select "tr:nth-child(2) th", "jdfrens"
-      assert_select "tr:nth-child(2) td:nth-child(2)", "12"   
+      assert_select "tr:nth-child(2) td:nth-child(2)", "2"
       assert_select "tr:nth-child(3) th", "randy"
     end
   end

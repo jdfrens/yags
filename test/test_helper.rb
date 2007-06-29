@@ -47,7 +47,16 @@ class Test::Unit::TestCase
       end
     end
     assert_select "a[href=/]", /home page/i
-    assert_select "a[href=/bench]", /bench/i if logged_in?
+    if logged_in?
+      case current_test_user.group.name
+      when "student"
+        assert_select "a[href=/bench]", /bench/i
+      when "instructor"
+        assert_select "a[href=/lab]", /lab/i
+      when "admin"
+        assert_select "a[href=/users]", /users/i  
+      end
+    end
   end
   
   def assert_redirected_to_login
@@ -56,6 +65,10 @@ class Test::Unit::TestCase
     
   def logged_in?
     session[:current_user_id] != nil
+  end
+  
+  def current_test_user
+    User.find(session[:current_user_id])
   end
   
   def user_session(privilege)

@@ -12,11 +12,15 @@
 </head>
 
 <body>
+	
+	<% logged_in = (session[:current_user_id] ? true : false) -%>
+	<% current_user = User.find(session[:current_user_id]) if logged_in -%>
+	<!-- it would be nice to have this come in from somewhere else -->
 
   <div class="bar">
       <div id="session-info">
-          <% if session[:current_user_id] != nil -%>
-            Logged in as: <%= User.find(session[:current_user_id]).username -%><br />
+          <% if logged_in -%>
+            Logged in as: <%= current_user.username -%><br />
             <%= link_to "Logout", :controller => 'users', :action => "logout" %>
           <% else %>
             <%= link_to "Login", :controller => 'users', :action => "login" %>
@@ -32,7 +36,15 @@
   
   <div class="bar">
       <a href="/">Home page</a>
-      <%= link_to "Bench", :controller => 'bench', :action => "index" if session[:current_user_id] -%>
+	  <% if logged_in %>
+	    <% if current_user.group.name == 'student' %>
+      		<%= link_to "Bench", :controller => 'bench', :action => "index" %>
+		<% elsif current_user.group.name == 'instructor' %>
+      		<%= link_to "Lab", :controller => 'lab', :action => "index" %>
+		<% elsif current_user.group.name == 'admin' %>
+      		<%= link_to "Users", :controller => 'users', :action => "index" %>
+		<% end %>
+	  <% end -%>
 	  
 	  <p style=" font-size: 11px; text-align: center">&copy; 2007 Calvin College | All Rights Reserved <br />
 	  Other fine print information	  </p> 

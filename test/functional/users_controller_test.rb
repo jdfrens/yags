@@ -296,23 +296,26 @@ class UsersControllerTest < Test::Unit::TestCase
     steve = users(:steve)
     assert_equal User.hash_password("steve_password"), steve.password_hash
     post :change_student_password, { :user => { :password => 'steve_m', 
-        :password_confirmation => 'steve_m' }, :student_id => 1 }, user_session(:jeremy)
-    assert_response 401 # access denied
+        :password_confirmation => 'steve_m' }, :student_id => 1 },
+        user_session(:jeremy)
+    assert_response 401, "access should be denied"
     steve.reload
     assert_equal User.hash_password('steve_password'), steve.password_hash
   end
   
   def test_change_student_password_fails_when_NOT_instructors_student
-    old_password_hash = User.find_by_id(3).password_hash # frens
+    old_password_hash = User.find_by_id(3).password_hash
     post :change_student_password, { :user => { :password => 'ninja', 
-        :password_confirmation => 'ninja' }, :student_id => 3 }, user_session(:darwin)
+        :password_confirmation => 'ninja' }, :student_id => 3 },
+        user_session(:darwin)
     assert_equal "Try Again", flash[:notice]
     assert_equal old_password_hash, User.find_by_id(3).password_hash
   end
   
   def test_change_student_password_fails_when_NOT_valid_student_id
     post :change_student_password, { :user => { :password => 'samurai', 
-        :password_confirmation => 'samurai' }, :student_id => 3000 }, user_session(:darwin)
+        :password_confirmation => 'samurai' }, :student_id => 3000 },
+        user_session(:darwin)
     assert_equal "Try Again", flash[:notice]
   end
   

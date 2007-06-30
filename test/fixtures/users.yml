@@ -29,7 +29,7 @@ randy:
   username: randy
   password_hash: <%= User.hash_password('randy_password') %>
   group_id: 1
-  email_address: rpruim@calvin.foo
+  email_address: randy@calvin.foo
   course_id: 1
 mendel:
   id: 5

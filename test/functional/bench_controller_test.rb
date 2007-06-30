@@ -170,7 +170,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_view_vial_fails_when_NOT_users_vial
-    get :view_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench_as_frens)
+    get :view_vial, { :id => vials(:vial_one).id }, user_session(:jeremy)
     assert_redirected_to :action => "list_vials"
     
     get :view_vial, { :id => 123123 }, user_session(:manage_bench)
@@ -186,7 +186,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_jeremy_has_table_preferences
-    get :view_vial, { :id => vials(:random_vial).id }, user_session(:manage_bench_as_frens)
+    get :view_vial, { :id => vials(:random_vial).id }, user_session(:jeremy)
     assert_response :success
     assert_select "table" do
       assert_select "tr:nth-child(1) th:nth-child(2)", "white"
@@ -197,7 +197,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_visible_characters_in_select_boxes_for_table
-    get :view_vial, {:id => vials(:random_vial).id }, user_session(:manage_bench_as_frens)
+    get :view_vial, {:id => vials(:random_vial).id }, user_session(:jeremy)
     assert_response :success
     assert_select "div#character_cols" do
       assert_select "select[name=character_col]"
@@ -404,7 +404,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_show_mateable_flies_again
-    xhr :post, :show_mateable_flies, {:vial => vials(:vial_with_many_flies) }, user_session(:pruim)
+    xhr :post, :show_mateable_flies, {:vial => vials(:vial_with_many_flies) }, user_session(:randy)
     assert_response :success
     assert_select "table" do
       assert_select "th", 4 * 2
@@ -442,11 +442,11 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_list_vials_lists_only_current_users_vials
-    get :list_vials, {}, user_session(:manage_bench_as_frens)
+    get :list_vials, {}, user_session(:jeremy)
     assert_response :success
     assert_standard_layout
     assert_select "div#list-vials" do
-      assert_select "h4", "frens bench"
+      assert_select "h4", "jeremy bench"
       assert_select "ul#4" do
         assert_select "li", 2
         assert_select "li#vial_6", "Destroyable vial"
@@ -487,7 +487,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_mate_flies_fails_when_NOT_owned_by_current_user
     number_of_old_vials = Vial.find(:all).size
     post :mate_flies, { :vial => { :label => "stolen children", :mom_id => "4", :dad_id => "3" }, 
-        :number => "2", :rack_id => "2"  }, user_session(:manage_bench_as_frens)
+        :number => "2", :rack_id => "2"  }, user_session(:jeremy)
     assert_nil Vial.find_by_label("stolen children")
     assert_redirected_to :controller => 'bench', :action => 'list_vials'
     assert_equal number_of_old_vials, Vial.find(:all).size
@@ -513,7 +513,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_preferences_page_again
-    get :preferences, {}, user_session(:pruim)
+    get :preferences, {}, user_session(:randy)
     assert_response :success
     assert_standard_layout
     assert_select "form" do
@@ -567,7 +567,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_choose_scenario_page
-    get :choose_scenario, {}, user_session(:pruim)
+    get :choose_scenario, {}, user_session(:randy)
     assert_response :success
     assert_standard_layout
     assert_select "form" do

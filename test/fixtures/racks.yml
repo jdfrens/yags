@@ -7,14 +7,14 @@ steve_bench_rack:
   id: 2
   user_id: 1
   label: "steve bench"
-jdfrens_stock_rack:
+jeremy_stock_rack:
   id: 3
   user_id: 3
-  label: "frens stock"
-jdfrens_bench_rack:
+  label: "jeremy stock"
+jeremy_bench_rack:
   id: 4
   user_id: 3
-  label: "frens bench"
+  label: "jeremy bench"
 randy_stock_rack:
   id: 5
   user_id: 4

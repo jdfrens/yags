@@ -37,9 +37,9 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_visible_characters
-    assert_equal [:gender, :legs], users(:randy).visible_characters
-    assert_equal [:gender, :eye_color, :wings], users(:jeremy).visible_characters
-    assert_equal [:gender, :eye_color, :wings, :legs, :antenna], users(:steve).visible_characters
+    assert_equal [:sex, :legs], users(:randy).visible_characters
+    assert_equal [:sex, :eye_color, :wings], users(:jeremy).visible_characters
+    assert_equal [:sex, :eye_color, :wings, :legs, :antenna], users(:steve).visible_characters
     
     assert_equal [], users(:randy).visible_characters([])
     assert_equal [], users(:jeremy).visible_characters([])
@@ -50,7 +50,7 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_visible_huh
-    assert users(:randy).visible?(:gender)
+    assert users(:randy).visible?(:sex)
     assert !users(:randy).visible?(:wings)
     assert !users(:randy).visible?(:devil_and_angel_on_shoulders)
     

@@ -15,11 +15,11 @@ class Fly < ActiveRecord::Base
   end
   
   def male?
-    phenotype(:gender) == :male
+    phenotype(:sex) == :male
   end
   
   def female?
-    phenotype(:gender) == :female
+    phenotype(:sex) == :female
   end
   
   def mate_with(partner, bit_gen = RandomBitGenerator.new)

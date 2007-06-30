@@ -31,33 +31,33 @@ class VialTest < Test::Unit::TestCase
     assert_equal 1, vials(:vial_with_many_flies).number_of_flies(:eye_color, :white)
     assert_equal 3, vials(:vial_with_many_flies).number_of_flies(:eye_color, :red)
     
-    assert_equal 0, vials(:vial_empty).number_of_flies(:gender, :female)
-    assert_equal 0, vials(:vial_empty).number_of_flies(:gender, :male)
-    assert_equal 0, vials(:vial_with_a_fly).number_of_flies(:gender, :female)
-    assert_equal 1, vials(:vial_with_a_fly).number_of_flies(:gender, :male)
-    assert_equal 2, vials(:vial_with_many_flies).number_of_flies(:gender, :female)
-    assert_equal 2, vials(:vial_with_many_flies).number_of_flies(:gender, :male)
+    assert_equal 0, vials(:vial_empty).number_of_flies(:sex, :female)
+    assert_equal 0, vials(:vial_empty).number_of_flies(:sex, :male)
+    assert_equal 0, vials(:vial_with_a_fly).number_of_flies(:sex, :female)
+    assert_equal 1, vials(:vial_with_a_fly).number_of_flies(:sex, :male)
+    assert_equal 2, vials(:vial_with_many_flies).number_of_flies(:sex, :female)
+    assert_equal 2, vials(:vial_with_many_flies).number_of_flies(:sex, :male)
   end
   
   def test_count_of_flies_with_multiple_phenotypes
-    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :gender], [:white, :female])
-    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :gender], [:white, :male])
-    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :gender], [:red, :female])
-    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :gender], [:red, :male])
-    assert_equal 0, vials(:vial_with_a_fly).number_of_flies([:eye_color, :gender], [:white, :female])
-    assert_equal 0, vials(:vial_with_a_fly).number_of_flies([:eye_color, :gender], [:white, :male])
-    assert_equal 0, vials(:vial_with_a_fly).number_of_flies([:eye_color, :gender], [:red, :female])
-    assert_equal 1, vials(:vial_with_a_fly).number_of_flies([:eye_color, :gender], [:red, :male])
-    assert_equal 0, vials(:vial_with_many_flies).number_of_flies([:eye_color, :gender], [:white, :female])
-    assert_equal 1, vials(:vial_with_many_flies).number_of_flies([:eye_color, :gender], [:white, :male])
-    assert_equal 2, vials(:vial_with_many_flies).number_of_flies([:eye_color, :gender], [:red, :female])
-    assert_equal 1, vials(:vial_with_many_flies).number_of_flies([:eye_color, :gender], [:red, :male])
+    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :sex], [:white, :female])
+    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :sex], [:white, :male])
+    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :sex], [:red, :female])
+    assert_equal 0, vials(:vial_empty).number_of_flies([:eye_color, :sex], [:red, :male])
+    assert_equal 0, vials(:vial_with_a_fly).number_of_flies([:eye_color, :sex], [:white, :female])
+    assert_equal 0, vials(:vial_with_a_fly).number_of_flies([:eye_color, :sex], [:white, :male])
+    assert_equal 0, vials(:vial_with_a_fly).number_of_flies([:eye_color, :sex], [:red, :female])
+    assert_equal 1, vials(:vial_with_a_fly).number_of_flies([:eye_color, :sex], [:red, :male])
+    assert_equal 0, vials(:vial_with_many_flies).number_of_flies([:eye_color, :sex], [:white, :female])
+    assert_equal 1, vials(:vial_with_many_flies).number_of_flies([:eye_color, :sex], [:white, :male])
+    assert_equal 2, vials(:vial_with_many_flies).number_of_flies([:eye_color, :sex], [:red, :female])
+    assert_equal 1, vials(:vial_with_many_flies).number_of_flies([:eye_color, :sex], [:red, :male])
   end
   
   def test_pick_first_fly
-    assert_equal flies(:fly_00), vials(:vial_with_many_flies).first_of_type([:eye_color, :gender], [:white, :male])
-    assert_equal flies(:fly_11), vials(:vial_with_many_flies).first_of_type([:eye_color, :gender], [:red, :female])
-    assert_equal flies(:fly_10), vials(:vial_with_many_flies).first_of_type([:eye_color, :gender], [:red, :male])
+    assert_equal flies(:fly_00), vials(:vial_with_many_flies).first_of_type([:eye_color, :sex], [:white, :male])
+    assert_equal flies(:fly_11), vials(:vial_with_many_flies).first_of_type([:eye_color, :sex], [:red, :female])
+    assert_equal flies(:fly_10), vials(:vial_with_many_flies).first_of_type([:eye_color, :sex], [:red, :male])
   end
   
   def test_destroying_a_vial
@@ -74,7 +74,7 @@ class VialTest < Test::Unit::TestCase
   end
   
   def test_combinations_of_phenotypes
-    assert_equal [:gender, :eye_color, :wings, :legs, :antenna], vials(:vial_one).species.characters
+    assert_equal [:sex, :eye_color, :wings, :legs, :antenna], vials(:vial_one).species.characters
     assert_equal cartesian_product([[:male, :female],
                                    [:white, :red], 
                                    [:curly, :straight],
@@ -83,7 +83,7 @@ class VialTest < Test::Unit::TestCase
                                    vials(:vial_one).combinations_of_phenotypes
     assert_equal cartesian_product([[:male, :female],
                                    [:white, :red]]),
-                                   vials(:vial_one).combinations_of_phenotypes([:gender, :eye_color])
+                                   vials(:vial_one).combinations_of_phenotypes([:sex, :eye_color])
     assert_equal cartesian_product([[:white, :red],
                                    [:smooth, :hairy]]),
                                    vials(:vial_one).combinations_of_phenotypes([:eye_color, :legs])
@@ -91,7 +91,7 @@ class VialTest < Test::Unit::TestCase
   
   def test_collect_four_flies_from_field
     new_vial = Vial.collect_from_field({ :label => "four fly vial"}, 4, CookedBitGenerator.new([1]))
-    assert_equal ([:female] * 4), new_vial.flies.map {|fly| fly.phenotype(:gender)}
+    assert_equal ([:female] * 4), new_vial.flies.map {|fly| fly.phenotype(:sex)}
     assert_equal ([:red] * 4), new_vial.flies.map {|fly| fly.phenotype(:eye_color)} 
     assert_equal ([:straight] * 4), new_vial.flies.map {|fly| fly.phenotype(:wings)}
     assert_equal ([:hairy] * 4), new_vial.flies.map {|fly| fly.phenotype(:legs)} 
@@ -101,7 +101,7 @@ class VialTest < Test::Unit::TestCase
     new_vial = Vial.collect_from_field({ :label => "nine fly vial"}, 9, 
         CookedBitGenerator.new([0, 1, 0, 0]))
     assert_equal_set(([:male] * 7 + [:female] * 2), 
-        new_vial.flies.map {|fly| fly.phenotype(:gender)})
+        new_vial.flies.map {|fly| fly.phenotype(:sex)})
     assert_equal_set(([:red] * 5 + [:white] * 4),
         new_vial.flies.map {|fly| fly.phenotype(:eye_color)})
     assert_equal_set(([:straight] * 4 + [:curly] * 5),
@@ -110,7 +110,7 @@ class VialTest < Test::Unit::TestCase
         new_vial.flies.map {|fly| fly.phenotype(:legs)})
     assert_equal_set(([:long] * 4 + [:short] * 5),
         new_vial.flies.map {|fly| fly.phenotype(:antenna)})
-    assert_equal 2, new_vial.flies_of_type([:gender, :legs],[:female, :smooth]).size
+    assert_equal 2, new_vial.flies_of_type([:sex, :legs],[:female, :smooth]).size
   end
   
   def test_collecting_field_vial_with_allele_frequencies
@@ -127,14 +127,14 @@ class VialTest < Test::Unit::TestCase
     assert_equal 15, dominant_vial.number_of_flies([:legs],[:hairy])
     
     strange_male_vial = Vial.collect_from_field({ :label => "wasp flies"}, 16, 
-        RandomBitGenerator.new, { :eye_color => 0.0, :gender => 0.0})
+        RandomBitGenerator.new, { :eye_color => 0.0, :sex => 0.0})
     assert_equal 16, strange_male_vial.number_of_flies([:eye_color],[:white])
-    assert_equal 16, strange_male_vial.number_of_flies([:gender],[:male])
+    assert_equal 16, strange_male_vial.number_of_flies([:sex],[:male])
   end
   
   def test_sex_linkage_in_field_vials
     antenna_flies_vial = Vial.collect_from_field({ :label => "flies with antenna"}, 11, 
-        RandomBitGenerator.new, { :gender => 0.0 })
+        RandomBitGenerator.new, { :sex => 0.0 })
     antenna_flies_vial.flies.each do |fly|
       fly_dad_allele = fly.genotypes.select do |g| 
         g.gene_number == fly.species.gene_number_of(:antenna) 
@@ -146,7 +146,7 @@ class VialTest < Test::Unit::TestCase
   def test_making_three_babies_and_a_vial
     new_vial = Vial.make_babies_and_vial({ :label => "three fly syblings", 
         :mom_id => "6", :dad_id => "1" }, 3, CookedBitGenerator.new([0]))
-    assert_equal ([:female] * 3), new_vial.flies.map {|fly| fly.phenotype(:gender)}
+    assert_equal ([:female] * 3), new_vial.flies.map {|fly| fly.phenotype(:sex)}
     assert_equal ([:white] * 3), new_vial.flies.map {|fly| fly.phenotype(:eye_color)} 
     assert_equal ([:straight] * 3), new_vial.flies.map {|fly| fly.phenotype(:wings)}
     assert_equal ([:smooth] * 3), new_vial.flies.map {|fly| fly.phenotype(:legs)}
@@ -156,7 +156,7 @@ class VialTest < Test::Unit::TestCase
     new_vial = Vial.make_babies_and_vial({ :label => "seven fly syblings", 
         :mom_id => "4", :dad_id => "3" }, 7, CookedBitGenerator.new([0, 1, 1, 0, 0, 0]))
     assert_equal_set(([:male] * 2 + [:female] * 5), 
-        new_vial.flies.map {|fly| fly.phenotype(:gender)})
+        new_vial.flies.map {|fly| fly.phenotype(:sex)})
     assert_equal_set(([:red] * 7 + [:white] * 0),
         new_vial.flies.map {|fly| fly.phenotype(:eye_color)})
     assert_equal_set(([:straight] * 3 + [:curly] * 4),

@@ -10,8 +10,8 @@ class Vial < ActiveRecord::Base
   
   def self.collect_from_field(vial_params, number, bit_generator = RandomBitGenerator.new, allele_frequencies = {})
     vial = Vial.new(vial_params)
-    allele_frequencies[:gender] = 0.5 unless allele_frequencies[:gender]
-    # or should we vary the gender ratios along with everything else?
+    allele_frequencies[:sex] = 0.5 unless allele_frequencies[:sex]
+    # or should we vary the sex ratios along with everything else?
     vial.species.characters.each do |character|
       allele_frequencies[character] = 0.13 + (rand 37) / 100.0 unless allele_frequencies[character]
     end
@@ -75,9 +75,9 @@ class Vial < ActiveRecord::Base
     number.times do |i|
        new_fly = Fly.create!
        species.characters.each do |character|
-         if character == :gender # could this be handled better?
-           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(:gender), 
-               :mom_allele => 1, :dad_allele => bit_generator.random_bit(allele_frequencies[:gender]))
+         if character == :sex # could this be handled better?
+           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(:sex), 
+               :mom_allele => 1, :dad_allele => bit_generator.random_bit(allele_frequencies[:sex]))
          else
            new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(character), 
                :mom_allele => bit_generator.random_bit(allele_frequencies[character]), 

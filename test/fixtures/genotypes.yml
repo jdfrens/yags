@@ -5,7 +5,7 @@ fly_00_eye_color:
   mom_allele: 0
   dad_allele: 0
   gene_number: 52
-fly_00_gender:
+fly_00_sex:
   id: 2
   fly_id: 1
   mom_allele: 1
@@ -35,7 +35,7 @@ fly_01_eye_color:
   mom_allele: 0
   dad_allele: 1
   gene_number: 52
-fly_01_gender:
+fly_01_sex:
   id: 4
   fly_id: 2
   mom_allele: 1
@@ -65,7 +65,7 @@ fly_10_eye_color:
   mom_allele: 1
   dad_allele: 1
   gene_number: 52
-fly_10_gender:
+fly_10_sex:
   id: 6
   fly_id: 3
   mom_allele: 1
@@ -95,7 +95,7 @@ fly_11_eye_color:
   mom_allele: 1
   dad_allele: 1
   gene_number: 52
-fly_11_gender:
+fly_11_sex:
   id: 8
   fly_id: 4
   mom_allele: 1
@@ -125,7 +125,7 @@ bob_eye_color:
   mom_allele: 1
   dad_allele: 0
   gene_number: 52
-bob_gender:
+bob_sex:
   id: 10
   fly_id: 5
   mom_allele: 1
@@ -155,7 +155,7 @@ fly_mom_eye_color:
   mom_allele: 0
   dad_allele: 0
   gene_number: 52
-fly_mom_gender:
+fly_mom_sex:
   id: 12
   fly_id: 6
   mom_allele: 1
@@ -185,7 +185,7 @@ fly_dad_eye_color:
   mom_allele: 0
   dad_allele: 1
   gene_number: 52
-fly_dad_gender:
+fly_dad_sex:
   id: 14
   fly_id: 7
   mom_allele: 1
@@ -215,7 +215,7 @@ child_one_eye_color:
   mom_allele: 0
   dad_allele: 0
   gene_number: 52
-child_one_gender:
+child_one_sex:
   id: 16
   fly_id: 8
   mom_allele: 1
@@ -245,7 +245,7 @@ child_two_eye_color:
   mom_allele: 0
   dad_allele: 1
   gene_number: 52
-child_two_gender:
+child_two_sex:
   id: 18
   fly_id: 9
   mom_allele: 1
@@ -275,7 +275,7 @@ gamete_maker_color:
   mom_allele: 1
   dad_allele: 0
   gene_number: 52
-gamete_maker_gender:
+gamete_maker_sex:
   id: 20
   fly_id: 10
   mom_allele: 1

@@ -187,7 +187,7 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "label[for=title]"
       
       # these tests might not belong here later when the check boxes are moved to a partial
-      assert_select "input#gender[value=visible][checked=checked]"
+      assert_select "input#sex[value=visible][checked=checked]"
       assert_select "input#eye_color[value=visible][checked=checked]"
       assert_select "input#wings[value=visible][checked=checked]"
       assert_select "input#legs[value=visible][checked=checked]"
@@ -202,13 +202,13 @@ class LabControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Final Exam")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
-    assert_equal [:gender, :eye_color, :wings, :legs, :antenna], scenario.hidden_characters
+    assert_equal [:sex, :eye_color, :wings, :legs, :antenna], scenario.hidden_characters
   end 
   
   def test_add_scenario_works_again
     number_of_old_scenarios = Scenario.find(:all).size
     post :add_scenario, { :scenario => { :title => "Intro to Dominance" }, 
-        :gender => "visible", :wings => "visible" }, user_session(:mendel)
+        :sex => "visible", :wings => "visible" }, user_session(:mendel)
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Intro to Dominance")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
@@ -232,7 +232,7 @@ class LabControllerTest < Test::Unit::TestCase
     get :view_scenario, {:id => 1 }, user_session(:mendel)
     assert_response :success
     assert_select "ul" do
-      assert_select "li", "gender"
+      assert_select "li", "sex"
       assert_select "li", "wings"
       assert_select "li", "legs"
     end

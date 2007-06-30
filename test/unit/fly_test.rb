@@ -10,11 +10,11 @@ class FlyTest < Test::Unit::TestCase
     assert_equal :red, flies(:fly_11).phenotype(:eye_color)
   end
   
-  def test_phenotype_gender
-    assert_equal :male, flies(:fly_00).phenotype(:gender)
-    assert_equal :male, flies(:fly_01).phenotype(:gender)
-    assert_equal :male, flies(:fly_10).phenotype(:gender)
-    assert_equal :female, flies(:fly_11).phenotype(:gender)
+  def test_phenotype_sex
+    assert_equal :male, flies(:fly_00).phenotype(:sex)
+    assert_equal :male, flies(:fly_01).phenotype(:sex)
+    assert_equal :male, flies(:fly_10).phenotype(:sex)
+    assert_equal :female, flies(:fly_11).phenotype(:sex)
   end
   
   def test_deletion_of_genotypes_upon_deletion_of_fly

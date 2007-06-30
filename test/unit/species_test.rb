@@ -8,13 +8,13 @@ class SpeciesTest < Test::Unit::TestCase
   end
   
   def test_singleton_represents_fruit_fly
-    assert_equal [:gender, :eye_color, :wings, :legs, :antenna], Species.singleton.characters
-    assert_equal [:male, :female], Species.singleton.phenotypes(:gender)
+    assert_equal [:sex, :eye_color, :wings, :legs, :antenna], Species.singleton.characters
+    assert_equal [:male, :female], Species.singleton.phenotypes(:sex)
     assert_equal [:white, :red], Species.singleton.phenotypes(:eye_color)
     assert_equal [:curly, :straight], Species.singleton.phenotypes(:wings)
     assert_equal [:smooth, :hairy], Species.singleton.phenotypes(:legs)
     assert_equal [:short, :long], Species.singleton.phenotypes(:antenna)
-    assert_equal 137, Species.singleton.gene_number_of(:gender)
+    assert_equal 137, Species.singleton.gene_number_of(:sex)
     assert_equal 52, Species.singleton.gene_number_of(:eye_color)
     assert_equal 163, Species.singleton.gene_number_of(:wings)
     assert_equal 7, Species.singleton.gene_number_of(:legs)
@@ -22,8 +22,8 @@ class SpeciesTest < Test::Unit::TestCase
   end
   
   def test_phenotype_from
-    assert_equal :female, Species.singleton.phenotype_from(:gender, 1, 1)
-    assert_equal :male, Species.singleton.phenotype_from(:gender, 0, 1)
+    assert_equal :female, Species.singleton.phenotype_from(:sex, 1, 1)
+    assert_equal :male, Species.singleton.phenotype_from(:sex, 0, 1)
     assert_equal :red, Species.singleton.phenotype_from(:eye_color, 1, 0)
     assert_equal :curly, Species.singleton.phenotype_from(:wings, 0, 0)
     assert_equal :hairy, Species.singleton.phenotype_from(:legs, 1, 1)
@@ -54,7 +54,7 @@ class SpeciesTest < Test::Unit::TestCase
     assert !Species.singleton.is_sex_linked?(:eye_color)
     assert !Species.singleton.is_sex_linked?(:wings)
     assert !Species.singleton.is_sex_linked?(:legs)
-    assert !Species.singleton.is_sex_linked?(:gender)
+    assert !Species.singleton.is_sex_linked?(:sex)
     
     assert Species.singleton.is_sex_linked?(:antenna)
   end

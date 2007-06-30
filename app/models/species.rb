@@ -7,18 +7,18 @@ class Species
   end
   
   def initialize
-    @characters = [:gender, :eye_color, :wings, :legs, :antenna]
-    @phenotypes = { :gender => [:male, :female], 
+    @characters = [:sex, :eye_color, :wings, :legs, :antenna]
+    @phenotypes = { :sex => [:male, :female], 
                     :eye_color => [:white, :red], 
                     :wings => [:curly, :straight], 
                     :legs => [:smooth, :hairy],
                     :antenna => [:short, :long] }
-    @phenotype_lookup = { :gender => {[1,1] => :female, [0,1] => :male, [0,0] => :not_possible },
+    @phenotype_lookup = { :sex => {[1,1] => :female, [0,1] => :male, [0,0] => :not_possible },
                           :eye_color => {[1,1] => :red, [0,1] => :red, [0,0] => :white }, 
                           :wings => {[1,1] => :straight, [0,1] => :straight, [0,0] => :curly }, 
                           :legs => {[1,1] => :hairy, [0,1] => :hairy, [0,0] => :smooth },
                           :antenna => {[1,1] => :long, [0,1] => :long, [0,0] => :short } }
-    @gene_numbers = { :gender => 137, :eye_color => 52, :wings => 163, :legs => 7, :antenna => 144}
+    @gene_numbers = { :sex => 137, :eye_color => 52, :wings => 163, :legs => 7, :antenna => 144}
     @positions = { 137 => 0.0, 52 => 0.5, 163 => 1.0, 7 => 1.2, 144 => 0.0 }
   end
   
@@ -31,7 +31,7 @@ class Species
   end
   
   def is_sex_linked?(character)
-    character != :gender and position_of(gene_number_of(character)) == 0.0
+    character != :sex and position_of(gene_number_of(character)) == 0.0
   end
   
   def position_of(gene_number)

@@ -140,15 +140,14 @@ class BenchController < ApplicationController
   
   def set_as_solution
     if request.post?
-      vials_old_solutions = Solution.find_all_by_vial_id(params[:solution][:vial_id]).select { |s| s.vial.user == current_user }
-      numbers_old_solutions = Solution.find_all_by_number(params[:solution][:number]).select { |s| s.vial.user == current_user }
-      if vials_old_solutions.empty? && numbers_old_solutions.empty?
+      old_solution = find_old_solution(params[:solution])
+      if old_solution
+        old_solution.update_attributes(params[:solution])
+      else
         solution = Solution.new params[:solution]
         solution.save!
-      else
-        solution = (vials_old_solutions + numbers_old_solutions)[0]
-        solution.update_attributes(params[:solution])
       end
+      render
     else
       render :nothing => true
     end
@@ -207,6 +206,19 @@ class BenchController < ApplicationController
         # flash[:notice] = "Action failed - bad parameters" # or something
         redirect_to :action => "list_vials"
       end
+    end
+  end
+
+  #
+  # Helpers
+  #
+  private
+
+  def find_old_solution(options)
+    number = options[:number].to_i
+    vial_id = options[:vial_id].to_i
+    old_solution = current_user.solutions.find do |solution|
+      solution.number == number || solution.vial_id == vial_id
     end
   end
   

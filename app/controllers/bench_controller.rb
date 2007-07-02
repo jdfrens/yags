@@ -100,6 +100,7 @@ class BenchController < ApplicationController
   def view_vial
     if params[:id] and @vial = Vial.find_by_id(params[:id]) and @vial.user_id == current_user.id
       @rack = Rack.find(@vial.rack_id)
+      @visible_characters = current_user.visible_characters
       if @parents = (@vial.mom_id && @vial.dad_id)
         @mom, @dad = Fly.find(@vial.mom_id), Fly.find(@vial.dad_id)
         @mom_vial = Vial.find @mom.vial_id
@@ -110,10 +111,9 @@ class BenchController < ApplicationController
             # um, maybe that if should be rewritten...
         @rows = current_user.basic_preference.row.intern
         @columns = current_user.basic_preference.column.intern
+        @row_titles = @vial.species.phenotypes(@rows)
+        @column_titles = @vial.species.phenotypes(@columns)
       end
-      @row_titles = @vial.species.phenotypes(@rows)
-      @column_titles = @vial.species.phenotypes(@columns)
-      @visible_characters = current_user.visible_characters
     else
       redirect_to :action => "list_vials"
     end

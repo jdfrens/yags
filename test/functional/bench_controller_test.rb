@@ -161,7 +161,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#parent-info table" do
       assert_select "p", "No parents!"
     end
-    assert_select "div#solution_notice", "This is a solution to Problem #8."
+    assert_select "div#solution_notice", "This is a solution to problem 8."
   end
   
   def test_view_vial_fails_when_NOT_logged_in
@@ -239,7 +239,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil vial.solution
     assert_equal 1, vial.solution.number
 
-    # TODO: test the RJS
+    assert_select_rjs "solution_notice", "img[src=/images/star.png]"
+    assert_select_rjs "solution_notice", "This vial is now a solution for problem 1."
   end
   
   def test_set_as_solution_resets_problem_of_vial
@@ -256,7 +257,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_equal original_2_count - 1, Solution.find_all_by_number(2).size
     assert_equal original_9_count + 1, Solution.find_all_by_number(9).size
 
-    # TODO: test the RJS
+    assert_select_rjs "solution_notice", "img[src=/images/star.png]"
+    assert_select_rjs "solution_notice", "This vial is now a solution for problem 9."
   end
   
   def test_set_as_solution_replacement_vial_for_problem_which_already_has_a_solution
@@ -274,7 +276,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil replacement_vial.solution
     assert_equal 2, replacement_vial.solution.number
 
-    # TODO: test the RJS
+    assert_select_rjs "solution_notice", "img[src=/images/star.png]"
+    assert_select_rjs "solution_notice", "This vial is now a solution for problem 2."
   end
   
   def test_set_as_solution_fails_when_NOT_logged_in
@@ -433,10 +436,15 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "ul#2" do
         assert_select "li", 5
         assert_select "li#vial_1", "First vial"
+        assert_select "li#vial_1 img[src^=/images/star.png]"
         assert_select "li#vial_2", "Empty vial"
+        assert_select "li#vial_2 img", false
         assert_select "li#vial_3", "Single fly vial"
+        assert_select "li#vial_3 img", false
         assert_select "li#vial_4", "Multiple fly vial"
+        assert_select "li#vial_4 img", false
         assert_select "li#vial_5", "Parents vial"
+        assert_select "li#vial_5 img[src^=/images/star.png]"
       end
     end
   end
@@ -450,7 +458,9 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "ul#4" do
         assert_select "li", 2
         assert_select "li#vial_6", "Destroyable vial"
+        assert_select "li#vial_6 img", false
         assert_select "li#vial_7", "Another vial"
+        assert_select "li#vial_7 img[src^=/images/star.png]"
       end
     end
   end

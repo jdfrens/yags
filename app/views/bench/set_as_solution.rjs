@@ -1,2 +1,2 @@
-page.replace_html 'solution_notice', "<img src='/images/star.png' /> This vial has been set as a solution."
+page.replace_html 'solution_notice', :partial => 'solution_notice'
 page['solution_notice'].visual_effect :highlight, :startcolor => "#FFFF00", :endcolor => "#FFFFFF", :duration => 1

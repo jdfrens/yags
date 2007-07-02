@@ -8,11 +8,15 @@
 	<% for rack in @racks -%>
 		<h4 id=<%= rack.label %> ><%= rack.label %></h4>
 		<ul id="<%= rack.id %>">
-    		<% for vial in @vials -%>
-    		  <% if vial.rack_id == rack.id %> <!-- too much logic in the view.  but ok for right now. -->
-                <li id="vial_<%= vial.id %>"><%= link_to vial.label, :action => :view_vial, :id => vial %></li>
-        	  <% end -%>
-			<% end -%>
+    		<% for vial in @vials %>
+    		  <% if vial.rack_id == rack.id %>
+                <li id="vial_<%= vial.id %>"><%= link_to vial.label, :action => :view_vial, :id => vial %>
+				<% for solution in @solutions %>
+				<% if solution.vial_id == vial.id && solution.number != nil %><%= image_tag '/images/star.png' %><% end %>
+				<% end %>
+				</li>
+        	  <% end %>
+			<% end %>
 		</ul>
 		<%= sortable_element rack.id.to_s %>
 	<% end -%>

@@ -8,7 +8,7 @@
 	<h3>Students</h3>
 	<ul>
 		<% for student in @students -%>
-          <li id=<%= student.id %>> <%= h(student.username) -%> </li>
+          <li id=<%= student.id %>> <%= h(student.username) -%></li>
 		<% end -%>
 	</ul>
 </div>
@@ -16,15 +16,18 @@
 <div id="table_of_student_solutions">
 	<table>
 		<tr>
-			<th>Students</th>
-			<th colspan=<%= @solutions.size %> >Solutions</th>
+			<th></th>
+			<% 1.upto(9) do |number| %>
+			<th><%= number %></th>
+			<% end %>
 		</tr>
 		<% for student in @students %>
 		<tr>
 			<th><%= student.username %></th>
-			
-			<td><% for solution in @solutions %><%= solution.number if Vial.find(solution.vial_id).user == student %><% end %></td>		
-			
+			<% solution_numbers = []; student.solutions.find_all { |solution|  solution_numbers << solution.number } %> 
+			<% 1.upto(9) do |solution_number| %>
+			<td><%= 'X' if solution_numbers.include? solution_number %></td>
+			<% end %>
 		</tr>
 		<% end -%>
 	</table>

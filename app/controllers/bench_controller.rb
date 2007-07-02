@@ -122,6 +122,7 @@ class BenchController < ApplicationController
   def list_vials
     @racks = current_user.racks
     @vials = current_user.vials
+    @solutions = current_user.solutions
   end
   
   def destroy_vial
@@ -142,12 +143,12 @@ class BenchController < ApplicationController
   
   def set_as_solution
     if request.post?
-      old_solution = find_old_solution(params[:solution])
-      if old_solution
-        old_solution.update_attributes(params[:solution])
+      @old_solution = find_old_solution(params[:solution])
+      if @old_solution
+        @old_solution.update_attributes(params[:solution])
       else
-        solution = Solution.new params[:solution]
-        solution.save!
+        @solution = Solution.new params[:solution]
+        @solution.save!
       end
       render
     else

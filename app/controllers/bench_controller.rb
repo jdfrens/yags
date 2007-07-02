@@ -105,8 +105,8 @@ class BenchController < ApplicationController
         @mom_vial = Vial.find @mom.vial_id
         @dad_vial = Vial.find @dad.vial_id
       end
-      if @table = current_user.basic_preference and 
-            current_user.basic_preference.row and current_user.basic_preference.column
+      if @table = (current_user.basic_preference and 
+            current_user.basic_preference.row and current_user.basic_preference.column)
             # um, maybe that if should be rewritten...
         @rows = current_user.basic_preference.row.intern
         @columns = current_user.basic_preference.column.intern

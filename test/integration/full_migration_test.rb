@@ -86,6 +86,11 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :hidden_character, :string
       end
       
+      s.table :courses_scenarios do |t|
+        t.column :course_id,   :integer
+        t.column :scenario_id, :integer
+      end
+      
       # authentication
       s.table "groups" do |t|
         t.column "id",          :integer

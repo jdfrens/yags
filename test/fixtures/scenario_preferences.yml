@@ -11,3 +11,15 @@ second_scenario_preference_one:
   id: 3
   scenario_id: 2
   hidden_character: antenna
+third_scenario_no_eye_color:
+  id: 4
+  scenario_id: 3
+  hidden_character: eye_color
+third_scenario_no_wings:
+  id: 5
+  scenario_id: 3
+  hidden_character: wings
+third_scenario_no_antenna:
+  id: 6
+  scenario_id: 3
+  hidden_character: antenna

@@ -36,6 +36,10 @@ class LabController < ApplicationController
     end
   end
   
+#  def choose_course_scenarios
+#    
+#  end
+  
   def delete_course
     if params[:id] and Course.find_by_id(params[:id]) and 
         Course.find(params[:id]).instructor == current_user

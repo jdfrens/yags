@@ -2,6 +2,11 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class CourseTest < Test::Unit::TestCase
   all_fixtures
+  
+  def test_has_and_belongs_to_many_scenarios
+    assert_equal [scenarios(:first_scenario)], courses(:mendels_course).scenarios
+    assert_equal [scenarios(:only_sex_and_legs)], courses(:darwins_first_course).scenarios
+  end
 
   def test_deletion_of_students_along_with_course
     number_of_old_courses = Course.find(:all).size

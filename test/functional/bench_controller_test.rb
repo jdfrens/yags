@@ -596,19 +596,27 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "select#scenario_id" do
         assert_select "option[value=]", "None"
         assert_select "option[value=1]", "forgetful instructor"
-        assert_select "option[value=2]", "party day"
-        assert_select "option", 3
+        assert_select "option", 2
       end
     end
   end
   
   def test_choose_scenario
+    assert_nil users(:randy).current_scenario
+    post :choose_scenario, { :scenario_id => 1 }, user_session(:randy)
+    assert_response :redirect
+    assert_redirected_to :controller => 'bench', :action => 'index'
+    users(:randy).reload
+    assert_equal scenarios(:first_scenario), users(:randy).current_scenario
+  end
+  
+  def test_choose_scenario_fails_when_NOT_scenario_for_course
     assert_nil users(:steve).current_scenario
     post :choose_scenario, { :scenario_id => 1 }, user_session(:steve)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal scenarios(:first_scenario), users(:steve).current_scenario
+    assert_nil users(:steve).current_scenario
   end
   
   def test_choose_scenario_fails_when_NOT_logged_in_as_student

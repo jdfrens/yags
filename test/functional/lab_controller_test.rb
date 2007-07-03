@@ -127,6 +127,22 @@ class LabControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "list_courses"
   end
   
+#  def test_choose_course_scenarios_page
+#    get :choose_course_scenarios, { :id => 1 }, user_session(:mendel)
+#    assert_response :success
+#    assert_standard_layout
+#    assert_select "form" do
+#      # checkboxes
+#    end
+#  end
+#  
+#  def test_choose_course_scenarios_works
+#    post :choose_course_scenarios, { :course_id => 1, :scenario_id => 2 }, user_session(:mendel)
+#    assert_response :success
+#    assert_redirected_to :action => :view_course
+#
+#  end
+  
   def test_delete_course
     assert_not_nil Course.find_by_id(2) # "Natural selection"
     post :delete_course, { :id => 2 }, user_session(:darwin)
@@ -262,20 +278,20 @@ class LabControllerTest < Test::Unit::TestCase
   end
   
   def test_delete_scenario_fails_when_NOT_logged_in_as_instructor
-    post :delete_scenario, { :id => 1 }
+    get :delete_scenario, { :id => 1 }
     assert_redirected_to_login
     
-    post :delete_scenario, { :id => 1 }, user_session(:calvin)
+    get :delete_scenario, { :id => 1 }, user_session(:calvin)
     assert_response 401 # access denied
     
-    post :delete_scenario, { :id => 1 }, user_session(:manage_bench)
+    get :delete_scenario, { :id => 1 }, user_session(:manage_bench)
     assert_response 401 # access denied
     
     assert_not_nil Scenario.find_by_id(1)
   end
   
   def test_view_cheat_sheet
-    post :view_cheat_sheet, {}, user_session(:mendel)
+    get :view_cheat_sheet, {}, user_session(:mendel)
     assert_response :success
     assert_standard_layout
     assert_select "table" do
@@ -285,14 +301,14 @@ class LabControllerTest < Test::Unit::TestCase
     end
   end
   
-    def test_view_cheat_sheet_fails_when_NOT_logged_in_as_instructor
-    post :view_cheat_sheet
+  def test_view_cheat_sheet_fails_when_NOT_logged_in_as_instructor
+    get :view_cheat_sheet
     assert_redirected_to_login
     
-    post :view_cheat_sheet, { }, user_session(:calvin)
+    get :view_cheat_sheet, { }, user_session(:calvin)
     assert_response 401 # access denied
     
-    post :view_cheat_sheet, { }, user_session(:manage_bench)
+    get :view_cheat_sheet, { }, user_session(:manage_bench)
     assert_response 401 # access denied
   end
   

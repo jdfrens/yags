@@ -39,11 +39,13 @@ class BenchController < ApplicationController
       @current_scenario_title = "None Selected"
     end
     @scenario_titles_and_ids = [["None", nil]]
-    Scenario.find(:all).each do |scenario|
+    current_user.enrolled_in.scenarios.each do |scenario|
       @scenario_titles_and_ids << [scenario.title, scenario.id]
     end
-    if request.post? and params[:scenario_id]
-      current_user.current_scenario_id = params[:scenario_id]
+    if request.post?
+      if @scenario_titles_and_ids.map { |d| d[1] }.include? params[:scenario_id].to_i
+        current_user.current_scenario_id = params[:scenario_id] 
+      end
       redirect_to :action => "index"
     end
   end

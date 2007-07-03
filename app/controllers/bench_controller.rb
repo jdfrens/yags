@@ -59,6 +59,7 @@ class BenchController < ApplicationController
         redirect_to :action => "view_vial", :id => @vial.id
       else
         flash[:error] = "The number of flies should be between 0 and 255."
+        render
       end
     else
       render
@@ -80,13 +81,9 @@ class BenchController < ApplicationController
       if Fly.find(params[:vial][:mom_id]).vial.user_id == current_user.id and 
         Fly.find(params[:vial][:dad_id]).vial.user_id == current_user.id
         params[:vial][:rack_id] = params[:rack_id]
-        if number_valid?(params[:number])
-          @vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)
-          @vial.save!
-          redirect_to :action => "view_vial", :id => @vial.id
-        else
-          flash[:error] = "The number of flies should be between 0 and 255."
-        end
+        @vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)
+        @vial.save!
+        redirect_to :action => "view_vial", :id => @vial.id
       else
         redirect_to :action => "list_vials"
       end

@@ -91,6 +91,7 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :scenario_id, :integer
       end
       
+      
       # authentication
       s.table "groups" do |t|
         t.column "id",          :integer
@@ -115,6 +116,8 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column "group_id",      :integer
         t.column "email_address", :string
         t.column "course_id",     :integer
+        t.column "first_name",    :string
+        t.column "last_name",     :string
       end
     end
   end

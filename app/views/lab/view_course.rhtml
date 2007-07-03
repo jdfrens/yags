@@ -26,7 +26,7 @@
 			<th><%= student.username %></th>
 			<% solution_numbers = []; student.solutions.find_all { |solution|  solution_numbers << solution.number } %> 
 			<% 1.upto(9) do |solution_number| %>
-			<td><%= 'X' if solution_numbers.include? solution_number %></td>
+			<td><% if solution_numbers.include? solution_number %><%= link_to 'X', :action => 'view_vial', :id => "#" %><% end %></td>
 			<% end %>
 		</tr>
 		<% end -%>

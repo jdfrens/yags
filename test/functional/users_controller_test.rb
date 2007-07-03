@@ -74,18 +74,22 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "form" do
       assert_select "label[for=username]"
+      assert_select "label[for=first_name]"
+      assert_select "label[for=last_name]"
       assert_select "label[for=email address]"
       assert_select "label[for=password]"
       assert_select "label[for=password confirmation]"
       assert_select "label[for=course_id]"
-      assert_select "label", 5
+      assert_select "label", 7
     end
+    assert_select "input[type=text]", 4
   end
   
   def test_add_student
     number_of_old_users =  User.find(:all).size
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
-        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1 }, user_session(:mendel)
+        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1, 
+        :first_name => 'David', :last_name => 'Hansson' }, user_session(:mendel)
     new_user = User.find_by_username("david hansson")
     assert_not_nil new_user
     assert_equal number_of_old_users + 1, User.find(:all).size
@@ -97,18 +101,21 @@ class UsersControllerTest < Test::Unit::TestCase
   
   def test_add_student_fails_when_NOT_logged_in_with_manage_student
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
-        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1 }
+        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1, 
+        :first_name => 'David', :last_name => 'Hansson' }
     assert_redirected_to_login
     
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
-        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1 }, user_session(:manage_bench)
+        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1, 
+        :first_name => 'David', :last_name => 'Hansson' }, user_session(:manage_bench)
     assert_nil User.find_by_username("david hansson")
     assert_response 401 # access denied
   end
   
   def test_new_student_has_racks
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
-        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_student)
+        :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1, 
+        :first_name => 'David', :last_name => 'Hansson'  }, user_session(:manage_student)
     new_student = User.find_by_username("david hansson")
     assert_not_nil new_student
     assert_equal 2, new_student.racks.size

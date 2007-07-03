@@ -30,10 +30,13 @@ class LabController < ApplicationController
         Course.find(params[:id]).instructor == current_user
       @course = Course.find(params[:id])
       @students = @course.students
-      @solution_numbers = []
     else
       redirect_to :action => "list_courses"
     end
+  end
+  
+  def view_vial
+    
   end
   
 #  def choose_course_scenarios

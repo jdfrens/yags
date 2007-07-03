@@ -13,4 +13,9 @@ class ApplicationController < ActionController::Base
   def authenticate_with_http_basic
     nil
   end
+        
+  def number_valid?(number)
+    number =~ /^\d+$/ && (0..255).include?(number.to_i)
+  end
+
 end

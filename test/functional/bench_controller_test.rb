@@ -43,6 +43,12 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
 
+  def test_collect_field_vial_fails_if_number_invalid
+    post :collect_field_vial, { :vial => { :label => "some vial"}, :number => "581" }, user_session(:manage_bench)
+    assert !flash.empty?
+    assert_equal "The number of flies should be between 0 and 255.",  flash[:error]
+  end
+
   def test_collect_field_vial_page
     post :collect_field_vial, {}, user_session(:manage_bench)
     assert_response :success
@@ -506,6 +512,12 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_mate_flies_fails_when_NOT_logged_in
     post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, :number => "8", :rack_id => "3"  }
     assert_redirected_to_login
+  end
+  
+  def test_mate_flies_fails_if_number_invalid
+    post :mate_flies, { :vial => { :label => "some vial", :mom_id => "6", :dad_id => "1"}, :number => "276" }, user_session(:manage_bench)
+    assert !flash.empty?
+    assert_equal "The number of flies should be between 0 and 255.",  flash[:error]
   end
   
   def test_preferences_page

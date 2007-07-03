@@ -1,3 +1,6 @@
+<% if flash[:error] -%>
+<div class="error"><%= flash[:error] %></div>
+<% end -%>
 <%= error_messages_for 'vial' %>
 
 <h1>Collect Field Vial</h1>

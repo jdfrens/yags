@@ -2,7 +2,7 @@ class LabController < ApplicationController
 
   restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course, 
       :delete_course, :list_scenarios, :add_scenario, :delete_scenario, :view_scenario,
-      :view_cheat_sheet ]
+      :view_cheat_sheet, :choose_course_scenarios ]
 
   def index 
     @username = current_user.username
@@ -39,9 +39,20 @@ class LabController < ApplicationController
     
   end
   
-#  def choose_course_scenarios
-#    
-#  end
+  def choose_course_scenarios
+    if params[:id] and @course = Course.find_by_id(params[:id]) and current_user == @course.instructor
+      @scenarios = Scenario.find(:all)
+      if request.post?
+        @course.scenarios.each { |s| @course.scenarios.delete s }
+        params[:scenario_ids].each do |scenario_id|
+          @course.scenarios << Scenario.find_by_id(scenario_id)
+        end
+        redirect_to :action => :view_course, :id => @course.id
+      end
+    else
+      redirect_to :action => "index"
+    end
+  end
   
   def delete_course
     if params[:id] and Course.find_by_id(params[:id]) and 

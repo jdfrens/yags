@@ -1,0 +1,12 @@
+<h2>Scenarios for <%= h(@course.name) -%></h2>
+
+<em id="instruction">Select which scenarios may be used in this course:</em>
+<br /><br />
+
+<% form_tag :url => { :action => :view_course, :id => @course.id } do %>
+  <% @scenarios.each do |scenario| -%>
+    <%= check_box_tag "scenario_ids[]", scenario.id, @course.scenarios.include?(scenario) -%>
+    <%= scenario.title.to_s %> <br />
+  <% end -%>
+  <%= submit_tag "Update", :class => "submit" -%>
+<% end -%>

@@ -195,8 +195,8 @@ class BenchControllerTest < Test::Unit::TestCase
     get :view_vial, { :id => vials(:random_vial).id }, user_session(:jeremy)
     assert_response :success
     assert_select "table" do
-      assert_select "tr:nth-child(1) th:nth-child(2)", "white"
-      assert_select "tr:nth-child(1) th:nth-child(3)", "red"
+      assert_select "tr:nth-child(1) th:nth-child(2)", "beige"
+      assert_select "tr:nth-child(1) th:nth-child(3)", "orange"
       assert_select "tr:nth-child(2) th:nth-child(1)", "curly"
       assert_select "tr:nth-child(3) th:nth-child(1)", "straight"
     end
@@ -297,10 +297,10 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     
     assert_select "table" do
-      assert_select "tr:nth-child(1) th:nth-child(2)", "white"
-      assert_select "tr:nth-child(1) th:nth-child(3)", "red"
-      assert_select "tr:nth-child(2) th:nth-child(1)", "male"
-      assert_select "tr:nth-child(3) th:nth-child(1)", "female"
+      assert_select "tr:nth-child(1) th:nth-child(2)", "red"
+      assert_select "tr:nth-child(1) th:nth-child(3)", "white"
+      assert_select "tr:nth-child(2) th:nth-child(1)", "female"
+      assert_select "tr:nth-child(3) th:nth-child(1)", "male"
     end
   end
   

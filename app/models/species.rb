@@ -13,6 +13,8 @@ class Species
                     :wings => [:curly, :straight], 
                     :legs => [:smooth, :hairy],
                     :antenna => [:short, :long] }
+    @alternate_phenotypes = { :eye_color => [:orange, :beige, :turquoise, :blue, :green, :maroon] }
+    @alternate_phenotypes.default = [] # is this the defaul we want?
     @phenotype_lookup = { :sex => {[1,1] => :female, [0,1] => :male, [0,0] => :not_possible },
                           :eye_color => {[1,1] => :red, [0,1] => :red, [0,0] => :white }, 
                           :wings => {[1,1] => :straight, [0,1] => :straight, [0,0] => :curly }, 
@@ -24,6 +26,10 @@ class Species
   
   def phenotypes(character)
     @phenotypes[character]
+  end
+  
+  def alternate_phenotypes(character)
+    @alternate_phenotypes[character]
   end
   
   def gene_number_of(character)

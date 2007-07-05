@@ -1,15 +1,15 @@
 <table>   
     <tr>
         <th></th>
-        <% @column_titles.each do |title| -%>
-        <th><%= title %></th>
+        <% @column_phenotypes.each do |phenotype| -%>
+        <th><%= phenotype %></th>
         <% end -%>
     </tr>
-    <% @row_titles.each do |row_title| -%>
+    <% @row_phenotypes.each do |row_phenotype| -%>
     <tr>
-        <th><%= row_title %></th>
-        <% @column_titles.each do |col_title| -%>
-        <td class="count"><%= @vial.number_of_flies([@rows, @columns], [row_title, col_title]) %></td>
+        <th><%= row_phenotype %></th>
+        <% @column_phenotypes.each do |col_phenotype| -%>
+        <td class="count"><%= @counts[row_phenotype.to_s + "$" + col_phenotype.to_s] %></td>
         <% end -%>
     </tr>
     <% end -%>

@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   has_many :vials, :through => :racks
   has_many :character_preferences, :dependent => :destroy
   has_one  :basic_preference, :dependent => :destroy
+  has_many :phenotype_alternates, :dependent => :destroy
   has_many :instructs, :class_name => "Course", :foreign_key => "instructor_id", :dependent => :destroy
   belongs_to :enrolled_in, :class_name => "Course", :foreign_key => "course_id"
   

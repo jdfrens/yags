@@ -21,6 +21,15 @@ class SpeciesTest < Test::Unit::TestCase
     assert_equal 144, Species.singleton.gene_number_of(:antenna)
   end
   
+  def test_alternate_phenotypes
+    assert_equal [:orange, :beige, :turquoise, :blue, :green, :maroon], 
+        Species.singleton.alternate_phenotypes(:eye_color)
+    assert_equal [], Species.singleton.alternate_phenotypes(:sex)
+    assert_equal [], Species.singleton.alternate_phenotypes(:wings)
+    assert_equal [], Species.singleton.alternate_phenotypes(:legs)
+    assert_equal [], Species.singleton.alternate_phenotypes(:antenna)
+  end
+  
   def test_phenotype_from
     assert_equal :female, Species.singleton.phenotype_from(:sex, 1, 1)
     assert_equal :male, Species.singleton.phenotype_from(:sex, 0, 1)

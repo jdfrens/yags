@@ -88,6 +88,36 @@ class VialTest < Test::Unit::TestCase
                                    [:smooth, :hairy]]),
                                    vials(:vial_one).combinations_of_phenotypes([:eye_color, :legs])
   end
+
+  def test_phenotypes_for_table
+    assert_equal [:female, :male], vials(:vial_one).phenotypes_for_table(:sex)
+    assert_equal [:red, :white], vials(:vial_one).phenotypes_for_table(:eye_color)
+    assert_equal [:curly, :straight], vials(:vial_one).phenotypes_for_table(:wings)
+    assert_equal [:female, :male], vials(:random_vial).phenotypes_for_table(:sex)
+    assert_equal [:beige, :orange], vials(:random_vial).phenotypes_for_table(:eye_color)
+    assert_equal [:hairy, :smooth], vials(:random_vial).phenotypes_for_table(:legs)
+    assert_equal [:long, :short], vials(:parents_vial).phenotypes_for_table(:antenna)
+  end
+  
+  def test_counts_for_table
+    counts_hash = { "female$red" => 0, "female$white" => 0, "male$red" => 0, "male$white" => 0 }
+    assert_equal counts_hash, vials(:vial_empty).counts_for_table(:sex, :eye_color)
+    counts_hash = { "female$red" => 2, "female$white" => 0, "male$red" => 1, "male$white" => 1 }
+    assert_equal counts_hash, vials(:vial_with_many_flies).counts_for_table(:sex, :eye_color)
+    counts_hash = { "curly$short" => 0, "curly$long" => 1, "straight$short" => 1, "straight$long" => 2 }
+    assert_equal counts_hash, vials(:vial_with_many_flies).counts_for_table(:wings, :antenna)
+    counts_hash = { "short$hairy" => 1, "short$smooth" => 1, "long$hairy" => 0, "long$smooth" => 0 }
+    assert_equal counts_hash, vials(:destroyable_vial).counts_for_table(:antenna, :legs)
+  end
+
+  def test_renamed_phenotype
+    assert_equal :orange, vials(:random_vial).renamed_phenotype(:eye_color, :red)
+    assert_equal :beige, vials(:random_vial).renamed_phenotype(:eye_color, :white)
+    assert_equal :rainbow, vials(:random_vial).renamed_phenotype(:eye_color, :rainbow)
+    assert_equal :male, vials(:random_vial).renamed_phenotype(:sex, :male)
+    assert_equal :poofy_smoke, vials(:random_vial).renamed_phenotype(:teleportation_style, :poofy_smoke)
+    assert_equal :red, vials(:vial_one).renamed_phenotype(:eye_color, :red)
+  end
   
   def test_collect_four_flies_from_field
     new_vial = Vial.collect_from_field({ :label => "four fly vial"}, 4, CookedBitGenerator.new([1]))

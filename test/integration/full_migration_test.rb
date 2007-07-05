@@ -91,6 +91,14 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :scenario_id, :integer
       end
       
+      s.table :phenotype_alternates do |t|
+        t.column :id,          :integer
+        t.column :scenario_id, :integer
+        t.column :user_id,     :integer
+        t.column :affected_character, :string
+        t.column :original_phenotype, :string
+        t.column :renamed_phenotype,  :string
+      end
       
       # authentication
       s.table "groups" do |t|

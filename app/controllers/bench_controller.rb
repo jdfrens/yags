@@ -116,10 +116,11 @@ class BenchController < ApplicationController
       if @table = (current_user.basic_preference and 
             current_user.basic_preference.row and current_user.basic_preference.column)
             # um, maybe that if should be rewritten...
-        @rows = current_user.basic_preference.row.intern
-        @columns = current_user.basic_preference.column.intern
-        @row_titles = @vial.species.phenotypes(@rows)
-        @column_titles = @vial.species.phenotypes(@columns)
+        @row_character = current_user.basic_preference.row.intern
+        @column_character = current_user.basic_preference.column.intern
+        @row_phenotypes = @vial.phenotypes_for_table(@row_character)
+        @column_phenotypes = @vial.phenotypes_for_table(@column_character)
+        @counts = @vial.counts_for_table(@row_character, @column_character)
       end
     else
       redirect_to :action => "list_vials"
@@ -168,15 +169,16 @@ class BenchController < ApplicationController
   def update_table
     if request.post?
       @vial = Vial.find(params[:vial_id])
-      @columns = params[:character_col].intern
-      @rows = params[:character_row].intern
-      @column_titles = @vial.species.phenotypes(@columns)
-      @row_titles = @vial.species.phenotypes(@rows)
+      @column_character = params[:character_col].intern
+      @row_character = params[:character_row].intern
+      @column_phenotypes = @vial.phenotypes_for_table(@column_character)
+      @row_phenotypes = @vial.phenotypes_for_table(@row_character)
+      @counts = @vial.counts_for_table(@row_character, @column_character)
       if current_user.basic_preference.nil?
-        BasicPreference.create!(:user_id => current_user.id, :row => @rows.to_s, :column => @columns.to_s)
+        BasicPreference.create!(:user_id => current_user.id, :row => @row_character.to_s, :column => @column_character.to_s)
       else
-        current_user.basic_preference.row = @rows.to_s
-        current_user.basic_preference.column = @columns.to_s
+        current_user.basic_preference.row = @row_character.to_s
+        current_user.basic_preference.column = @column_character.to_s
         current_user.basic_preference.save!
       end
     end

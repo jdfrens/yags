@@ -35,7 +35,7 @@ class Test::Unit::TestCase
     fixtures :users, :groups, :privileges, :groups_privileges, 
         :flies, :vials, :genotypes, :basic_preferences, :character_preferences, 
         :racks, :courses, :solutions, :scenarios, :scenario_preferences,
-        :courses_scenarios
+        :courses_scenarios, :phenotype_alternates
   end
   
   def assert_standard_layout

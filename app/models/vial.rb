@@ -70,6 +70,37 @@ class Vial < ActiveRecord::Base
     end
     selection
   end
+  
+  def phenotypes_for_table(character)
+    species.phenotypes(character).map do |p| 
+      renamed_phenotype(character, p).to_s 
+    end.sort.map{ |p| p.intern }
+  end
+  
+  def counts_for_table(row_character, column_character)
+    counts = {}
+    species.phenotypes(row_character).each do |row_phenotype|
+      species.phenotypes(column_character).each do |column_phenotype|
+        key = renamed_phenotype(row_character, row_phenotype).to_s + "$" + 
+            renamed_phenotype(column_character, column_phenotype).to_s
+        counts[key] = number_of_flies([row_character, column_character], 
+            [row_phenotype, column_phenotype])
+      end
+    end
+    counts
+  end
+  
+  def renamed_phenotype(character, phenotype)
+    phenotype_alternate = user.phenotype_alternates.select do |pa|
+      pa.scenario_id == user.current_scenario.id and 
+          pa.affected_character.intern == character and pa.original_phenotype.intern == phenotype
+    end.first
+    if phenotype_alternate
+      phenotype_alternate.renamed_phenotype.intern
+    else
+      phenotype
+    end
+  end
 
   def fill_from_field(number, bit_generator, allele_frequencies)
     number.times do |i|

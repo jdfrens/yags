@@ -160,4 +160,17 @@ class UserTest < Test::Unit::TestCase
     assert_equal number_of_old_character_preferences - 3, CharacterPreference.find(:all).size
   end
   
+  def test_destruction_of_phenotype_alternates_along_with_student
+    number_of_old_users = User.find(:all).size
+    number_of_old_phenotype_alternates = PhenotypeAlternate.find(:all).size
+    assert_equal 1, User.find(:all, :conditions => "id = 3").size
+    assert_equal 2, users(:jeremy).phenotype_alternates.size
+    
+    users(:jeremy).destroy
+    assert_equal number_of_old_users - 1, User.find(:all).size
+    assert_equal 0, User.find(:all, :conditions => "id = 3").size
+    assert_equal 0, PhenotypeAlternate.find(:all, :conditions => "user_id = 3").size
+    assert_equal number_of_old_phenotype_alternates - 2, PhenotypeAlternate.find(:all).size
+  end
+  
 end

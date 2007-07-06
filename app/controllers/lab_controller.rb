@@ -67,14 +67,17 @@ class LabController < ApplicationController
   end
   
   def add_scenario
+    @species = Species.singleton # the selected species later
     @characters = Species.singleton.characters
-    if request.post? and params[:scenario]
+    if request.post? and params[:scenario] and params[:characters] and params[:alternates]
       @scenario = Scenario.new params[:scenario]
       @scenario.save!
-      species = Species.singleton # the selected species later
-      species.characters.each do |character|
-        unless params.keys.include?(character.to_s) and params[character.to_s]
+      @species.characters.each do |character|
+        unless params[:characters].include?(character.to_s)
           ScenarioPreference.create!(:scenario_id => @scenario.id, :hidden_character => character.to_s)
+        end
+        if params[:alternates].include?(character.to_s)
+          RenamedCharacter.create!(:scenario_id => @scenario.id, :renamed_character => character.to_s)
         end
       end
       redirect_to :action => "list_scenarios"
@@ -111,6 +114,10 @@ class LabController < ApplicationController
           :location => @species.position_of(@species.gene_number_of(character)) }
       # use .map instead?
     end
+  end
+  
+  def view_student_vial
+    # TODO make and test
   end
 
 end

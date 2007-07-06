@@ -48,7 +48,7 @@ class Vial < ActiveRecord::Base
   
   def combinations_of_phenotypes(characters = species.characters)
     cartesian_product( characters.collect do |character| 
-      phenotypes = species.phenotypes(character)
+      phenotypes = phenotypes_for_table(character)
     end )
   end
   

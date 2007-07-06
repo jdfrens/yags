@@ -32,6 +32,11 @@ class Species
     @alternate_phenotypes[character]
   end
   
+  # to test
+  def random_alternate_for(character)
+    
+  end
+  
   def gene_number_of(character)
     @gene_numbers[character]
   end

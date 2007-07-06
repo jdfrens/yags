@@ -107,6 +107,25 @@ class UserTest < Test::Unit::TestCase
     assert_equal Scenario.find(1), users(:steve).current_scenario
   end
   
+  def test_set_scenario_to
+    users(:steve).set_scenario_to(2, CookedNumberGenerator.new([1,2]))
+    users(:steve).reload
+    assert_equal Scenario.find(2), users(:steve).current_scenario
+    assert_equal :turquoise, users(:steve).vials.first.renamed_phenotype(:eye_color, :red)
+    assert_equal :beige, users(:steve).vials.first.renamed_phenotype(:eye_color, :white)
+    assert_equal ["beige", "turquoise"], users(:steve).phenotype_alternates.map { |pa| pa.renamed_phenotype }
+    users(:steve).set_scenario_to(1)
+    users(:steve).reload
+    assert_equal Scenario.find(1), users(:steve).current_scenario
+    assert_equal :red, users(:steve).vials.first.renamed_phenotype(:eye_color, :red)
+    assert_equal :white, users(:steve).vials.first.renamed_phenotype(:eye_color, :white)
+    users(:steve).set_scenario_to(2, CookedNumberGenerator.new([3,5]))
+    users(:steve).reload
+    assert_equal Scenario.find(2), users(:steve).current_scenario
+    assert_equal ["beige", "turquoise"], users(:steve).phenotype_alternates.map { |pa| pa.renamed_phenotype } 
+                  # unchanged
+  end
+  
   def test_destruction_of_courses_along_with_instructor
     number_of_old_users = User.find(:all).size
     number_of_old_courses = Course.find(:all).size
@@ -121,56 +140,24 @@ class UserTest < Test::Unit::TestCase
     assert_equal number_of_old_courses - 2, Course.find(:all).size
   end
   
-  def test_destruction_of_racks_along_with_student
-    number_of_old_users = User.find(:all).size
-    number_of_old_racks = Rack.find(:all).size
-    assert_equal 1, User.find(:all, :conditions => "id = 3").size
-    assert_equal 2, Rack.find(:all, :conditions => "user_id = 3").size
-    
-    users(:jeremy).destroy
-    assert_equal number_of_old_users - 1, User.find(:all).size
-    assert_equal 0, User.find(:all, :conditions => "id = 3").size
-    assert_equal 0, Rack.find(:all, :conditions => "user_id = 3").size
-    assert_equal number_of_old_racks - 2, Rack.find(:all).size
+  def test_racks_are_destroyed_along_with_student
+    assert_dependents_destroyed(User, Rack, :foreign_key => "user_id", 
+        :fixture_id => 3, :number_of_dependents => 2)
   end
   
-  def test_destruction_of_basic_preference_along_with_student
-    number_of_old_users = User.find(:all).size
-    number_of_old_basic_preferences = BasicPreference.find(:all).size
-    assert_equal 1, User.find(:all, :conditions => "id = 3").size
-    assert_equal 1, BasicPreference.find(:all, :conditions => "user_id = 3").size
-    
-    users(:jeremy).destroy
-    assert_equal number_of_old_users - 1, User.find(:all).size
-    assert_equal 0, User.find(:all, :conditions => "id = 3").size
-    assert_equal 0, BasicPreference.find(:all, :conditions => "user_id = 3").size
-    assert_equal number_of_old_basic_preferences - 1, BasicPreference.find(:all).size
+  def test_basic_preference_is_destroyed_along_with_student
+    assert_dependents_destroyed(User, BasicPreference, :foreign_key => "user_id", 
+        :fixture_id => 3, :number_of_dependents => 1)
   end
   
-  def test_destruction_of_character_preferences_along_with_student
-    number_of_old_users = User.find(:all).size
-    number_of_old_character_preferences = CharacterPreference.find(:all).size
-    assert_equal 1, User.find(:all, :conditions => "id = 4").size
-    assert_equal 3, CharacterPreference.find(:all, :conditions => "user_id = 4").size
-    
-    users(:randy).destroy
-    assert_equal number_of_old_users - 1, User.find(:all).size
-    assert_equal 0, User.find(:all, :conditions => "id = 4").size
-    assert_equal 0, CharacterPreference.find(:all, :conditions => "user_id = 4").size
-    assert_equal number_of_old_character_preferences - 3, CharacterPreference.find(:all).size
+  def test_character_preferences_are_destroyed_along_with_student
+    assert_dependents_destroyed(User, CharacterPreference, :foreign_key => "user_id", 
+        :fixture_id => 4, :number_of_dependents => 3)
   end
   
-  def test_destruction_of_phenotype_alternates_along_with_student
-    number_of_old_users = User.find(:all).size
-    number_of_old_phenotype_alternates = PhenotypeAlternate.find(:all).size
-    assert_equal 1, User.find(:all, :conditions => "id = 3").size
-    assert_equal 2, users(:jeremy).phenotype_alternates.size
-    
-    users(:jeremy).destroy
-    assert_equal number_of_old_users - 1, User.find(:all).size
-    assert_equal 0, User.find(:all, :conditions => "id = 3").size
-    assert_equal 0, PhenotypeAlternate.find(:all, :conditions => "user_id = 3").size
-    assert_equal number_of_old_phenotype_alternates - 2, PhenotypeAlternate.find(:all).size
+  def test_phenotype_alternates_are_destroyed_along_with_student
+    assert_dependents_destroyed(User, PhenotypeAlternate, :foreign_key => "user_id", 
+        :fixture_id => 3, :number_of_dependents => 2)
   end
   
 end

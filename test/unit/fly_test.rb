@@ -17,17 +17,9 @@ class FlyTest < Test::Unit::TestCase
     assert_equal :female, flies(:fly_11).phenotype(:sex)
   end
   
-  def test_deletion_of_genotypes_upon_deletion_of_fly
-    number_of_old_flies = Fly.find(:all).size
-    number_of_old_genotypes = Genotype.find(:all).size
-    assert_equal 1, Fly.find(:all, :conditions => "id = 5").size # :bob
-    assert_equal 5, Genotype.find(:all, :conditions => "fly_id = 5").size # :bob's genotypes
-    
-    flies(:bob).destroy
-    assert_equal number_of_old_flies - 1, Fly.find(:all).size
-    assert_equal number_of_old_genotypes - 5, Genotype.find(:all).size
-    assert_equal 0, Fly.find(:all, :conditions => "id = 5").size # :bob
-    assert_equal 0, Genotype.find(:all, :conditions => "fly_id = 5").size # :bob's genotypes
+  def test_genotypes_are_destroyed_along_with_fly
+    assert_dependents_destroyed(Fly, Genotype, :foreign_key => "fly_id", 
+        :fixture_id => 5, :number_of_dependents => 5)
   end
   
   def test_make_gamete
@@ -91,17 +83,6 @@ class FlyTest < Test::Unit::TestCase
           g.gene_number == fly.species.gene_number_of(character)
         }.size
       end
-    end
-  end
-  
-  # helpers
-  
-  def assert_basically_the_same_fly(fly1, fly2)
-    assert_equal fly1.species.characters, fly2.species.characters
-    fly1.species.order(fly1.genotypes).zup(fly2.genotypes) do |fly1_genotype, fly2_genotype|
-      assert_equal fly1_genotype.gene_number, fly2_genotype.gene_number
-      assert_equal fly1_genotype.mom_allele, fly2_genotype.mom_allele
-      assert_equal fly1_genotype.dad_allele, fly2_genotype.dad_allele
     end
   end
   

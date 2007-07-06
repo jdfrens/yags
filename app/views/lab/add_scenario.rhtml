@@ -13,10 +13,16 @@
     </p>
     
     <!-- could this part become a partial that changes once we have multiple species? -->
+	<table>
     <% @characters.each do |character| -%>
-        <%= check_box_tag character.to_s, "visible", true -%>
-        <%= character.to_s %> <br />
+		<tr><td><%= check_box_tag "characters[]", character.to_s, true -%>
+                <%= character.to_s %></td>
+			<td><% if @species.alternate_phenotypes(character) != [] -%>
+			      <%= check_box_tag "alternates[]", character.to_s, true -%>
+        	      <%= "use random " + character.to_s %>
+		        <% end -%></td></tr>
     <% end -%>
+	</table>
     
     <%= submit_tag "Add Scenario", :class => "submit" %>
 <% end %>

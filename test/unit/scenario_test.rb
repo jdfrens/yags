@@ -14,17 +14,15 @@ class ScenarioTest < Test::Unit::TestCase
     assert_equal [:sex, :eye_color, :wings, :legs], scenarios(:another_scenario).visible_characters
     assert_equal [:sex, :legs], scenarios(:only_sex_and_legs).visible_characters
   end
-
-  def test_destruction_of_preferences_along_with_scenario
-    number_of_old_scenarios = Scenario.find(:all).size
-    number_of_old_scenario_preferences = ScenarioPreference.find(:all).size
-    assert_equal 1, Scenario.find(:all, :conditions => "id = 1").size
-    assert_equal 2, ScenarioPreference.find(:all, :conditions => "scenario_id = 1").size
-    
-    scenarios(:first_scenario).destroy
-    assert_equal number_of_old_scenarios - 1, Scenario.find(:all).size
-    assert_equal 0, Scenario.find(:all, :conditions => "id = 1").size
-    assert_equal 0, ScenarioPreference.find(:all, :conditions => "scenario_id = 1").size
-    assert_equal number_of_old_scenario_preferences - 2, ScenarioPreference.find(:all).size
+  
+  def test_scenarios_preferences_are_dependently_destroyed
+    assert_dependents_destroyed(Scenario, ScenarioPreference, :foreign_key => "scenario_id", 
+        :fixture_id => 1, :number_of_dependents => 2)
   end
+  
+  def test_renamed_characters_are_dependently_destroyed
+    assert_dependents_destroyed(Scenario, RenamedCharacter, :foreign_key => "scenario_id", 
+        :fixture_id => 2, :number_of_dependents => 1)
+  end
+  
 end

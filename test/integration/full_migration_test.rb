@@ -1,8 +1,6 @@
 require "#{File.dirname(__FILE__)}/../test_helper"
 
 class FullMigrationTest < ActionController::IntegrationTest
-
-  user_fixtures
   
   def test_full_migration
     drop_all_tables
@@ -84,6 +82,12 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :id,               :integer
         t.column :scenario_id,      :integer
         t.column :hidden_character, :string
+      end
+      
+      s.table :renamed_characters do |t|
+        t.column :id,                :integer
+        t.column :scenario_id,       :integer
+        t.column :renamed_character, :string
       end
       
       s.table :courses_scenarios do |t|

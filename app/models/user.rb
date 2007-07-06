@@ -67,8 +67,22 @@ class User < ActiveRecord::Base
       self.basic_preference.scenario_id = new_id
       self.basic_preference.save!
     else
-      new_bp = BasicPreference.new(:user_id => self.id, :scenario_id => new_id)
-      new_bp.save!
+      self.basic_preference = BasicPreference.create!(:user_id => self.id, :scenario_id => new_id)
+    end
+  end
+  
+  def set_scenario_to(scenario_id, number_generator = RandomNumberGenerator.new)
+    self.current_scenario_id = scenario_id
+    if scenario_id and self.phenotype_alternates.select { |pa| pa.scenario_id == scenario_id }.size == 0
+      Scenario.find(scenario_id).renamed_characters.map { |rc| rc.renamed_character }.each do |renamed_character|
+        current_scenario.species.phenotypes(renamed_character.intern).each do |phenotype|
+          alternate_phenotypes = current_scenario.species.alternate_phenotypes(renamed_character.intern)
+          alternate_name = alternate_phenotypes[number_generator.random_number(alternate_phenotypes.size)]
+          phenotype_alternates << PhenotypeAlternate.create!( :user_id => self.id,
+              :scenario_id => scenario_id, :affected_character => renamed_character,
+              :original_phenotype => phenotype.to_s, :renamed_phenotype => alternate_name.to_s )
+        end
+      end
     end
   end
   

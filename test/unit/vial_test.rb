@@ -60,32 +60,24 @@ class VialTest < Test::Unit::TestCase
     assert_equal flies(:fly_10), vials(:vial_with_many_flies).first_of_type([:eye_color, :sex], [:red, :male])
   end
   
-  def test_destroying_a_vial
-    number_of_old_vials = Vial.find(:all).size
-    number_of_old_flies = Fly.find(:all).size
-    assert_equal 1, Vial.find(:all, :conditions => "id = 6").size
-    assert_equal 2, Fly.find(:all, :conditions => "vial_id = 6").size
-    
-    vials(:destroyable_vial).destroy
-    assert_equal number_of_old_vials - 1, Vial.find(:all).size
-    assert_equal 0, Vial.find(:all, :conditions => "id = 6").size
-    assert_equal 0, Fly.find(:all, :conditions => "vial_id = 6").size
-    assert_equal number_of_old_flies - 2, Fly.find(:all).size
+  def test_flies_are_destroyed_along_with_vial
+    assert_dependents_destroyed(Vial, Fly, :foreign_key => "vial_id", 
+        :fixture_id => 6, :number_of_dependents => 2)
   end
   
   def test_combinations_of_phenotypes
     assert_equal [:sex, :eye_color, :wings, :legs, :antenna], vials(:vial_one).species.characters
-    assert_equal cartesian_product([[:male, :female],
-                                   [:white, :red], 
+    assert_equal cartesian_product([[:female, :male],
+                                   [:red, :white], 
                                    [:curly, :straight],
-                                   [:smooth, :hairy],
-                                   [:short, :long]]),
+                                   [:hairy, :smooth],
+                                   [:long, :short]]),
                                    vials(:vial_one).combinations_of_phenotypes
-    assert_equal cartesian_product([[:male, :female],
-                                   [:white, :red]]),
+    assert_equal cartesian_product([[:female, :male],
+                                   [:red, :white]]),
                                    vials(:vial_one).combinations_of_phenotypes([:sex, :eye_color])
-    assert_equal cartesian_product([[:white, :red],
-                                   [:smooth, :hairy]]),
+    assert_equal cartesian_product([[:red, :white],
+                                   [:hairy, :smooth]]),
                                    vials(:vial_one).combinations_of_phenotypes([:eye_color, :legs])
   end
 

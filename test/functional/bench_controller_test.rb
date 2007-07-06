@@ -596,12 +596,17 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_choose_scenario
-    assert_nil users(:randy).current_scenario
-    post :choose_scenario, { :scenario_id => 1 }, user_session(:randy)
+    assert_nil users(:steve).current_scenario
+    assert_equal 0, users(:steve).phenotype_alternates.size
+    post :choose_scenario, { :scenario_id => 2 }, user_session(:steve)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
-    users(:randy).reload
-    assert_equal scenarios(:first_scenario), users(:randy).current_scenario
+    users(:steve).reload
+    assert_equal scenarios(:another_scenario), users(:steve).current_scenario
+    assert_equal [:eye_color, :eye_color], 
+        users(:steve).phenotype_alternates.map { |pa| pa.affected_character.intern }
+    assert_equal [:red, :white].to_set, 
+        users(:steve).phenotype_alternates.map { |pa| pa.original_phenotype.intern }.to_set
   end
   
   def test_choose_scenario_fails_when_NOT_scenario_for_course

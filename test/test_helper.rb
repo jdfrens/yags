@@ -35,7 +35,7 @@ class Test::Unit::TestCase
     fixtures :users, :groups, :privileges, :groups_privileges, 
         :flies, :vials, :genotypes, :basic_preferences, :character_preferences, 
         :racks, :courses, :solutions, :scenarios, :scenario_preferences,
-        :courses_scenarios, :phenotype_alternates
+        :courses_scenarios, :phenotype_alternates, :renamed_characters
   end
   
   def assert_standard_layout
@@ -62,6 +62,29 @@ class Test::Unit::TestCase
   
   def assert_redirected_to_login
     assert_redirected_to :controller => 'users', :action => 'login'
+  end
+  
+  def assert_dependents_destroyed(main_class, dependent_class, options)
+    number_of_old_objects = main_class.find(:all).size
+    number_of_old_dependents = dependent_class.find(:all).size
+    assert_not_nil main_class.find_by_id(options[:fixture_id])
+    assert_equal options[:number_of_dependents], 
+        dependent_class.send("find_all_by_" + options[:foreign_key], options[:fixture_id]).size
+    
+    main_class.find(options[:fixture_id]).destroy
+    assert_equal number_of_old_objects - 1, main_class.find(:all).size
+    assert_nil main_class.find_by_id(options[:fixture_id])
+    assert_equal 0, dependent_class.send("find_all_by_" + options[:foreign_key], options[:fixture_id]).size
+    assert_equal number_of_old_dependents - options[:number_of_dependents], dependent_class.find(:all).size
+  end
+  
+  def assert_basically_the_same_fly(fly1, fly2)
+    assert_equal fly1.species.characters, fly2.species.characters
+    fly1.species.order(fly1.genotypes).zup(fly2.genotypes) do |fly1_genotype, fly2_genotype|
+      assert_equal fly1_genotype.gene_number, fly2_genotype.gene_number
+      assert_equal fly1_genotype.mom_allele, fly2_genotype.mom_allele
+      assert_equal fly1_genotype.dad_allele, fly2_genotype.dad_allele
+    end
   end
     
   def logged_in?

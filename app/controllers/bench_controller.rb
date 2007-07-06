@@ -44,7 +44,7 @@ class BenchController < ApplicationController
     end
     if request.post?
       if @scenario_titles_and_ids.map { |d| d[1] }.include? params[:scenario_id].to_i
-        current_user.current_scenario_id = params[:scenario_id] 
+        current_user.set_scenario_to params[:scenario_id].to_i
       end
       redirect_to :action => "index"
     end

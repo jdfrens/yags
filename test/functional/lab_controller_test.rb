@@ -219,19 +219,19 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "label[for=species]"
       assert_select "label[for=title]"
       
-      # these tests might not belong here later when the check boxes are moved to a partial
-      assert_select "input#sex[value=visible][checked=checked]"
-      assert_select "input#eye_color[value=visible][checked=checked]"
-      assert_select "input#wings[value=visible][checked=checked]"
-      assert_select "input#legs[value=visible][checked=checked]"
-      assert_select "input#antenna[value=visible][checked=checked]"
-      assert_select "input[type=checkbox][checked=checked]", 5
+      assert_select "input[value=sex][checked=checked]"
+      assert_select "input[value=eye_color][checked=checked]", 2
+      assert_select "input[value=legs][checked=checked]"
+      assert_select "input[value=wings][checked=checked]"
+      assert_select "input[value=antenna][checked=checked]"
+      assert_select "input[type=checkbox][checked=checked]", 6
     end
   end
   
   def test_add_scenario_works
     number_of_old_scenarios = Scenario.find(:all).size
-    post :add_scenario, { :scenario => { :title => "Final Exam" } }, user_session(:darwin)
+    post :add_scenario, { :scenario => { :title => "Final Exam" }, 
+        :characters => [], :alternates => [] }, user_session(:darwin)
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Final Exam")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
@@ -241,11 +241,12 @@ class LabControllerTest < Test::Unit::TestCase
   def test_add_scenario_works_again
     number_of_old_scenarios = Scenario.find(:all).size
     post :add_scenario, { :scenario => { :title => "Intro to Dominance" }, 
-        :sex => "visible", :wings => "visible" }, user_session(:mendel)
+        :characters => ["sex", "wings", "eye_color"], :alternates => ["eye_color"] }, user_session(:mendel)
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Intro to Dominance")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
-    assert_equal [:eye_color, :legs, :antenna], scenario.hidden_characters
+    assert_equal [:legs, :antenna], scenario.hidden_characters
+    assert_equal [:eye_color], scenario.renamed_characters.map { |rc| rc.renamed_character.intern }
   end 
   
   def test_add_scenario_fails_when_NOT_logged_in_as_instructor

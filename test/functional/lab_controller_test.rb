@@ -220,7 +220,7 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "label[for=title]"
       
       assert_select "input[value=sex][checked=checked]"
-      assert_select "input[value=eye_color][checked=checked]", 2
+      assert_select "input[value=eye color][checked=checked]", 2
       assert_select "input[value=legs][checked=checked]"
       assert_select "input[value=wings][checked=checked]"
       assert_select "input[value=antenna][checked=checked]"
@@ -235,18 +235,18 @@ class LabControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Final Exam")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
-    assert_equal [:sex, :eye_color, :wings, :legs, :antenna], scenario.hidden_characters
+    assert_equal [:sex, :"eye color", :wings, :legs, :antenna], scenario.hidden_characters
   end 
   
   def test_add_scenario_works_again
     number_of_old_scenarios = Scenario.find(:all).size
     post :add_scenario, { :scenario => { :title => "Intro to Dominance" }, 
-        :characters => ["sex", "wings", "eye_color"], :alternates => ["eye_color"] }, user_session(:mendel)
+        :characters => ["sex", "wings", "eye color"], :alternates => ["eye color"] }, user_session(:mendel)
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Intro to Dominance")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
     assert_equal [:legs, :antenna], scenario.hidden_characters
-    assert_equal [:eye_color], scenario.renamed_characters.map { |rc| rc.renamed_character.intern }
+    assert_equal [:"eye color"], scenario.renamed_characters.map { |rc| rc.renamed_character.intern }
   end 
   
   def test_add_scenario_fails_when_NOT_logged_in_as_instructor

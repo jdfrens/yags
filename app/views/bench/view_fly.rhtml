@@ -1,6 +1,0 @@
-<div class="fly-title"><h3>A fly from <%= h(@fly.vial.label) %></h3></div>
-<ul>
-  <li>Sex: <%= @fly.phenotype(:sex) -%></li>
-  <li>Eye color: <%= @fly.phenotype(:eye_color) -%></li>
-  <li>Source vial: <%= link_to h(@fly.vial.label), :action => :view_vial, :id => @fly.vial_id -%></li>
-</ul>

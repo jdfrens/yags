@@ -11,13 +11,13 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_has_basic_preference
-    assert_equal "eye_color", users(:jeremy).basic_preference.column
+    assert_equal "eye color", users(:jeremy).basic_preference.column
     assert_equal "wings", users(:jeremy).basic_preference.row
     assert_nil users(:steve).basic_preference
   end
   
   def test_has_many_character_preferences
-    assert_equal [:eye_color, :wings, :antenna], 
+    assert_equal [:"eye color", :wings, :antenna], 
         users(:randy).character_preferences.map { |p| p.hidden_character.intern }
     assert_equal [:legs], 
         users(:jeremy).character_preferences.map { |p| p.hidden_character.intern }
@@ -40,15 +40,15 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_hidden_characters
-    assert_equal [:eye_color, :wings, :antenna], users(:randy).hidden_characters
+    assert_equal [:"eye color", :wings, :antenna], users(:randy).hidden_characters
     assert_equal [:legs, :antenna], users(:jeremy).hidden_characters
     assert_equal [], users(:steve).hidden_characters
   end
   
   def test_visible_characters
     assert_equal [:sex, :legs], users(:randy).visible_characters
-    assert_equal [:sex, :eye_color, :wings], users(:jeremy).visible_characters
-    assert_equal [:sex, :eye_color, :wings, :legs, :antenna], users(:steve).visible_characters
+    assert_equal [:sex, :"eye color", :wings], users(:jeremy).visible_characters
+    assert_equal [:sex, :"eye color", :wings, :legs, :antenna], users(:steve).visible_characters
     
     assert_equal [], users(:randy).visible_characters([])
     assert_equal [], users(:jeremy).visible_characters([])
@@ -120,14 +120,14 @@ class UserTest < Test::Unit::TestCase
     users(:steve).set_scenario_to(2, CookedNumberGenerator.new([1,2]))
     users(:steve).reload
     assert_equal Scenario.find(2), users(:steve).current_scenario
-    assert_equal :turquoise, users(:steve).vials.first.renamed_phenotype(:eye_color, :red)
-    assert_equal :beige, users(:steve).vials.first.renamed_phenotype(:eye_color, :white)
+    assert_equal :turquoise, users(:steve).vials.first.renamed_phenotype(:"eye color", :red)
+    assert_equal :beige, users(:steve).vials.first.renamed_phenotype(:"eye color", :white)
     assert_equal ["beige", "turquoise"], users(:steve).phenotype_alternates.map { |pa| pa.renamed_phenotype }
     users(:steve).set_scenario_to(1)
     users(:steve).reload
     assert_equal Scenario.find(1), users(:steve).current_scenario
-    assert_equal :red, users(:steve).vials.first.renamed_phenotype(:eye_color, :red)
-    assert_equal :white, users(:steve).vials.first.renamed_phenotype(:eye_color, :white)
+    assert_equal :red, users(:steve).vials.first.renamed_phenotype(:"eye color", :red)
+    assert_equal :white, users(:steve).vials.first.renamed_phenotype(:"eye color", :white)
     users(:steve).set_scenario_to(2, CookedNumberGenerator.new([3,5]))
     users(:steve).reload
     assert_equal Scenario.find(2), users(:steve).current_scenario

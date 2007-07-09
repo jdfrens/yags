@@ -4,10 +4,10 @@ class FlyTest < Test::Unit::TestCase
   fixtures :flies, :genotypes
 
   def test_phenotype_eye_color
-    assert_equal :white, flies(:fly_00).phenotype(:eye_color)
-    assert_equal :red, flies(:fly_01).phenotype(:eye_color)
-    assert_equal :red, flies(:fly_10).phenotype(:eye_color)
-    assert_equal :red, flies(:fly_11).phenotype(:eye_color)
+    assert_equal :white, flies(:fly_00).phenotype(:"eye color")
+    assert_equal :red, flies(:fly_01).phenotype(:"eye color")
+    assert_equal :red, flies(:fly_10).phenotype(:"eye color")
+    assert_equal :red, flies(:fly_11).phenotype(:"eye color")
   end
   
   def test_phenotype_sex

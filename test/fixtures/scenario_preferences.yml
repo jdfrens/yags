@@ -2,7 +2,7 @@
 first_scenario_preference_one:
   id: 1
   scenario_id: 1
-  hidden_character: eye_color
+  hidden_character: eye color
 first_scenario_preference_two:
   id: 2
   scenario_id: 1
@@ -14,7 +14,7 @@ second_scenario_preference_one:
 third_scenario_no_eye_color:
   id: 4
   scenario_id: 3
-  hidden_character: eye_color
+  hidden_character: eye color
 third_scenario_no_wings:
   id: 5
   scenario_id: 3

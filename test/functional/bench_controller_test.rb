@@ -208,13 +208,13 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#character_cols" do
       assert_select "select[name=character_col]"
       assert_select "option[value=sex]"
-      assert_select "option[value=eye_color]"
+      assert_select "option[value=eye color]"
       assert_select "option[value=wings]"
     end
     assert_select "div#character_rows" do
       assert_select "select[name=character_row]"
       assert_select "option[value=sex]"
-      assert_select "option[value=eye_color]"
+      assert_select "option[value=eye color]"
       assert_select "option[value=wings]"
     end
   end
@@ -292,7 +292,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_update_table
-    xhr :post, :update_table, { :vial_id => vials(:vial_one).id, :character_col => "eye_color", 
+    xhr :post, :update_table, { :vial_id => vials(:vial_one).id, :character_col => "eye color", 
         :character_row => "sex" }, user_session(:manage_bench)
     assert_response :success
     
@@ -482,7 +482,7 @@ class BenchControllerTest < Test::Unit::TestCase
         :number => "8", :rack_id => "2"}, user_session(:manage_bench)
     new_vial = Vial.find_by_label("children vial")
     assert_not_nil new_vial
-    assert_equal [:white] * 8, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}
+    assert_equal [:white] * 8, new_vial.flies.map {|fly| fly.phenotype(:"eye color")}
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
     assert_equal 1, new_vial.user_id
@@ -494,7 +494,7 @@ class BenchControllerTest < Test::Unit::TestCase
         :number => "3", :rack_id => "1" }, user_session(:manage_bench)
     new_vial = Vial.find_by_label("children 2")
     assert_not_nil new_vial
-    assert_equal [:red] * 3, new_vial.flies.map {|fly| fly.phenotype(:eye_color)}
+    assert_equal [:red] * 3, new_vial.flies.map {|fly| fly.phenotype(:"eye color")}
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
     assert_equal 1, new_vial.user_id
@@ -520,7 +520,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "form" do
       assert_select "input#sex[value=visible][checked=checked]"
-      assert_select "input#eye_color[value=visible][checked=checked]"
+      assert_select "input[id=eye color][value=visible][checked=checked]"
       assert_select "input#wings[value=visible][checked=checked]"
       assert_select "input#legs[value=visible][checked=checked]"
       assert_select "input#antenna[value=visible][checked=checked]"
@@ -534,7 +534,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "form" do
       assert_select "input#sex[value=visible][type=checkbox][checked=checked]"
-      assert_select "input#eye_color[value=visible][type=checkbox][checked=checked]", 0
+      assert_select "input[id=eye color][value=visible][type=checkbox][checked=checked]", 0
       assert_select "input#wings[value=visible][type=checkbox][checked=checked]", 0
       assert_select "input#legs[value=visible][type=checkbox][checked=checked]"
       assert_select "input#antenna[value=visible][type=checkbox][checked=checked]", 0
@@ -548,7 +548,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "form" do
       assert_select "input#sex[value=visible][type=checkbox][checked=checked]"
-      assert_select "input#eye_color[value=visible][type=checkbox][checked=checked]"
+      assert_select "input[id=eye color][value=visible][type=checkbox][checked=checked]"
       assert_select "input#wings[value=visible][type=checkbox][checked=checked]"
       assert_select "input#legs[value=visible][type=checkbox][checked=checked]", 0
       assert_select "input[type=checkbox][checked=checked]", 3
@@ -562,13 +562,13 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal [:eye_color, :legs], users(:steve).hidden_characters
+    assert_equal [:"eye color", :legs], users(:steve).hidden_characters
     assert_equal [:sex, :wings, :antenna], users(:steve).visible_characters
     
     post :preferences, {:sex => "visible", :wings => "visible", :legs => "visible"}, user_session(:steve)
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal [:eye_color, :antenna], users(:steve).hidden_characters
+    assert_equal [:"eye color", :antenna], users(:steve).hidden_characters
     assert_equal [:sex, :wings, :legs], users(:steve).visible_characters
   end
   
@@ -602,7 +602,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
     assert_equal scenarios(:another_scenario), users(:steve).current_scenario
-    assert_equal [:eye_color, :eye_color], 
+    assert_equal [:"eye color", :"eye color"], 
         users(:steve).phenotype_alternates.map { |pa| pa.affected_character.intern }
     assert_equal [:red, :white].to_set, 
         users(:steve).phenotype_alternates.map { |pa| pa.original_phenotype.intern }.to_set

@@ -6,7 +6,7 @@ no_legs_jeremy:
 no_eyes_for_randy:
   id: 2
   user_id: 4
-  hidden_character: eye_color
+  hidden_character: eye color
 no_wings_for_randy:
   id: 3
   user_id: 4

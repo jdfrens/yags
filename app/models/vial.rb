@@ -63,9 +63,15 @@ class Vial < ActiveRecord::Base
   def flies_of_type (characters, phenotypes)
     characters, phenotypes = [*characters], [*phenotypes]
     selection = flies
-    characters.each_with_index do |character, i|
+    characters.zup(phenotypes) do |character, phenotype|
+      #
+      alternate = user.phenotype_alternates.select do |pa|
+        pa.affected_character.intern == character and pa.renamed_phenotype.intern == phenotype
+      end
+      phenotype = alternate.first.original_phenotype.intern if alternate != []
+      #
       selection = selection.select do |fly|
-        fly.phenotype(character) == phenotypes[i]
+        fly.phenotype(character) == phenotype
       end
     end
     selection
@@ -90,6 +96,7 @@ class Vial < ActiveRecord::Base
     counts
   end
   
+  # i don't know that this is the right location for this method...
   def renamed_phenotype(character, phenotype)
     phenotype_alternate = user.phenotype_alternates.select do |pa|
       pa.scenario_id == user.current_scenario.id and 

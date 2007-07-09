@@ -13,14 +13,16 @@
                 <tr>
                     <th>Mom</th>
                     <% @visible_characters.each do |ch| -%>
-                        <td><%= @mom.phenotype(ch) %></td>
+                        <td><%= @mom.vial.renamed_phenotype(ch, @mom.phenotype(ch)) %></td>
+						        <!-- yucky code here... -->
                     <% end -%>
                     <td><%= link_to @mom_vial.label, :action => :view_vial, :id => @mom_vial %></td>
                 </tr>
                 <tr>
                     <th>Dad</th>
                     <% @visible_characters.each do |ch| -%>
-                        <td><%= @dad.phenotype(ch) %></td>
+                        <td><%= @dad.vial.renamed_phenotype(ch, @dad.phenotype(ch)) %></td>
+						        <!-- yucky here too... -->
                     <% end -%>
                     <td><%= link_to @dad_vial.label, :action => :view_vial, :id => @dad_vial %></td>
                 </tr>

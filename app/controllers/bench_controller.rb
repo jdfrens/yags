@@ -38,7 +38,7 @@ class BenchController < ApplicationController
     else
       @current_scenario_title = "None Selected"
     end
-    @scenario_titles_and_ids = [["None", nil]]
+    @scenario_titles_and_ids = []
     current_user.enrolled_in.scenarios.each do |scenario|
       @scenario_titles_and_ids << [scenario.title, scenario.id]
     end

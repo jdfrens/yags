@@ -112,7 +112,8 @@ class VialTest < Test::Unit::TestCase
   end
   
   def test_collect_four_flies_from_field
-    new_vial = Vial.collect_from_field({ :label => "four fly vial"}, 4, CookedBitGenerator.new([1]))
+    new_vial = Vial.collect_from_field({ :label => "four fly vial", :rack_id => 1 }, 4, 
+        CookedBitGenerator.new([1]))
     assert_equal ([:female] * 4), new_vial.flies.map {|fly| fly.phenotype(:sex)}
     assert_equal ([:red] * 4), new_vial.flies.map {|fly| fly.phenotype(:eye_color)} 
     assert_equal ([:straight] * 4), new_vial.flies.map {|fly| fly.phenotype(:wings)}
@@ -120,7 +121,7 @@ class VialTest < Test::Unit::TestCase
   end
   
   def test_collect_nine_flies_from_field
-    new_vial = Vial.collect_from_field({ :label => "nine fly vial"}, 9, 
+    new_vial = Vial.collect_from_field({ :label => "nine fly vial", :rack_id => 1 }, 9, 
         CookedBitGenerator.new([0, 1, 0, 0]))
     assert_equal_set(([:male] * 7 + [:female] * 2), 
         new_vial.flies.map {|fly| fly.phenotype(:sex)})
@@ -136,26 +137,26 @@ class VialTest < Test::Unit::TestCase
   end
   
   def test_collecting_field_vial_with_allele_frequencies
-    recessive_vial = Vial.collect_from_field({ :label => "white-eyed curly and shaven flies"}, 14, 
+    recessive_vial = Vial.collect_from_field({ :label => "white-eyed curly and shaven flies", :rack_id => 1 }, 14, 
         RandomBitGenerator.new, { :eye_color => 0.0, :wings => 0.0, :legs => 0.0})
     assert_equal 14, recessive_vial.number_of_flies([:eye_color],[:white])
     assert_equal 14, recessive_vial.number_of_flies([:wings],[:curly])
     assert_equal 14, recessive_vial.number_of_flies([:legs],[:smooth])
     
-    dominant_vial = Vial.collect_from_field({ :label => "red-eyed gruff flies"}, 15, 
+    dominant_vial = Vial.collect_from_field({ :label => "red-eyed gruff flies", :rack_id => 1}, 15, 
         RandomBitGenerator.new, { :eye_color => 1.0, :wings => 1.0, :legs => 1.0})
     assert_equal 15, dominant_vial.number_of_flies([:eye_color],[:red])
     assert_equal 15, dominant_vial.number_of_flies([:wings],[:straight])
     assert_equal 15, dominant_vial.number_of_flies([:legs],[:hairy])
     
-    strange_male_vial = Vial.collect_from_field({ :label => "wasp flies"}, 16, 
+    strange_male_vial = Vial.collect_from_field({ :label => "wasp flies", :rack_id => 1}, 16, 
         RandomBitGenerator.new, { :eye_color => 0.0, :sex => 0.0})
     assert_equal 16, strange_male_vial.number_of_flies([:eye_color],[:white])
     assert_equal 16, strange_male_vial.number_of_flies([:sex],[:male])
   end
   
   def test_sex_linkage_in_field_vials
-    antenna_flies_vial = Vial.collect_from_field({ :label => "flies with antenna"}, 11, 
+    antenna_flies_vial = Vial.collect_from_field({ :label => "flies with antenna", :rack_id => 1}, 11, 
         RandomBitGenerator.new, { :sex => 0.0 })
     antenna_flies_vial.flies.each do |fly|
       fly_dad_allele = fly.genotypes.select do |g| 
@@ -166,7 +167,7 @@ class VialTest < Test::Unit::TestCase
   end
   
   def test_making_three_babies_and_a_vial
-    new_vial = Vial.make_babies_and_vial({ :label => "three fly syblings", 
+    new_vial = Vial.make_babies_and_vial({ :label => "three fly syblings", :rack_id => 1, 
         :mom_id => "6", :dad_id => "1" }, 3, CookedBitGenerator.new([0]))
     assert_equal ([:female] * 3), new_vial.flies.map {|fly| fly.phenotype(:sex)}
     assert_equal ([:white] * 3), new_vial.flies.map {|fly| fly.phenotype(:eye_color)} 
@@ -175,7 +176,7 @@ class VialTest < Test::Unit::TestCase
   end
   
   def test_making_seven_babies_and_a_vial
-    new_vial = Vial.make_babies_and_vial({ :label => "seven fly syblings", 
+    new_vial = Vial.make_babies_and_vial({ :label => "seven fly syblings", :rack_id => 1,
         :mom_id => "4", :dad_id => "3" }, 7, CookedBitGenerator.new([0, 1, 1, 0, 0, 0]))
     assert_equal_set(([:male] * 2 + [:female] * 5), 
         new_vial.flies.map {|fly| fly.phenotype(:sex)})
@@ -193,7 +194,7 @@ class VialTest < Test::Unit::TestCase
   def test_sex_linkage_of_antenna
     mom_ids = [4, 6, 8]; dad_ids = [3, 7, 10]
     mom_ids.zup(dad_ids) do |mom_id, dad_id|
-      children_vial = Vial.make_babies_and_vial({ :label => "sex linkage test vial", 
+      children_vial = Vial.make_babies_and_vial({ :label => "sex linkage test vial", :rack_id => 1, 
           :mom_id => mom_id, :dad_id => dad_id }, 12)
       
       children_vial.flies.each do |fly|

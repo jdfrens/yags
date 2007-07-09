@@ -11,7 +11,15 @@ class User < ActiveRecord::Base
   belongs_to :enrolled_in, :class_name => "Course", :foreign_key => "course_id"
   
   def solutions
-    Solution.find_all_by_vial_id(vials.map { |v| v.id })
+    Solution.find_all_by_vial_id(vials.map { |v| v.id }, :order => "number")
+  end
+  
+  def solutions_as_hash
+    answer = Hash.new
+    solutions.each do |solution|
+      answer[solution.number] = solution
+    end
+    answer
   end
   
   def hidden_characters

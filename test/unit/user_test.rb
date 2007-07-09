@@ -30,6 +30,15 @@ class UserTest < Test::Unit::TestCase
     assert_equal_set [solutions(:steve_solves_1), solutions(:steve_solves_8)], users(:steve).solutions
   end
   
+  def test_solutions_as_hash
+    assert_equal({}, users(:randy).solutions_as_hash)
+    assert_equal({ 2 => solutions(:jeremy_solves_2) }, users(:jeremy).solutions_as_hash)
+    assert_equal({ 1 => solutions(:steve_solves_1), 8 => solutions(:steve_solves_8) }, users(:steve).solutions_as_hash)
+    assert_equal solutions(:steve_solves_8), users(:steve).solutions_as_hash[8]
+    assert_nil users(:steve).solutions_as_hash[5]
+    assert_nil users(:steve).solutions_as_hash[9]
+  end
+  
   def test_hidden_characters
     assert_equal [:eye_color, :wings, :antenna], users(:randy).hidden_characters
     assert_equal [:legs, :antenna], users(:jeremy).hidden_characters

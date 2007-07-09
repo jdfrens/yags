@@ -35,10 +35,6 @@ class LabController < ApplicationController
     end
   end
   
-  def view_vial
-    
-  end
-  
   def choose_course_scenarios
     if params[:id] and @course = Course.find_by_id(params[:id]) and current_user == @course.instructor
       @scenarios = Scenario.find(:all)
@@ -117,7 +113,7 @@ class LabController < ApplicationController
   end
   
   def view_student_vial
-    # TODO make and test
+    # TODO: make and test
   end
 
 end

@@ -1,4 +1,4 @@
 class Solution < ActiveRecord::Base
-  belongs_to :via
+  belongs_to :vial
   
 end

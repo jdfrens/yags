@@ -24,13 +24,11 @@
 		<% for student in @students %>
 		<tr>
 			<th><%= student.username %></th>
-			<% solution_numbers = [] %> 
-			<% student.solutions.find_all { |solution| solution_numbers << solution.number } %> 
 			<% 1.upto(9) do |solution_number| %>
 			<td>
-				<% if solution_numbers.include? solution_number %>
-				  <%= link_to 'X', :action => 'view_vial', :id => "#" %>
-				<% end %>
+			<% if student.solutions_as_hash[solution_number] %>
+				<%= link_to 'X', :action => 'view_student_vial', :id => student.solutions_as_hash[solution_number].vial_id %>
+			<% end %>
 			</td>
 			<% end %>
 		</tr>

@@ -13,10 +13,10 @@
                        :before => visual_effect(:appear, 'spinner'),
                        :complete => visual_effect(:fade, 'spinner')  do -%>
                 <div id="character_rows">
-                    <label for="character_select_row"><strong>Rows: </strong></label><%= select_tag(:character_row, options_for_select(@visible_characters, @rows), :onchange => "onsubmit()"  ) %>
+                    <label for="character_select_row"><strong>Rows: </strong></label><%= select_tag(:character_row, options_for_select(@visible_characters, @row_character), :onchange => "onsubmit()"  ) %>
                 </div>
                 <div id="character_cols">
-                    <label for="character_select_col"><strong>Columns: </strong></label><%= select_tag(:character_col, options_for_select(@visible_characters , @columns), :onchange => "onsubmit()"  ) %>
+                    <label for="character_select_col"><strong>Columns: </strong></label><%= select_tag(:character_col, options_for_select(@visible_characters , @column_character), :onchange => "onsubmit()"  ) %>
                 </div>
                 <%= hidden_field_tag(:vial_id, @vial.id) %>
             <% end -%>

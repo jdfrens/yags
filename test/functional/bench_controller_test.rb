@@ -588,9 +588,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "form" do
       assert_select "select#scenario_id" do
-        assert_select "option[value=]", "None"
         assert_select "option[value=1]", "forgetful instructor"
-        assert_select "option", 2
+        assert_select "option", 1
       end
     end
   end

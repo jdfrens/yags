@@ -118,7 +118,7 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_set_scenario_to
-    users(:steve).set_scenario_to(2, CookedNumberGenerator.new([1,2]))
+    users(:steve).set_scenario_to(2, CookedNumberGenerator.new([1,1]))
     users(:steve).reload
     assert_equal Scenario.find(2), users(:steve).current_scenario
     assert_equal :turquoise, users(:steve).vials.first.renamed_phenotype(:"eye color", :red)
@@ -129,11 +129,18 @@ class UserTest < Test::Unit::TestCase
     assert_equal Scenario.find(1), users(:steve).current_scenario
     assert_equal :red, users(:steve).vials.first.renamed_phenotype(:"eye color", :red)
     assert_equal :white, users(:steve).vials.first.renamed_phenotype(:"eye color", :white)
-    users(:steve).set_scenario_to(2, CookedNumberGenerator.new([3,5]))
+    users(:steve).set_scenario_to(2, CookedNumberGenerator.new([0,4]))
     users(:steve).reload
     assert_equal Scenario.find(2), users(:steve).current_scenario
     assert_equal ["beige", "turquoise"], users(:steve).phenotype_alternates.map { |pa| pa.renamed_phenotype } 
                   # unchanged
+  end
+ 
+  def test_set_scenario_to_doesnt_assign_red_and_white_to_blue_and_blue
+    users(:steve).set_scenario_to(2, CookedNumberGenerator.new([3,3]))
+    users(:steve).reload
+    assert_equal Scenario.find(2), users(:steve).current_scenario
+    assert_equal ["blue", "green"], users(:steve).phenotype_alternates.map { |pa| pa.renamed_phenotype }
   end
   
   def test_destruction_of_courses_along_with_instructor

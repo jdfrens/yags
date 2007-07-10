@@ -1,20 +1,47 @@
 <div id="student-vial-info">
 	<h3>Vial Information</h3>
-	<strong>Owner: </strong>	
+	<strong>Owner: </strong><%= @vial.user.username %>	
 	<br />
-	<strong>Rack: </strong>
+	<strong>Rack: </strong><%= @rack.label %>
 	<br />
-	<strong>Solution to: </strong>
+	<strong>Solution to: </strong><%= @vial.solution.number %>
 	<br />
-	<strong>Genotypes: </strong>visual representation of genotypes below this
-</div>
+	<strong>Genotypes: </strong>
+	<br />
+	</div>
 <div id="pedigree-info">
 	<h3>Pedigree Information</h3>
-	
+        <table id="pedigree-info">
+        	<% if @parents %>
+            <tr>
+                <th></th>
+                <% @visible_characters.each do |ch| -%>
+                    <th><%= ch %></th>
+                <% end -%>
+                <th>source vial</th>
+            </tr>
+            <tr>
+                <th>Mom</th>
+                <% @visible_characters.each do |ch| -%>
+                    <td><%= @mom.vial.renamed_phenotype(ch, @mom.phenotype(ch)) %></td>
+                <% end -%>
+                <td><%= link_to @mom_vial.label, :action => :view_student_vial, :id => @mom_vial %></td>
+            </tr>
+            <tr>
+        	    <th>Dad</th>
+                    <% @visible_characters.each do |ch| -%>
+                        <td><%= @dad.vial.renamed_phenotype(ch, @dad.phenotype(ch)) %></td>
+                    <% end -%>
+                <td><%= link_to @dad_vial.label, :action => :view_student_vial, :id => @dad_vial %></td>
+            </tr>
+			<% else %>
+                <p>This vial is a field vial.  There are no parents.</p>
+            <% end %>
+	    </table>
 </div>
 <div id="summary-stats">
 	<h3>Summary statistics</h3>
-	<strong>Count of flies: </strong>
+	<strong>Sample size: </strong><%= @vial.flies.size %>
 	<br />
 	<strong>Distance from field vial: </strong>
 </div>

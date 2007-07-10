@@ -366,13 +366,13 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "select[name=vial]"
       assert_select "strong", "First Vial:"
       assert_select "input[name=which_vial][value=1]"
-      assert_select "img#spinner_1[src^=/images/ajax-loader-red.gif]"
+      assert_select "img#spinner_1[src^=/images/green-load.gif]"
     end
     assert_select "div#vial_selector_2" do
       assert_select "select[name=vial]"
       assert_select "strong", "Second Vial:"
       assert_select "input[name=which_vial][value=2]"
-      assert_select "img#spinner_2[src^=/images/ajax-loader-red.gif]"
+      assert_select "img#spinner_2[src^=/images/green-load.gif]"
     end
     assert_select "div.section_header", "First Vial"
     assert_select "div#big-table-1"

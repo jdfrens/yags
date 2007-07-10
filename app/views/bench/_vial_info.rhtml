@@ -7,7 +7,7 @@
 		<p><strong>Rack: </strong><%= link_to @rack.label, :action => :move_vial_to_another_rack, :id => @vial %></p>
 
         <p><strong>Total number of flies: </strong><%= @vial.flies.size %></p>
-
+		
         <div>
             <% form_remote_tag :url => {:action => :update_table},
                        :before => visual_effect(:appear, 'spinner'),
@@ -18,10 +18,10 @@
                 <div id="character_cols">
                     <label for="character_select_col"><strong>Columns: </strong></label><%= select_tag(:character_col, options_for_select(@visible_characters , @column_character), :onchange => "onsubmit()"  ) %>
                 </div>
+				<div style="display: inline;"><%= image_tag '/images/green-load.gif', :id => 'spinner', :style => 'display: none;' %></div>
                 <%= hidden_field_tag(:vial_id, @vial.id) %>
             <% end -%>
         </div>
-<%= image_tag '/images/ajax-loader-red.gif', :id => 'spinner', :style => 'display: none;' %>
         <br />
         <div id="vial-table">
 				<br />

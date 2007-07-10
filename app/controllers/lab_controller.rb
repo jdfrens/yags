@@ -1,9 +1,8 @@
 class LabController < ApplicationController
-
   restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course, 
-      :delete_course, :list_scenarios, :add_scenario, :delete_scenario, :view_scenario,
-      :view_cheat_sheet, :choose_course_scenarios ]
-
+  :delete_course, :list_scenarios, :add_scenario, :delete_scenario, :view_scenario,
+  :view_cheat_sheet, :choose_course_scenarios ]
+  
   def index 
     @username = current_user.username
   end
@@ -27,7 +26,7 @@ class LabController < ApplicationController
   
   def view_course
     if params[:id] and Course.find_by_id(params[:id]) and 
-        Course.find(params[:id]).instructor == current_user
+      Course.find(params[:id]).instructor == current_user
       @course = Course.find(params[:id])
       @students = @course.students
     else
@@ -52,7 +51,7 @@ class LabController < ApplicationController
   
   def delete_course
     if params[:id] and Course.find_by_id(params[:id]) and 
-        Course.find(params[:id]).instructor == current_user
+      Course.find(params[:id]).instructor == current_user
       Course.find(params[:id]).destroy
     end
     redirect_to :action => "list_courses"
@@ -106,14 +105,24 @@ class LabController < ApplicationController
     @characters = [] 
     @species.characters.each do |character|
       @characters << {:name => character.to_s, :hom_dom => @species.phenotype_from(character, 1,1).to_s, 
-          :het => @species.phenotype_from(character, 1,0).to_s, :rec => @species.phenotype_from(character, 0,0).to_s,
-          :location => @species.position_of(@species.gene_number_of(character)) }
+        :het => @species.phenotype_from(character, 1,0).to_s, :rec => @species.phenotype_from(character, 0,0).to_s,
+        :location => @species.position_of(@species.gene_number_of(character)) }
       # use .map instead?
     end
   end
   
   def view_student_vial
-    # TODO: make and test
+    if params[:id] && @vial = Vial.find_by_id(params[:id])
+      @rack = Rack.find(@vial.rack_id)
+      if @parents = (@vial.mom_id && @vial.dad_id)
+        @mom, @dad = Fly.find(@vial.mom_id), Fly.find(@vial.dad_id)
+        @mom_vial = Vial.find @mom.vial_id
+        @dad_vial = Vial.find @dad.vial_id
+      end
+      @visible_characters = current_user.visible_characters
+    else
+      redirect_to :action => 'view_course'
+    end
   end
-
+  
 end

@@ -100,7 +100,6 @@ class LabControllerTest < Test::Unit::TestCase
     assert_select "div#table_of_student_solutions"
     assert_select "table" do
       assert_select "tr th", ""
-#      assert_select "tr th:nth-child(2)", "Solutions"
       assert_select "tr:nth-child(2) th", "jeremy"
       assert_select "tr:nth-child(2) td:nth-child(3)", "X"
       assert_select "tr:nth-child(3) th", "randy"
@@ -158,6 +157,20 @@ class LabControllerTest < Test::Unit::TestCase
   def test_choose_course_scenarios_fails_when_NOT_instructors_course
     get :choose_course_scenarios, {:id => 1 }, user_session(:darwin)
     assert_redirected_to :action => :index
+  end
+  
+  def view_student_vial
+    get :view_student_vial, {:id => vials(:random_vial).id }, user_session(:mendel)
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "p", "Owner: jeremy"
+    assert_select "p", "Rack: jeremy bench"
+    assert_select "p", "Solution to: 2"
+    
+    assert_select "div#pedigree-info table" do
+      assert_select "p", "No parents!"
+    end
   end
   
   def test_delete_course

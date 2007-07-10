@@ -14,6 +14,7 @@
 </div>
 
 <div id="table_of_student_solutions">
+	<%= periodically_call_remote :url => { :action => 'view_course', :id => @course.id }, :frequency => 60 %>
 	<table>
 		<tr>
 			<th></th>

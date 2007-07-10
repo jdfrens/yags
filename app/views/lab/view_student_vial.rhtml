@@ -1,17 +1,41 @@
 <div id="student-vial-info">
 	<h3>Vial Information</h3>
-	<strong>Owner: </strong><%= @vial.user.username %>	
+	<p><strong>Owner: </strong><%= @vial.user.username %>	
 	<br />
 	<strong>Rack: </strong><%= @rack.label %>
 	<br />
 	<strong>Solution to: </strong><%= @vial.solution.number %>
 	<br />
-	<strong>Genotypes: </strong>
-	<br />
-	</div>
+	<strong>Genotypes: </strong>For the time being, these graphs are generated with JavaScript and are showing the total number of flies in the vial.  
+	<br />They might be replaced or scrapped altogether.
+	<br /></p>
+	<script type="text/javascript">
+var options = {
+   "colorScheme": PlotKit.Base.palette(PlotKit.Base.baseColors()[4]),
+   "xTicks": [{v:0, label:"AA"}, 
+          {v:1, label:"Aa"}, 
+          {v:2, label:"aa"}]
+};
+
+function drawGraph() {
+    var layout = new PlotKit.Layout("bar", options);
+	var AA = <%= @vial.flies.size %>
+	var Aa = <%= @vial.flies.size %>
+	var aa = <%= @vial.flies.size %>
+    layout.addDataset("genotypes", [[0, AA], [1, Aa], [2, aa]]);
+    layout.evaluate();
+    var canvas = MochiKit.DOM.getElement("graph");
+    var plotter = new PlotKit.SweetCanvasRenderer(canvas, layout, options);
+    plotter.render();
+}
+
+MochiKit.DOM.addLoadEvent(drawGraph);
+</script>
+<div><canvas id="graph" height="300" width="350"></canvas></div>
+</div>
 <div id="pedigree-info">
 	<h3>Pedigree Information</h3>
-        <table id="pedigree-info">
+        <table>
         	<% if @parents %>
             <tr>
                 <th></th>

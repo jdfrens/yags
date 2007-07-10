@@ -358,28 +358,6 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
-  def test_mate_flies_page
-    get :mate_flies, {}, user_session(:manage_bench)
-    assert_response :success
-    assert_standard_layout
-    assert_select "div#vial_selector_1" do
-      assert_select "select[name=vial]"
-      assert_select "strong", "First Vial:"
-      assert_select "input[name=which_vial][value=1]"
-      assert_select "img#spinner_1[src^=/images/green-load.gif]"
-    end
-    assert_select "div#vial_selector_2" do
-      assert_select "select[name=vial]"
-      assert_select "strong", "Second Vial:"
-      assert_select "input[name=which_vial][value=2]"
-      assert_select "img#spinner_2[src^=/images/green-load.gif]"
-    end
-    assert_select "div.section_header", "First Vial"
-    assert_select "div#big-table-1"
-    assert_select "div.section_header", "Second Vial"
-    assert_select "div#big-table-2"
-  end
-  
   def test_collect_mate_data
     get :mate_flies, {}, user_session(:manage_bench)
     assert_response :success
@@ -479,6 +457,28 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
+  def test_mate_flies_page
+    get :mate_flies, {}, user_session(:manage_bench)
+    assert_response :success
+    assert_standard_layout
+    assert_select "div#vial_selector_1" do
+      assert_select "select[name=vial]"
+      assert_select "strong", "First Vial:"
+      assert_select "input[name=which_vial][value=1]"
+      assert_select "img#spinner_1[src^=/images/green-load.gif]"
+    end
+    assert_select "div#vial_selector_2" do
+      assert_select "select[name=vial]"
+      assert_select "strong", "Second Vial:"
+      assert_select "input[name=which_vial][value=2]"
+      assert_select "img#spinner_2[src^=/images/green-load.gif]"
+    end
+    assert_select "div.section_header", "First Vial"
+    assert_select "div#big-table-1"
+    assert_select "div.section_header", "Second Vial"
+    assert_select "div#big-table-2"
+  end
+  
   def test_mate_flies
     number_of_old_vials = Vial.find(:all).size
     post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, 
@@ -515,6 +515,13 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_mate_flies_fails_when_NOT_logged_in
     post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, :number => "8", :rack_id => "3"  }
     assert_redirected_to_login
+  end
+  
+  def test_mate_flies_doesnt_blow_up_when_two_parents_are_NOT_selected
+    post :mate_flies, { :vial => { :label => "children vial", :dad_id => "1" }, 
+        :number => "8", :rack_id => "2"}, user_session(:steve)
+    assert_standard_layout
+    assert flash[:error].include?("Hot pickles!") # inspiration: _why
   end
   
   def test_preferences_page

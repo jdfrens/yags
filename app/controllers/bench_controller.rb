@@ -78,7 +78,10 @@ class BenchController < ApplicationController
       @rack_labels_and_ids << [rack.label, rack.id]
     end
     if params[:vial]
-      if Fly.find(params[:vial][:mom_id]).vial.user_id == current_user.id and 
+      if params[:vial][:mom_id].nil? or params[:vial][:dad_id].nil?
+        flash[:error] = "Hot pickles! You didn't select two parents!"
+        # we're mixing the validation box and flash[:error] messages...
+      elsif Fly.find(params[:vial][:mom_id]).vial.user_id == current_user.id and 
         Fly.find(params[:vial][:dad_id]).vial.user_id == current_user.id
         params[:vial][:rack_id] = params[:rack_id]
         @vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)

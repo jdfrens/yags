@@ -394,7 +394,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
 
   def test_show_mateable_flies
-    xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }, user_session(:manage_bench)
+    xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }, user_session(:steve)
     assert_response :success
     assert_select "table" do
       assert_select "th", 32 * 5
@@ -416,12 +416,15 @@ class BenchControllerTest < Test::Unit::TestCase
     xhr :post, :show_mateable_flies, {:vial => vials(:vial_with_many_flies) }, user_session(:randy)
     assert_response :success
     assert_select "table" do
-      assert_select "th", 4 * 2
-      assert_select "td", 4
-      assert_select "th", "female", 2
-      assert_select "th", "male", 2
-      assert_select "th", "smooth", 2
-      assert_select "th", "hairy", 2
+      assert_select "th", 12 * 3
+      assert_select "td", 12
+      assert_select "th", "female", 6
+      assert_select "th", "male", 6
+      assert_select "th", "smooth", 6
+      assert_select "th", "hairy", 6
+      assert_select "th", "no seizure", 4
+      assert_select "th", "20% seizure", 4
+      assert_select "th", "40% seizure", 4
     end
   end
   
@@ -538,7 +541,8 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "input#wings[value=visible][type=checkbox][checked=checked]", 0
       assert_select "input#legs[value=visible][type=checkbox][checked=checked]"
       assert_select "input#antenna[value=visible][type=checkbox][checked=checked]", 0
-      assert_select "input[type=checkbox][checked=checked]", 2
+      assert_select "input#seizure[value=visible][type=checkbox][checked=checked]"
+      assert_select "input[type=checkbox][checked=checked]", 3
     end
   end
   
@@ -557,18 +561,18 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_change_preferences
-    assert_equal 0, users(:steve).hidden_characters.size
+    assert_equal 1, users(:steve).hidden_characters.size
     post :preferences, {:sex => "visible", :wings => "visible", :antenna => "visible"}, user_session(:steve)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal [:"eye color", :legs], users(:steve).hidden_characters
+    assert_equal [ :seizure, :"eye color", :legs], users(:steve).hidden_characters
     assert_equal [:sex, :wings, :antenna], users(:steve).visible_characters
     
     post :preferences, {:sex => "visible", :wings => "visible", :legs => "visible"}, user_session(:steve)
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
-    assert_equal [:"eye color", :antenna], users(:steve).hidden_characters
+    assert_equal [:seizure, :"eye color", :antenna], users(:steve).hidden_characters
     assert_equal [:sex, :wings, :legs], users(:steve).visible_characters
   end
   

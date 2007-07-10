@@ -5,12 +5,12 @@ class ScenarioTest < Test::Unit::TestCase
   
   def test_hidden_characters
     assert_equal [:"eye color", :antenna], scenarios(:first_scenario).hidden_characters
-    assert_equal [:antenna], scenarios(:another_scenario).hidden_characters
-    assert_equal [:"eye color", :wings, :antenna], scenarios(:only_sex_and_legs).hidden_characters
+    assert_equal [:antenna, :seizure], scenarios(:another_scenario).hidden_characters
+    assert_equal [:"eye color", :wings, :antenna, :seizure], scenarios(:only_sex_and_legs).hidden_characters
   end
   
   def test_visible_characters
-    assert_equal [:sex, :wings, :legs], scenarios(:first_scenario).visible_characters
+    assert_equal [:sex, :wings, :legs, :seizure], scenarios(:first_scenario).visible_characters
     assert_equal [:sex, :"eye color", :wings, :legs], scenarios(:another_scenario).visible_characters
     assert_equal [:sex, :legs], scenarios(:only_sex_and_legs).visible_characters
   end

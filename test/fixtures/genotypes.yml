@@ -29,6 +29,12 @@ fly_00_antenna:
   mom_allele: 1
   dad_allele: 0
   gene_number: 144
+fly_00_seizure:
+  id: 211
+  fly_id: 1
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 19
 fly_01_eye_color:
   id: 3
   fly_id: 2
@@ -59,6 +65,12 @@ fly_01_antenna:
   mom_allele: 0
   dad_allele: 0
   gene_number: 144
+fly_01_seizure:
+  id: 212
+  fly_id: 2
+  mom_allele: 0
+  dad_allele: 1
+  gene_number: 19
 fly_10_eye_color:
   id: 5
   fly_id: 3
@@ -89,6 +101,12 @@ fly_10_antenna:
   mom_allele: 1
   dad_allele: 0
   gene_number: 144
+fly_10_seizure:
+  id: 213
+  fly_id: 3
+  mom_allele: 1
+  dad_allele: 0
+  gene_number: 19
 fly_11_eye_color:
   id: 7
   fly_id: 4
@@ -119,6 +137,12 @@ fly_11_antenna:
   mom_allele: 1
   dad_allele: 1
   gene_number: 144
+fly_11_seizure:
+  id: 214
+  fly_id: 4
+  mom_allele: 1
+  dad_allele: 0
+  gene_number: 19
 bob_eye_color:
   id: 9
   fly_id: 5
@@ -149,6 +173,12 @@ bob_antenna:
   mom_allele: 0
   dad_allele: 0
   gene_number: 144
+bob_seizure:
+  id: 215
+  fly_id: 5
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 19
 fly_mom_eye_color:
   id: 11
   fly_id: 6
@@ -179,6 +209,12 @@ fly_mom_antenna:
   mom_allele: 0
   dad_allele: 0
   gene_number: 144
+fly_mom_seizure:
+  id: 216
+  fly_id: 6
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 19
 fly_dad_eye_color:
   id: 13
   fly_id: 7
@@ -209,6 +245,12 @@ fly_dad_antenna:
   mom_allele: 0
   dad_allele: 0
   gene_number: 144
+fly_dad_seizure:
+  id: 217
+  fly_id: 7
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 19
 child_one_eye_color:
   id: 15
   fly_id: 8
@@ -239,6 +281,12 @@ child_one_antenna:
   mom_allele: 0
   dad_allele: 0
   gene_number: 144
+child_one_seizure:
+  id: 218
+  fly_id: 8
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 19
 child_two_eye_color:
   id: 17
   fly_id: 9
@@ -269,6 +317,12 @@ child_two_antenna:
   mom_allele: 0
   dad_allele: 0
   gene_number: 144
+child_two_seizure:
+  id: 219
+  fly_id: 9
+  mom_allele: 0
+  dad_allele: 0
+  gene_number: 19
 gamete_maker_color:
   id: 19
   fly_id: 10
@@ -293,9 +347,15 @@ gamete_maker_legs:
   mom_allele: 1
   dad_allele: 0
   gene_number: 7
-gemete_maker_antenna:
+gamete_maker_antenna:
   id: 210
   fly_id: 10
   mom_allele: 1
   dad_allele: 0
   gene_number: 144
+gamete_maker_seizure:
+  id: 220
+  fly_id: 10
+  mom_allele: 1
+  dad_allele: 0
+  gene_number: 19

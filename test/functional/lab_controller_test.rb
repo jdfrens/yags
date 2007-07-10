@@ -224,7 +224,8 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "input[value=legs][checked=checked]"
       assert_select "input[value=wings][checked=checked]"
       assert_select "input[value=antenna][checked=checked]"
-      assert_select "input[type=checkbox][checked=checked]", 6
+      assert_select "input[value=seizure][checked=checked]"
+      assert_select "input[type=checkbox][checked=checked]", 7
     end
   end
   
@@ -235,7 +236,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Final Exam")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
-    assert_equal [:sex, :"eye color", :wings, :legs, :antenna], scenario.hidden_characters
+    assert_equal [:sex, :"eye color", :wings, :legs, :antenna, :seizure], scenario.hidden_characters
   end 
   
   def test_add_scenario_works_again
@@ -245,7 +246,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Intro to Dominance")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
-    assert_equal [:legs, :antenna], scenario.hidden_characters
+    assert_equal [:legs, :antenna, :seizure], scenario.hidden_characters
     assert_equal [:"eye color"], scenario.renamed_characters.map { |rc| rc.renamed_character.intern }
   end 
   
@@ -313,9 +314,9 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "table" do
-      assert_select "tr", 6
-      assert_select "th", 10
-      assert_select "td", 20
+      assert_select "tr", 7
+      assert_select "th", 11
+      assert_select "td", 24
     end
   end
   

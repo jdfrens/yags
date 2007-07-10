@@ -34,7 +34,8 @@ class Fly < ActiveRecord::Base
       dad_gamete = partner.make_gamete(bit_gen)
       mom_gamete.zup(dad_gamete) do |mom, dad|
         child.genotypes << Genotype.create!(:gene_number => mom[1],
-            :mom_allele => mom[0], :dad_allele => dad[0])
+            :mom_allele => mom[0], 
+            :dad_allele => dad[0])
       end
       child.save!
       child

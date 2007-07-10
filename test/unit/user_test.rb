@@ -21,7 +21,8 @@ class UserTest < Test::Unit::TestCase
         users(:randy).character_preferences.map { |p| p.hidden_character.intern }
     assert_equal [:legs], 
         users(:jeremy).character_preferences.map { |p| p.hidden_character.intern }
-    assert_equal 0, users(:steve).character_preferences.size
+    assert_equal [:seizure], 
+        users(:steve).character_preferences.map { |p| p.hidden_character.intern }
   end
   
   def test_solutions
@@ -41,12 +42,12 @@ class UserTest < Test::Unit::TestCase
   
   def test_hidden_characters
     assert_equal [:"eye color", :wings, :antenna], users(:randy).hidden_characters
-    assert_equal [:legs, :antenna], users(:jeremy).hidden_characters
-    assert_equal [], users(:steve).hidden_characters
+    assert_equal [:legs, :antenna, :seizure], users(:jeremy).hidden_characters
+    assert_equal [:seizure], users(:steve).hidden_characters
   end
   
   def test_visible_characters
-    assert_equal [:sex, :legs], users(:randy).visible_characters
+    assert_equal [:sex, :legs, :seizure], users(:randy).visible_characters
     assert_equal [:sex, :"eye color", :wings], users(:jeremy).visible_characters
     assert_equal [:sex, :"eye color", :wings, :legs, :antenna], users(:steve).visible_characters
     

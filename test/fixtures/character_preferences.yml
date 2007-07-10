@@ -15,3 +15,7 @@ no_antenna_for_randy:
   id: 4
   user_id: 4
   hidden_character: antenna
+no_seizures_for_steve:
+  id: 5
+  user_id: 1
+  hidden_character: seizure

@@ -19,19 +19,19 @@ class FlyTest < Test::Unit::TestCase
   
   def test_genotypes_are_destroyed_along_with_fly
     assert_dependents_destroyed(Fly, Genotype, :foreign_key => "fly_id", 
-        :fixture_id => 5, :number_of_dependents => 5)
+        :fixture_id => 5, :number_of_dependents => 6)
   end
   
   def test_make_gamete
-    assert_equal [[1,137],[1,144],[1,52],[1,163],[1,7]], 
+    assert_equal [[1,137],[1,144],[1,52],[1,163],[1,7],[1,19]], 
         flies(:gamete_maker).make_gamete(CookedBitGenerator.new([0,0,0,0]))
-    assert_equal [[1,137],[0,144],[0,52],[0,163],[0,7]], 
+    assert_equal [[1,137],[0,144],[0,52],[0,163],[0,7],[1,19]], 
         flies(:gamete_maker).make_gamete(CookedBitGenerator.new([0,1,0,0]))
-    assert_equal [[0,137],[1,144],[0,52],[1,163],[0,7]], 
+    assert_equal [[0,137],[1,144],[0,52],[1,163],[0,7],[1,19]], 
         flies(:gamete_maker).make_gamete(CookedBitGenerator.new([1,1,1,1]))
-    assert_equal [[0,137],[0,144],[0,52],[1,163],[0,7]], 
+    assert_equal [[0,137],[0,144],[0,52],[1,163],[0,7],[0,19]], 
         flies(:gamete_maker).make_gamete(CookedBitGenerator.new([1,0,0,1]))
-    assert_equal [[1,137],[0,144],[0,52],[0,163],[1,7]], 
+    assert_equal [[1,137],[0,144],[0,52],[0,163],[1,7],[0,19]], 
         flies(:bob).make_gamete(CookedBitGenerator.new([1,0,0,0]))
   end
   
@@ -41,9 +41,9 @@ class FlyTest < Test::Unit::TestCase
     assert_basically_the_same_fly flies(:child_one), 
         flies(:fly_dad).mate_with(flies(:fly_mom), CookedBitGenerator.new([0]))
     assert_basically_the_same_fly flies(:child_two), 
-        flies(:fly_mom).mate_with(flies(:fly_dad), CookedBitGenerator.new([1,0,0,0,0]))
+        flies(:fly_mom).mate_with(flies(:fly_dad), CookedBitGenerator.new([1,0,0,0,0,0]))
     assert_basically_the_same_fly flies(:child_two), 
-        flies(:fly_dad).mate_with(flies(:fly_mom), CookedBitGenerator.new([1,0,0,0,0]))
+        flies(:fly_dad).mate_with(flies(:fly_mom), CookedBitGenerator.new([1,0,0,0,0,0]))
   end
   
   def test_mate_with_same_sex

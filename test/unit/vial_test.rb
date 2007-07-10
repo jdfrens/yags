@@ -66,12 +66,13 @@ class VialTest < Test::Unit::TestCase
   end
   
   def test_combinations_of_phenotypes
-    assert_equal [:sex, :"eye color", :wings, :legs, :antenna], vials(:vial_one).species.characters
+    assert_equal [:sex, :"eye color", :wings, :legs, :antenna, :seizure], vials(:vial_one).species.characters
     assert_equal cartesian_product([[:female, :male],
                                    [:red, :white], 
                                    [:curly, :straight],
                                    [:hairy, :smooth],
-                                   [:long, :short]]),
+                                   [:long, :short],
+                                   [:"20% seizure", :"40% seizure", :"no seizure"]]),
                                    vials(:vial_one).combinations_of_phenotypes
     assert_equal cartesian_product([[:female, :male],
                                    [:red, :white]]),
@@ -89,6 +90,7 @@ class VialTest < Test::Unit::TestCase
     assert_equal [:beige, :orange], vials(:random_vial).phenotypes_for_table(:"eye color")
     assert_equal [:hairy, :smooth], vials(:random_vial).phenotypes_for_table(:legs)
     assert_equal [:long, :short], vials(:parents_vial).phenotypes_for_table(:antenna)
+    assert_equal [:"20% seizure", :"40% seizure", :"no seizure"], vials(:parents_vial).phenotypes_for_table(:seizure)
   end
   
   def test_counts_for_table
@@ -107,7 +109,7 @@ class VialTest < Test::Unit::TestCase
     assert_equal :beige, vials(:random_vial).renamed_phenotype(:"eye color", :white)
     assert_equal :rainbow, vials(:random_vial).renamed_phenotype(:"eye color", :rainbow)
     assert_equal :male, vials(:random_vial).renamed_phenotype(:sex, :male)
-    assert_equal :poofy_smoke, vials(:random_vial).renamed_phenotype(:teleportation_style, :poofy_smoke)
+    assert_equal :"poofy smoke", vials(:random_vial).renamed_phenotype(:"teleportation style", :"poofy smoke")
     assert_equal :red, vials(:vial_one).renamed_phenotype(:"eye color", :red)
   end
   
@@ -177,17 +179,19 @@ class VialTest < Test::Unit::TestCase
   
   def test_making_seven_babies_and_a_vial
     new_vial = Vial.make_babies_and_vial({ :label => "seven fly syblings", :rack_id => 1,
-        :mom_id => "4", :dad_id => "3" }, 7, CookedBitGenerator.new([0, 1, 1, 0, 0, 0]))
-    assert_equal_set(([:male] * 2 + [:female] * 5), 
+        :mom_id => "4", :dad_id => "3" }, 7, CookedBitGenerator.new([0,1,1,0,0,0,1]))
+    assert_equal_set(([:male] * 3 + [:female] * 4), 
         new_vial.flies.map {|fly| fly.phenotype(:sex)})
     assert_equal_set(([:red] * 7 + [:white] * 0),
         new_vial.flies.map {|fly| fly.phenotype(:"eye color")})
     assert_equal_set(([:straight] * 3 + [:curly] * 4),
         new_vial.flies.map {|fly| fly.phenotype(:wings)})
-    assert_equal_set(([:hairy] * 5 + [:smooth] * 2),
+    assert_equal_set(([:hairy] * 4 + [:smooth] * 3),
         new_vial.flies.map {|fly| fly.phenotype(:legs)})
     assert_equal_set(([:long] * 7 + [:short] * 0),
         new_vial.flies.map {|fly| fly.phenotype(:antenna)})
+    assert_equal_set(([:"no seizure"] * 1 + [:"20% seizure"] * 4 + [:"40% seizure"] * 2),
+        new_vial.flies.map {|fly| fly.phenotype(:seizure)})
     assert_equal 2, new_vial.flies_of_type([:wings, :legs],[:curly, :smooth]).size
   end
   

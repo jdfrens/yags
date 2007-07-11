@@ -433,15 +433,17 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_list_vials
-    get :list_vials, {}, user_session(:manage_bench)
+    get :list_vials, {}, user_session(:steve)
+    
     assert_response :success
     assert_standard_layout
+    assert_select "h1", "Your Vials"
     assert_select "div#list-vials" do
-      assert_select "h4", "steve bench"
-      assert_select "ul#2" do
+      assert_select "h2", "Vials on the steve bench rack:"
+      assert_select "ul#rack_2" do
         assert_select "li", 5
         assert_select "li#vial_1", "First vial"
-        assert_select "li#vial_1 img[src^=/images/star.png]"
+        assert_select "li#vial_1 img[src^=/images/star.png][title=Solves Problem #8]"
         assert_select "li#vial_2", "Empty vial"
         assert_select "li#vial_2 img", false
         assert_select "li#vial_3", "Single fly vial"
@@ -449,18 +451,20 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "li#vial_4", "Multiple fly vial"
         assert_select "li#vial_4 img", false
         assert_select "li#vial_5", "Parents vial"
-        assert_select "li#vial_5 img[src^=/images/star.png]"
+        assert_select "li#vial_5 img[src^=/images/star.png][title=Solves Problem #1]"
       end
     end
   end
   
   def test_list_vials_lists_only_current_users_vials
     get :list_vials, {}, user_session(:jeremy)
+
     assert_response :success
     assert_standard_layout
+    assert_select "h1", "Your Vials"
     assert_select "div#list-vials" do
-      assert_select "h4", "jeremy bench"
-      assert_select "ul#4" do
+      assert_select "h2", "Vials on the jeremy bench rack:"
+      assert_select "ul#rack_4" do
         assert_select "li", 2
         assert_select "li#vial_6", "Destroyable vial"
         assert_select "li#vial_6 img", false

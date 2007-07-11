@@ -132,8 +132,6 @@ class BenchController < ApplicationController
   
   def list_vials
     @racks = current_user.racks
-    @vials = current_user.vials
-    @solutions = current_user.solutions
   end
   
   def destroy_vial

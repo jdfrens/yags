@@ -2,23 +2,20 @@
 	<div class="notice"><%= flash[:notice] %></div>
 <% end -%>
 
-<h1>Listing Your Vials</h1>
+<h1>Your Vials</h1>
 
 <div id="list-vials">
 	<% for rack in @racks -%>
-		<h4 id=<%= rack.label %> ><%= rack.label %></h4>
-		<ul id="<%= rack.id %>">
-    		<% for vial in @vials %>
-    		  <% if vial.rack_id == rack.id %>
-                <li id="vial_<%= vial.id %>"><%= link_to vial.label, :action => :view_vial, :id => vial %>
-				<% for solution in @solutions %>
-				<% if solution.vial_id == vial.id && solution.number != nil %><%= image_tag '/images/star.png' %><% end %>
-				<% end %>
+		<h2>Vials on the <em><%= rack.label %></em> rack:</h2>
+		<ul id="rack_<%= rack.id %>">
+    		<% rack.vials.each do |vial| -%>
+                <li id="vial_<%= vial.id %>">
+                  <%= link_to vial.label, :action => :view_vial, :id => vial %>
+				  <% if vial.solution -%>
+				    <%= image_tag '/images/star.png', :title => "Solves Problem ##{vial.solution.number}" %>
+                  <% end -%>
 				</li>
-        	  <% end %>
-			<% end %>
+			<% end -%>
 		</ul>
-		<%= sortable_element rack.id.to_s %>
 	<% end -%>
-
 </div>

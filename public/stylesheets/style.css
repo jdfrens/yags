@@ -1,6 +1,6 @@
 body {
 	background: #fff url(/images/body_bg.png) repeat-x;
-	font-family: Helvetica;
+	font-family: Tahoma;
 }
 
 img {
@@ -194,4 +194,8 @@ div #table_of_student_solutions th {
 	text-align: justify;
 	border-bottom: 1px dotted #aaa;
 	border-right: 1px dotted #aaa;	
+}
+
+.parent {
+	background-color: gray;
 }

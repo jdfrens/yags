@@ -86,4 +86,11 @@ class FlyTest < Test::Unit::TestCase
     end
   end
   
+  def test_used_as_parent?
+    assert Fly.find(6).used_as_parent?
+    assert Fly.find(7).used_as_parent?
+    assert !Fly.find(1).used_as_parent?
+    assert !Fly.find(2).used_as_parent?
+  end
+  
 end

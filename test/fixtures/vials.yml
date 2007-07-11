@@ -23,6 +23,8 @@ destroyable_vial:
   id: 6
   label: Destroyable vial
   rack_id: 4
+  mom_id: 6
+  dad_id: 7
 random_vial:
   id: 7
   label: Another vial

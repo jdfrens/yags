@@ -521,7 +521,7 @@ class BenchControllerTest < Test::Unit::TestCase
     post :mate_flies, { :vial => { :label => "children vial", :dad_id => "1" }, 
         :number => "8", :rack_id => "2"}, user_session(:steve)
     assert_standard_layout
-    assert flash[:error].include?("Hot pickles!") # inspiration: _why
+    assert flash[:error].include?("parent")
   end
   
   def test_preferences_page

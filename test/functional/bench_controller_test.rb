@@ -351,10 +351,28 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_index_page
     get :index, {}, user_session(:manage_bench)
+    
     assert_response :success
     assert_standard_layout
-    assert_select "ul:first-of-type" do
-      assert_select "li", 7
+    assert_select "h1", "The Bench"
+    assert_select "h2", "Fly and Vial Operations"
+    assert_select "ul#fly_and_vial_operations" do
+      assert_select "li", 3
+      assert_select "li a[href=/bench/list_vials]", "List vials"
+      assert_select "li a[href=/bench/mate_flies]", "Mate flies"
+      assert_select "li a[href=/bench/collect_field_vial]", "Collect a field vial"
+    end
+    assert_select "h2", "Rack Operations"
+    assert_select "ul#rack_operations" do
+      assert_select "li", 1
+      assert_select "li a[href=/bench/add_rack]", "Add a rack"
+    end
+    assert_select "h2", "System Operations"
+    assert_select "ul#system_operations" do
+      assert_select "li", 3
+      assert_select "li a[href=/bench/preferences]", "Set your preferences"
+      assert_select "li a[href=/bench/choose_scenario]", "Choose a scenario"
+      assert_select "li a[href=/users/change_password]", "Change your password"
     end
   end
   

@@ -1,21 +1,23 @@
-<h2>Current Bench Functionality</h2>
-<ul>
-  <li><%= link_to "List Vials", :action => "list_vials" %></li>
-  <li><%= link_to "Mate Flies", :action => "mate_flies" %></li>
-  <li><%= link_to "Collect a Field Vial", :action => "collect_field_vial" %></li>
-  <li><%= link_to "Add Rack", :action => "add_rack" %></li>
-  <li><%= link_to "Change Your Password", :controller => "users", :action => "change_password" %></li>
-  <li><%= link_to "Preferences", :action => "preferences" %></li>
-  <li><%= link_to "Choose Scenario", :action => "choose_scenario" %></li>
+<h1>The Bench</h1>
+
+<h2>Fly and Vial Operations</h2>
+
+<ul id="fly_and_vial_operations">
+  <li><%= link_to "List vials", :action => "list_vials" %></li>
+  <li><%= link_to "Mate flies", :action => "mate_flies" %></li>
+  <li><%= link_to "Collect a field vial", :action => "collect_field_vial" %></li>
 </ul>
-	
-<h3>The following can be done when viewing a vial:</h3>
-<ul>
-  <li>Re-label a Vial through In-Place Editing</li>
-  <li>Move a Vial To a Different Rack</li>
-  <li>Display a Two-Way Table</li>
-  <li>View Parental Information</li>
-  <li>Submit the vial as a solution to a particular problem</li>
-  <li>Toggle Displayed Sections</li>
-  <li>Destroy a Vial</li>
+
+<h2>Rack Operations</h2>
+
+<ul id="rack_operations">
+  <li><%= link_to "Add a rack", :action => "add_rack" %></li>
+</ul>
+
+<h2>System Operations</h2>
+
+<ul id="system_operations">
+  <li><%= link_to "Set your preferences", :action => "preferences" %></li>
+  <li><%= link_to "Choose a scenario", :action => "choose_scenario" %></li>
+  <li><%= link_to "Change your password", :controller => "users", :action => "change_password" %></li>
 </ul>

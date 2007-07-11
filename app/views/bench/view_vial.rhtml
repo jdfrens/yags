@@ -1,21 +1,7 @@
-<div id="vial-info">
-    <%= render(:partial => "vial_info") %>
-</div>
+<%= render(:partial => "vial_info") %>
 
-<div id="parent-info">
-	<%= render(:partial => "parents_info") %>
-</div>
-<br />
-<div id="solution_notice"><% if @vial.solution && @vial.solution.number != nil %><img src='/images/star.png' /> This is a solution to Problem #<%= @vial.solution.number %>.<% end %></div>
-<br />
-<div id="submit_as_solution">
-	<% remote_form_for :solution, @vial.solution, :url => {:action => :set_as_solution } do |form| -%>
-	    <label for="solution_number"><strong>Submit as a solution to Problem # </strong></label>
-		<%= form.select('number', 1..9, {:include_blank => true}, :onchange => "onsubmit()" ) %>
-		<%= form.hidden_field(:vial_id, :value => @vial.id) %>
-	<% end -%>
-</div>
-<br />
-<div id="destroy-vial">
-	<%= button_to "Destroy this vial!", { :action => :destroy_vial, :id => @vial.id }, :confirm => "Are you sure?" %>
-</div>
+<%= render :partial => "two_way_table" %>
+
+<%= render(:partial => "parents_info") %>
+
+<%= render :partial => "vial_maintenance" %>

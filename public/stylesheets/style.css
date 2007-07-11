@@ -29,7 +29,9 @@ span.highlight {
 	background-color: #B5F9B3;
 }
 
-.vial-title {
+.vial-title h1 {
+    margin: 0;
+    padding: 0;
 }
 
 #vial-info {
@@ -53,8 +55,8 @@ table {
 }
 
 #vial-table {
-	width: 400px;
-	padding: 0 0 0 75px;
+/*	width: 400px; */
+	padding: 0;
 }
 
 #vial-table td {

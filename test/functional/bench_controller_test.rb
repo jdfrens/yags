@@ -126,48 +126,75 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_view_vial_with_a_fly
-    get :view_vial, { :id => vials(:vial_with_a_fly).id }, user_session(:manage_bench)
+    vial = vials(:vial_with_a_fly)
+    
+    get :view_vial, { :id => vial.id }, user_session(:manage_bench)
+    
     assert_response :success
     assert_standard_layout
-    assert_select "span#vial_label_3_in_place_editor", vials(:vial_with_a_fly).label
-    assert_select "p", "Rack: steve bench"
+    
+    assert_select "h1", /Vial #{vial.label}/
+    assert_select "h1", "on rack #{vial.rack.label}"
+    assert_select "span#vial_label_3_in_place_editor", vial.label
         
-    assert_select "div#vial-table"
-    assert_select "div#parent-info"
+    assert_select "div#solution_notice", ""
+    assert_select "div#vial-table" do
+      # TODO: what's in this table?
+    end
     assert_select "div#parent-info table" do
       assert_select "p", "Parent information is unknown for field vials."
     end
-    assert_select "div#solution_notice", ""
+    assert_select "div#vial_maintenance" do
+      # TODO: what's in this section?
+    end
   end
   
   def test_view_vial_with_many_flies
-    get :view_vial, { :id => vials(:vial_with_many_flies).id }, user_session(:manage_bench)
+    vial = vials(:vial_with_many_flies)
+    
+    get :view_vial, { :id => vial.id }, user_session(:manage_bench)
+
     assert_response :success
     assert_standard_layout
-    assert_select "span#vial_label_4_in_place_editor", vials(:vial_with_many_flies).label
-    assert_select "p", "Rack: steve bench"
     
-    assert_select "div#vial-table"
-    assert_select "div#parent-info"
+    assert_select "h1", /Vial #{vial.label}/
+    assert_select "h1", "on rack #{vial.rack.label}"
+    assert_select "span#vial_label_4_in_place_editor", vial.label
+    
+    assert_select "div#solution_notice", ""
+
+    assert_select "div#vial-table" do
+      # TODO: what's in this table?
+    end
     assert_select "div#parent-info table" do
       assert_select "p", "Parent information is unknown for field vials."
     end
-    assert_select "div#solution_notice", ""
+    assert_select "div#vial_maintenance" do
+      # TODO: what's in this section?
+    end
   end
   
   def test_view_vial_one
-    get :view_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
+    vial = vials(:vial_one)
+    
+    get :view_vial, { :id => vial.id }, user_session(:manage_bench)
+
     assert_response :success
     assert_standard_layout
-    assert_select "span#vial_label_1_in_place_editor", vials(:vial_one).label
-    assert_select "p", "Rack: steve bench"
-    
-    assert_select "div#vial-table"
-    assert_select "div#parent-info"
+
+    assert_select "h1", /Vial #{vial.label}/
+    assert_select "h1", "on rack #{vial.rack.label}"
+    assert_select "span#vial_label_1_in_place_editor", vial.label    
+    assert_select "div#solution_notice", "This is a solution to Problem #8."
+    assert_select "div#vial-table" do
+      # TODO: what's in this table?
+    end
     assert_select "div#parent-info table" do
       assert_select "p", "Parent information is unknown for field vials."
     end
-    assert_select "div#solution_notice", "This is a solution to Problem #8."
+    assert_select "div#vial_maintenance" do
+      # TODO: what's in this section?
+    end
   end
   
   def test_view_vial_fails_when_NOT_logged_in
@@ -186,9 +213,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_steve_has_no_table_preference
     get :view_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
     assert_response :success
-    assert_select "em#instruction" do
-      assert_select "q"
-    end
+    assert_select "em#instruction", true, "should have displayed instructions"
   end
   
   def test_jeremy_has_table_preferences
@@ -205,14 +230,12 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_visible_characters_in_select_boxes_for_table
     get :view_vial, {:id => vials(:random_vial).id }, user_session(:jeremy)
     assert_response :success
-    assert_select "div#character_cols" do
-      assert_select "select[name=character_col]"
+    assert_select "select[name=character_col]" do
       assert_select "option[value=sex]"
       assert_select "option[value=eye color]"
       assert_select "option[value=wings]"
     end
-    assert_select "div#character_rows" do
-      assert_select "select[name=character_row]"
+    assert_select "select[name=character_row]" do
       assert_select "option[value=sex]"
       assert_select "option[value=eye color]"
       assert_select "option[value=wings]"

@@ -1,36 +1,15 @@
-<div class="section_open">
-    <div class="section_header" onclick="toggle_section(this.parentNode)">Vial Information</div>
-    <div class="section_content">
-        <div class="vial-title">
-            <strong>Label: </strong><%= in_place_editor_field 'vial', 'label', {} %>
-        </div>
-		<p><strong>Rack: </strong><%= link_to @rack.label, :action => :move_vial_to_another_rack, :id => @vial %></p>
-
-        <p><strong>Total number of flies: </strong><%= @vial.flies.size %></p>
-		
-        <div>
-            <% form_remote_tag :url => {:action => :update_table},
-                       :before => visual_effect(:appear, 'spinner'),
-                       :complete => visual_effect(:fade, 'spinner')  do -%>
-                <div id="character_rows">
-                    <label for="character_select_row"><strong>Rows: </strong></label><%= select_tag(:character_row, options_for_select(@visible_characters, @row_character), :onchange => "onsubmit()"  ) %>
-                </div>
-                <div id="character_cols">
-                    <label for="character_select_col"><strong>Columns: </strong></label><%= select_tag(:character_col, options_for_select(@visible_characters , @column_character), :onchange => "onsubmit()"  ) %>
-                </div>
-				<div style="display: inline;"><%= image_tag '/images/green-load.gif', :id => 'spinner', :style => 'display: none;' %></div>
-                <%= hidden_field_tag(:vial_id, @vial.id) %>
-            <% end -%>
-        </div>
-        <br />
-        <div id="vial-table">
-				<br />
-				<% if @table %>
-					<%= render :partial => "character_table" %>
-				<% else %>
-					<em id="instruction">To update the table, select two characters from above.
-             	   <br />Then, click <q>Update Table</q></em>
-				<% end %>
-        </div>
-    </div>
+<div id="vial-info">
+  <div class="vial-title">
+    <h1>Vial <em><%= in_place_editor_field 'vial', 'label', {} %></em></h1>
+    <h1>on rack <em><%= @vial.rack.label %></em></h1>
+  </div>
+  
+  <div id="solution_notice">
+    <% if @vial.solution && @vial.solution.number != nil %>
+      <p>
+        <img src='/images/star.png' />
+        This is a solution to Problem #<%= @vial.solution.number %>.
+      </p>
+    <% end %>
+  </div>
 </div>

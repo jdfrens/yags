@@ -15,4 +15,8 @@ class Scenario < ActiveRecord::Base
     Species.singleton
   end
   
+  def has_renamed?(character)
+    renamed_characters.select { |rc| rc.renamed_character.intern == character }.size != 0
+  end
+  
 end

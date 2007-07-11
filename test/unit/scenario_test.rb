@@ -25,4 +25,12 @@ class ScenarioTest < Test::Unit::TestCase
         :fixture_id => 2, :number_of_dependents => 1)
   end
   
+  def test_has_renamed?
+    assert scenarios(:another_scenario).has_renamed?(:"eye color")
+    
+    assert !scenarios(:first_scenario).has_renamed?(:wings)
+    assert !scenarios(:another_scenario).has_renamed?(:legs)
+    assert !scenarios(:only_sex_and_legs).has_renamed?(:sex)
+  end
+  
 end

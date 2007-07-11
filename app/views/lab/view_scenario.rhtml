@@ -7,7 +7,11 @@
 <div id="list-characters">
 	<ul>
 		<% for character in @scenario.visible_characters -%>
-          <li id=<%= character %>> <%= h(character.to_s) -%> </li>
+          <li id=<%= character %>> <%= h(character.to_s) -%>
+		  <% if @scenario.has_renamed?(character) -%>
+		  (randomized)
+		  <% end -%>
+		  </li>
 		<% end -%>
 	</ul>
 </div>

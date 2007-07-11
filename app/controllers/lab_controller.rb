@@ -64,14 +64,13 @@ class LabController < ApplicationController
   def add_scenario
     @species = Species.singleton # the selected species later
     @characters = Species.singleton.characters
-    if request.post? and params[:scenario] and params[:characters] and params[:alternates]
+    if request.post? and params[:scenario] and params[:characters]
       @scenario = Scenario.new params[:scenario]
       @scenario.save!
       @species.characters.each do |character|
-        unless params[:characters].include?(character.to_s)
+        if !params[:characters].include?(character.to_s)
           ScenarioPreference.create!(:scenario_id => @scenario.id, :hidden_character => character.to_s)
-        end
-        if params[:alternates].include?(character.to_s)
+        elsif params[:alternates] and params[:alternates].include?(character.to_s)
           RenamedCharacter.create!(:scenario_id => @scenario.id, :renamed_character => character.to_s)
         end
       end

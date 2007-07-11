@@ -1,6 +1,6 @@
 body {
 	background: #fff url(/images/body_bg.png) repeat-x;
-	font-family: Tahoma;
+	font-family: Helvetica;
 }
 
 img {
@@ -25,6 +25,10 @@ a:hover {
 	color: #0b6304;
 }
 
+span.highlight {
+	background-color: #B5F9B3;
+}
+
 .vial-title {
 }
 
@@ -42,12 +46,6 @@ a:hover {
 
 #parent-table th {
 	text-align: justify;
-}
-
-#destroy-vial {
-	border: 2px dashed #ff0000; 
-	width: 140px; 
-	padding: 2px;
 }
 
 table {

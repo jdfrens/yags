@@ -27,7 +27,7 @@
                     <td><%= link_to @dad_vial.label, :action => :view_vial, :id => @dad_vial %></td>
                 </tr>
             <% else %>
-                <p>No parents!</p>
+                <p><%= image_tag 'information.png' %> This vial has no parents!</p>
             <% end %>
         </table>
     </div>

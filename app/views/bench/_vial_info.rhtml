@@ -2,7 +2,7 @@
     <div class="section_header" onclick="toggle_section(this.parentNode)">Vial Information</div>
     <div class="section_content">
         <div class="vial-title">
-            <strong>Label: </strong><%= in_place_editor_field :vial, 'label', {} %>
+            <strong>Label: </strong><%= in_place_editor_field 'vial', 'label', {} %>
         </div>
 		<p><strong>Rack: </strong><%= link_to @rack.label, :action => :move_vial_to_another_rack, :id => @vial %></p>
 

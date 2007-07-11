@@ -18,7 +18,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     
-    assert_select "ul" do
+    assert_select "ul:first-of-type" do
       assert_select "li", 9
     end
   end
@@ -209,7 +209,8 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "ul" do
-      assert_select "li", "forgetful instructor[delete]"
+      assert_select "li", "forgetful instructor"
+      assert_select "li img[src^=/images/cross.png]"
     end
   end
   

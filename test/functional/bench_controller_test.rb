@@ -135,7 +135,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do
-      assert_select "p", "No parents!"
+      assert_select "p", "This vial has no parents!"
     end
     assert_select "div#solution_notice", ""
   end
@@ -150,7 +150,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do
-      assert_select "p", "No parents!"
+      assert_select "p", "This vial has no parents!"
     end
     assert_select "div#solution_notice", ""
   end
@@ -165,7 +165,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do
-      assert_select "p", "No parents!"
+      assert_select "p", "This vial has no parents!"
     end
     assert_select "div#solution_notice", "This is a solution to problem 8."
   end

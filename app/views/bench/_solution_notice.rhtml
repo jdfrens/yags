@@ -1,1 +1,1 @@
-<%= image_tag '/images/star.png' %> This vial is now a solution to problem <% if @solution %><%= @solution.number %><% else %><%= @old_solution.number %><% end %>.
+<%= image_tag '/images/star.png' %> This vial is now a solution to Problem #<% if @solution %><%= @solution.number %><% else %><%= @old_solution.number %><% end %>.

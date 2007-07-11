@@ -135,7 +135,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do
-      assert_select "p", "This vial has no parents!"
+      assert_select "p", "Parent information is unknown for field vials."
     end
     assert_select "div#solution_notice", ""
   end
@@ -150,7 +150,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do
-      assert_select "p", "This vial has no parents!"
+      assert_select "p", "Parent information is unknown for field vials."
     end
     assert_select "div#solution_notice", ""
   end
@@ -165,9 +165,9 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#vial-table"
     assert_select "div#parent-info"
     assert_select "div#parent-info table" do
-      assert_select "p", "This vial has no parents!"
+      assert_select "p", "Parent information is unknown for field vials."
     end
-    assert_select "div#solution_notice", "This is a solution to problem 8."
+    assert_select "div#solution_notice", "This is a solution to Problem #8."
   end
   
   def test_view_vial_fails_when_NOT_logged_in

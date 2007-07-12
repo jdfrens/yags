@@ -1,6 +1,8 @@
 class Vial < ActiveRecord::Base
 
   has_many :flies, :dependent => :destroy
+  belongs_to :mom, :class_name => 'Fly', :foreign_key => 'mom_id'
+  belongs_to :dad, :class_name => 'Fly', :foreign_key => 'dad_id'
   has_one :solution
   belongs_to :rack
   
@@ -38,12 +40,12 @@ class Vial < ActiveRecord::Base
     Species.singleton
   end
   
-  def user_id
-    Rack.find(self.rack_id).user_id
+  def has_parents?
+    mom
   end
   
   def user
-    User.find(self.user_id)
+    rack.user
   end
   
   def combinations_of_phenotypes(characters = species.characters)

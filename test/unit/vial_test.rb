@@ -16,6 +16,21 @@ class VialTest < Test::Unit::TestCase
     assert vial.errors.invalid?(:label)
   end
   
+  def test_mom
+    assert_nil vials(:vial_one).mom
+    assert_equal Fly.find(6), vials(:destroyable_vial).mom
+  end
+  
+  def test_mom
+    assert_nil vials(:vial_one).dad
+    assert_equal Fly.find(7), vials(:destroyable_vial).dad
+  end
+  
+  def test_has_parents?
+    assert !vials(:vial_one).has_parents?
+    assert  vials(:destroyable_vial).has_parents?
+  end
+  
   def test_vial_has_many_flies
     assert_equal 0, vials(:vial_empty).flies.size, "should be no flies"
     assert_equal [flies(:fly_01)].to_set, vials(:vial_with_a_fly).flies.to_set
@@ -216,14 +231,10 @@ class VialTest < Test::Unit::TestCase
     assert_equal users(:steve), vials(:vial_one).user
     assert_equal users(:jeremy), vials(:destroyable_vial).user
   end
-  
-  def test_can_give_user_id
-    assert_equal users(:steve).id, vials(:parents_vial).user_id
-    assert_equal users(:steve).id, vials(:vial_one).user_id
-    assert_equal users(:jeremy).id, vials(:destroyable_vial).user_id
-  end
-  
-  # helpers
+
+  #
+  # Helpers
+  #
   private
   
   # maybe should this be a full fledged method in the Fly class instead of a helper?

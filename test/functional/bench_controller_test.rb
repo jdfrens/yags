@@ -15,25 +15,25 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_collect_field_vial_of_four_flies
     number_of_old_vials =  Vial.find(:all).size
-    post :collect_field_vial, { :vial => { :label => "four fly vial"}, :number => "4" }, user_session(:manage_bench)
+    post :collect_field_vial, { :vial => { :label => "four fly vial"}, :number => "4" }, user_session(:steve)
     new_vial = Vial.find_by_label("four fly vial")
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
-    assert_equal 1, new_vial.user_id
+    assert_equal users(:steve), new_vial.user
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
   
   def test_collect_field_vial_of_nine_flies
     number_of_old_vials =  Vial.find(:all).size
-    post :collect_field_vial, { :vial => { :label => "nine fly vial" }, :number => "9" }, user_session(:manage_bench)
+    post :collect_field_vial, { :vial => { :label => "nine fly vial" }, :number => "9" }, user_session(:steve)
     assert logged_in?, "should be logged in"
     new_vial = Vial.find_by_label("nine fly vial")
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 9, new_vial.flies.size
-    assert_equal 1, new_vial.user_id
+    assert_equal users(:steve), new_vial.user
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
@@ -404,11 +404,15 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     
-    assert_select "form" do
-      assert_select "p", "Label for Offspring Vial:"
-      assert_select "input"
-      assert_select "p", "Number of Desired Flies:"
-      assert_select "input"
+    assert_select "form[action=/bench/mate_flies]" do
+      assert_select "p", "Label for vial of offspring:"
+      assert_select "input#vial_label"
+      assert_select "p", "Number of flies:"
+      assert_select "input#number"
+      assert_select "p", /^Store in rack named:/
+      assert_select "select#rack_id" do
+        # TODO: what options are in this select?
+      end
     end
   end
 
@@ -507,45 +511,47 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "div#vial_selector_1" do
-      assert_select "select[name=vial]"
-      assert_select "strong", "First Vial:"
+      assert_select "select[name=vial]" do
+        # TODO: what options are in this select?
+      end
+      assert_select "h2", "First Vial"
       assert_select "input[name=which_vial][value=1]"
       assert_select "img#spinner_1[src^=/images/green-load.gif]"
     end
     assert_select "div#vial_selector_2" do
-      assert_select "select[name=vial]"
-      assert_select "strong", "Second Vial:"
+      assert_select "select[name=vial]" do
+        # TODO: what options are in this select?
+      end
+      assert_select "h2", "Second Vial"
       assert_select "input[name=which_vial][value=2]"
       assert_select "img#spinner_2[src^=/images/green-load.gif]"
     end
-    assert_select "div.section_header", "First Vial"
     assert_select "div#big-table-1"
-    assert_select "div.section_header", "Second Vial"
     assert_select "div#big-table-2"
   end
   
   def test_mate_flies
     number_of_old_vials = Vial.find(:all).size
     post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, 
-        :number => "8", :rack_id => "2"}, user_session(:manage_bench)
+        :number => "8", :rack_id => "2"}, user_session(:steve)
     new_vial = Vial.find_by_label("children vial")
     assert_not_nil new_vial
     assert_equal [:white] * 8, new_vial.flies.map {|fly| fly.phenotype(:"eye color")}
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
-    assert_equal 1, new_vial.user_id
+    assert_equal users(:steve), new_vial.user
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
   end
     
   def test_mate_flies_again  
     post :mate_flies, { :vial => { :label => "children 2", :mom_id => "4", :dad_id => "3" }, 
-        :number => "3", :rack_id => "1" }, user_session(:manage_bench)
+        :number => "3", :rack_id => "1" }, user_session(:steve)
     new_vial = Vial.find_by_label("children 2")
     assert_not_nil new_vial
     assert_equal [:red] * 3, new_vial.flies.map {|fly| fly.phenotype(:"eye color")}
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
-    assert_equal 1, new_vial.user_id
+    assert_equal users(:steve), new_vial.user
   end
   
   def test_mate_flies_fails_when_NOT_owned_by_current_user

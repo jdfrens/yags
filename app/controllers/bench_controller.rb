@@ -78,11 +78,12 @@ class BenchController < ApplicationController
       @rack_labels_and_ids << [rack.label, rack.id]
     end
     if params[:vial]
-      if params[:vial][:mom_id].nil? or params[:vial][:dad_id].nil?
+      if params[:vial][:mom_id].nil? || params[:vial][:dad_id].nil?
         flash[:error] = "You didn't select two parents!"
         # we're mixing the validation box and flash[:error] messages...
-      elsif Fly.find(params[:vial][:mom_id]).vial.user_id == current_user.id and 
-        Fly.find(params[:vial][:dad_id]).vial.user_id == current_user.id
+      elsif Fly.find(params[:vial][:mom_id]).vial.user == current_user && 
+        Fly.find(params[:vial][:dad_id]).vial.user == current_user
+        # TODO: this next line seems like a form is misformed...
         params[:vial][:rack_id] = params[:rack_id]
         @vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)
         @vial.save!
@@ -108,7 +109,7 @@ class BenchController < ApplicationController
   end
   
   def view_vial
-    if params[:id] and @vial = Vial.find_by_id(params[:id]) and @vial.user_id == current_user.id
+    if params[:id] and @vial = Vial.find_by_id(params[:id]) and @vial.user == current_user
       @visible_characters = current_user.visible_characters
       if @parents = (@vial.mom_id && @vial.dad_id)
         @mom, @dad = Fly.find(@vial.mom_id), Fly.find(@vial.dad_id)

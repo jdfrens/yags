@@ -2,7 +2,7 @@
 
 <h2>Parents of this vial</h2>
 <table id="parent-table">
-    <% if @parents %>
+    <% if @vial.has_parents? %>
         <tr>
             <th></th>
             <% @visible_characters.each do |ch| -%>
@@ -13,18 +13,18 @@
         <tr>
             <th>Mom</th>
             <% @visible_characters.each do |ch| -%>
-                <td><%= @mom.vial.renamed_phenotype(ch, @mom.phenotype(ch)) %></td>
+                <td><%= @vial.mom.vial.renamed_phenotype(ch, @vial.mom.phenotype(ch)) %></td>
 				        <!-- yucky code here... -->
             <% end -%>
-            <td><%= link_to @mom_vial.label, :action => :view_vial, :id => @mom_vial %></td>
+            <td><%= link_to @vial.mom.vial.label, :action => :view_vial, :id => @vial.mom.vial %></td>
         </tr>
         <tr>
             <th>Dad</th>
             <% @visible_characters.each do |ch| -%>
-                <td><%= @dad.vial.renamed_phenotype(ch, @dad.phenotype(ch)) %></td>
+                <td><%= @vial.dad.vial.renamed_phenotype(ch, @vial.dad.phenotype(ch)) %></td>
 				        <!-- yucky here too... -->
             <% end -%>
-            <td><%= link_to @dad_vial.label, :action => :view_vial, :id => @dad_vial %></td>
+            <td><%= link_to @vial.dad.vial.label, :action => :view_vial, :id => @vial.dad.vial %></td>
         </tr>
     <% else %>
         <p><%= image_tag 'information.png' %> Parent information is unknown for field vials.</p>

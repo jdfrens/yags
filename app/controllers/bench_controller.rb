@@ -99,6 +99,7 @@ class BenchController < ApplicationController
   def show_mateable_flies
     if request.post?
       @vial = Vial.find(params[:vial])
+      # TODO: why isn't @vial nil below sometimes?
     end
     @phenotypes_to_flies = {}
     @vial.combinations_of_phenotypes(current_user.visible_characters).each do |combination|
@@ -106,16 +107,14 @@ class BenchController < ApplicationController
     end
     @which_vial = params[:which_vial]
     redirect_to :action => "mate_flies" unless request.xhr? 
+    # TODO: what if it's not xhr?
   end
   
   def view_vial
-    if params[:id] and @vial = Vial.find_by_id(params[:id]) and @vial.user == current_user
+    if valid_vial_to_view?
+      @vial = Vial.find_by_id(params[:id])
       @visible_characters = current_user.visible_characters
-      if @parents = (@vial.mom_id && @vial.dad_id)
-        @mom, @dad = Fly.find(@vial.mom_id), Fly.find(@vial.dad_id)
-        @mom_vial = Vial.find @mom.vial_id
-        @dad_vial = Vial.find @dad.vial_id
-      end
+      # TODO: no assignments in condition!!!!
       if @table = (current_user.basic_preference and 
             current_user.basic_preference.row and current_user.basic_preference.column)
             # um, maybe that if should be rewritten...
@@ -233,6 +232,12 @@ class BenchController < ApplicationController
     old_solution = current_user.solutions.find do |solution|
       solution.number == number || solution.vial_id == vial_id
     end
+  end
+  
+  def valid_vial_to_view?
+    # TODO: I want current_user.owns?(Vial.find_by_id(params[:id]))
+    # could also current_user.owns?(some_rack)
+    params[:id] && Vial.find_by_id(params[:id]) && Vial.find(params[:id]).user == current_user
   end
   
 end

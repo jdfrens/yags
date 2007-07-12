@@ -77,7 +77,10 @@ class BenchController < ApplicationController
     current_user.racks.each do |rack|
       @rack_labels_and_ids << [rack.label, rack.id]
     end
-    if params[:vial]
+    if !number_valid?(params[:number])
+      flash[:error] = "The number of offspring should be between 0 and 255."
+      render
+    elsif params[:vial]
       if params[:vial][:mom_id].nil? || params[:vial][:dad_id].nil?
         flash[:error] = "You didn't select two parents!"
         # we're mixing the validation box and flash[:error] messages...

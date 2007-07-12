@@ -407,7 +407,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "form[action=/bench/mate_flies]" do
       assert_select "p", "Label for vial of offspring:"
       assert_select "input#vial_label"
-      assert_select "p", "Number of flies:"
+      assert_select "p", "Number of offspring:"
       assert_select "input#number"
       assert_select "p", /^Store in rack named:/
       assert_select "select#rack_id" do
@@ -568,11 +568,61 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
-  def test_mate_flies_doesnt_blow_up_when_two_parents_are_NOT_selected
+  def test_mate_flies_flashes_error_when_ONLY_dad_selected
     post :mate_flies, { :vial => { :label => "children vial", :dad_id => "1" }, 
         :number => "8", :rack_id => "2"}, user_session(:steve)
+        
     assert_standard_layout
     assert flash[:error].include?("parent")
+  end
+  
+  def test_mate_flies_flashes_error_when_ONLY_mom_selected
+    post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6" }, 
+        :number => "8", :rack_id => "2"}, user_session(:steve)
+        
+    assert_standard_layout
+    assert flash[:error].include?("parent")
+  end
+  
+  def test_mate_flies_flashes_error_when_NO_parents_are_selected
+    post :mate_flies, { :vial => { :label => "children vial" }, 
+        :number => "8", :rack_id => "2"}, user_session(:steve)
+        
+    assert_standard_layout
+    assert flash[:error].include?("parent")
+  end
+  
+  def test_mate_flies_flashes_error_when_too_many_offspring_requested
+    post :mate_flies,
+        { :vial => { :label => "children vial", :dad_id => "1", :mom_id => 6 }, 
+          :number => "256",
+          :rack_id => "2" },
+        user_session(:steve)
+        
+    assert_standard_layout
+    assert_equal "The number of offspring should be between 0 and 255.", flash[:error]
+  end
+  
+  def test_mate_flies_flashes_error_when_too_few_offspring_requested
+    post :mate_flies,
+        { :vial => { :label => "children vial", :dad_id => "1", :mom_id => 6 }, 
+          :number => "-1",
+          :rack_id => "2" },
+        user_session(:steve)
+        
+    assert_standard_layout
+    assert_equal "The number of offspring should be between 0 and 255.", flash[:error]
+  end
+  
+  def test_mate_flies_flashes_error_when_non_numeric_number_of_offspring_requested
+    post :mate_flies,
+        { :vial => { :label => "children vial", :dad_id => "1", :mom_id => 6 }, 
+          :number => "abc",
+          :rack_id => "2" },
+        user_session(:steve)
+        
+    assert_standard_layout
+    assert_equal "The number of offspring should be between 0 and 255.", flash[:error]
   end
   
   def test_preferences_page

@@ -35,23 +35,21 @@
       <h1>YAGS</h1>
   </div>
   
+  <div class="menu-bar">
+  	<ul class="menu">
+  		<li class="first"><strong><%= link_to "Bench", :controller => 'bench', :action => "index" %></strong></li>
+		<li><%= link_to "List Vials", :controller => 'bench', :action => 'list_vials' %></li>
+		<li><%= link_to "Mate Flies", :controller => 'bench', :action => 'mate_flies' %></li>
+		<li><%= link_to "Create New Rack", :controller => 'bench', :action => 'add_rack' %></li>
+  	</ul>
+  </div>
+  
   <div class="main">
     <%= yield :layout %>
   </div>
   
   <div class="bar">
-      <a href="/">Home page</a>
-	  <% if logged_in %>
-	    <% if current_user.group.name == 'student' %>
-      		<%= link_to "Bench", :controller => 'bench', :action => "index" %>
-		<% elsif current_user.group.name == 'instructor' %>
-      		<%= link_to "Lab", :controller => 'lab', :action => "index" %>
-		<% elsif current_user.group.name == 'admin' %>
-      		<%= link_to "Users", :controller => 'users', :action => "index" %>
-		<% end %>
-	  <% end -%>
-	  
-	  <p style=" font-size: 11px; text-align: center">&copy; 2007 Calvin College | All Rights Reserved <br />
+	 <p style=" font-size: 11px; text-align: center">&copy; 2007 Calvin College | All Rights Reserved <br />
 	  Other fine print information	  </p> 
   </div>
   

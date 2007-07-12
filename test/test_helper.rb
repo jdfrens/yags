@@ -47,17 +47,8 @@ class Test::Unit::TestCase
         assert_select "a[href=/users/login]", /login/i
       end
     end
-    assert_select "a[href=/]", /home page/i
-    if logged_in?
-      case current_test_user.group.name
-      when "student"
-        assert_select "a[href=/bench]", /bench/i
-      when "instructor"
-        assert_select "a[href=/lab]", /lab/i
-      when "admin"
-        assert_select "a[href=/users]", /users/i  
-      end
-    end
+  assert_select "a[href=/bench]", /bench/i
+
   end
   
   def assert_redirected_to_login

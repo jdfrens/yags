@@ -201,3 +201,42 @@ div #table_of_student_solutions th {
 .parent {
 	background-color: gray;
 }
+
+.menu-bar {
+	padding: 3px;
+	border: 1px solid #333;
+	background-color: #0b6304;
+	}
+	
+.menu-bar ul {
+	margin-left: 0;
+	padding-left: 0;
+	display: inline;
+	} 
+
+.menu-bar ul li {
+	margin-left: 0;
+	padding: 3px 15px;
+	border-left: 1px solid #333;
+	list-style: none;
+	display: inline;
+	}
+	
+.menu-bar ul li.first {
+	margin-left: 0;
+	border-left: none;
+	list-style: none;
+	display: inline;
+	}
+	
+.menu-bar a:link {
+	color: #fff;
+}
+
+.menu-bar a:visited {
+	color: #b40;
+}
+
+.menu-bar a:hover {
+	color: #ffff80;
+}	

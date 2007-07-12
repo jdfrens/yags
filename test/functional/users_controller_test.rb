@@ -47,7 +47,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "div#list-users"
-    assert_select "ul" do
+    assert_select "ul.list" do
       assert_select "li", 6
       assert_select "li#1", "steve (student) [delete]"
       assert_select "li#2", "calvin (admin) [delete]"
@@ -329,7 +329,7 @@ class UsersControllerTest < Test::Unit::TestCase
   def test_index
     post :index, {}, user_session(:manage_student)
     assert_response :success
-    assert_select "ul" do
+    assert_select "ul.list" do
       assert_select "li", 5
     end
   end

@@ -18,7 +18,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     
-    assert_select "ul:first-of-type" do
+    assert_select "ul.list" do
       assert_select "li", 9
     end
   end

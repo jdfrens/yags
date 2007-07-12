@@ -5,7 +5,7 @@
 <h1>Listing All Users</h1>
 
 <div id="list-users">
-    <ul>
+    <ul class="list">
         <% for user in @users %>
             <li id=<%= user.id %> >
               <%= h(user.username) -%> (<%= h(user.group.name) -%>) [<%= link_to "delete", { :action => "delete_user", :id => user.id }, :confirm => "Are you sure?", :method => :post -%>]

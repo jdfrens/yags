@@ -57,7 +57,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "form" do
       assert_select "p", "Label:"
       assert_select "label"
-      assert_select "p", "Number of Flies:"
+      assert_select "p", "Number of flies:"
       assert_select "input"
     end
   end
@@ -388,7 +388,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "h2", "Rack Operations"
     assert_select "ul#rack_operations" do
       assert_select "li", 1
-      assert_select "li a[href=/bench/add_rack]", "Add a rack"
+      assert_select "li a[href=/bench/add_rack]", "Create a new rack"
     end
     assert_select "h2", "System Operations"
     assert_select "ul#system_operations" do

@@ -4,8 +4,9 @@
 
 <h1>Log In</h1>
 
-<% form_for :user do |form| -%>
+<% form_for :user do |form| %>
     <p><strong>Username: </strong><%= form.text_field :username, :size => 20 %></p>
+	<script type="text/javascript">$('user_username').focus();</script>
     <p><strong>Password: </strong><%= form.password_field :password, :size => 20 %></p>
     <p><%= submit_tag "Login" %></p>
 <% end -%>

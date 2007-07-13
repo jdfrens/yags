@@ -508,8 +508,11 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_mate_flies_page
     get :mate_flies, {}, user_session(:manage_bench)
+    
     assert_response :success
     assert_standard_layout
+    
+    assert_nil flash[:error]
     assert_select "div#vial_selector_1" do
       assert_select "select[name=vial]" do
         # TODO: what options are in this select?

@@ -77,11 +77,11 @@ class BenchController < ApplicationController
     current_user.racks.each do |rack|
       @rack_labels_and_ids << [rack.label, rack.id]
     end
-    if !number_valid?(params[:number])
-      flash[:error] = "The number of offspring should be between 0 and 255."
-      render
-    elsif params[:vial]
-      if params[:vial][:mom_id].nil? || params[:vial][:dad_id].nil?
+    if params[:vial]
+      if !number_valid?(params[:number])
+        flash[:error] = "The number of offspring should be between 0 and 255."
+        render
+      elsif params[:vial][:mom_id].nil? || params[:vial][:dad_id].nil?
         flash[:error] = "You didn't select two parents!"
         # we're mixing the validation box and flash[:error] messages...
       elsif Fly.find(params[:vial][:mom_id]).vial.user == current_user && 
@@ -94,6 +94,8 @@ class BenchController < ApplicationController
       else
         redirect_to :action => "list_vials"
       end
+    else
+      render
     end
     rescue ActiveRecord::RecordInvalid
     render

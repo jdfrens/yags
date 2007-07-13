@@ -11,7 +11,7 @@
     		<% rack.vials.each do |vial| -%>
                 <li id="vial_<%= vial.id %>">
                   <%= link_to vial.label, :action => :view_vial, :id => vial %>
-				  <% if vial.solution -%>
+				  <% if vial.solution && vial.solution.number != nil -%>
 				    <%= image_tag '/images/star.png', :title => "Solves Problem ##{vial.solution.number}" %>
                   <% end -%>
 				</li>

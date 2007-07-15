@@ -6,6 +6,10 @@ class ApplicationControllerTest < Test::Unit::TestCase
     @app = ApplicationController.new
   end
   
+  def test_authenticate_with_http_basic
+    assert_nil @app.authenticate_with_http_basic
+  end
+  
   def test_number_is_valid
     assert  @app.number_valid?('123')
     assert  @app.number_valid?('66')

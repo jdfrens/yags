@@ -2,14 +2,11 @@ class Fly < ActiveRecord::Base
   has_many :genotypes, :dependent => :destroy
   has_many :mom_of, :class_name => "Vial", :foreign_key => "mom_id"
   has_many :dad_of, :class_name => "Vial", :foreign_key => "dad_id"
+  belongs_to :vial
   
   def phenotype(character)
     genotype = genotypes.select { |g| g.gene_number == species.gene_number_of(character) }.first
     species.phenotype_from character, genotype.mom_allele, genotype.dad_allele
-  end
-
-  def vial
-    Vial.find(vial_id)
   end
   
   def species

@@ -14,10 +14,6 @@ class ApplicationController < ActionController::Base
     nil
   end
         
-  def number_valid?(number)
-    number =~ /^\d+$/ && (0..255).include?(number.to_i)
-  end
-  
   filter_parameter_logging "password"
 
 end

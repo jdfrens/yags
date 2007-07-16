@@ -1,4 +1,5 @@
 class Fly < ActiveRecord::Base
+
   has_many :genotypes, :dependent => :destroy
   has_many :mom_of, :class_name => "Vial", :foreign_key => "mom_id"
   has_many :dad_of, :class_name => "Vial", :foreign_key => "dad_id"
@@ -25,8 +26,8 @@ class Fly < ActiveRecord::Base
     (self.mom_of != [] || self.dad_of != [])
   end
   
-  def user
-    vial.user
+  def owner
+    vial.owner
   end
   
   def mate_with(partner, bit_gen = RandomBitGenerator.new)

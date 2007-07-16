@@ -65,7 +65,7 @@ class UsersControllerTest < Test::Unit::TestCase
     get :list_users
     assert_redirected_to_login
     
-    get :list_users, {}, user_session(:manage_bench)
+    get :list_users, {}, user_session(:steve)
     assert_response 401, "HTTP response should be access denied"
   end
   
@@ -109,7 +109,7 @@ class UsersControllerTest < Test::Unit::TestCase
     
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
         :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1, 
-        :first_name => 'David', :last_name => 'Hansson' }, user_session(:manage_bench)
+        :first_name => 'David', :last_name => 'Hansson' }, user_session(:steve)
     assert_nil User.find_by_username("david hansson")
     assert_response 401 # access denied
   end
@@ -155,7 +155,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
     
     post :add_instructor, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
-        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:manage_bench)
+        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:steve)
     assert_nil User.find_by_username("david hansson")
     assert_response 401 # access denied
     
@@ -186,7 +186,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_not_nil User.find_by_username("steve")
     
     assert_not_nil User.find_by_username("randy")
-    post :delete_user, { :id => 1 }, user_session(:manage_bench)
+    post :delete_user, { :id => 1 }, user_session(:steve)
     assert_not_nil User.find_by_username("randy")
     assert_response 401 # access denied
   end
@@ -198,7 +198,7 @@ class UsersControllerTest < Test::Unit::TestCase
   end
   
   def test_change_password_form
-    get :change_password, { }, user_session(:manage_bench)
+    get :change_password, { }, user_session(:steve)
     assert_response :success
     assert_standard_layout
     
@@ -342,7 +342,7 @@ class UsersControllerTest < Test::Unit::TestCase
     post :index
     assert_redirected_to_login
     
-    post :index, {}, user_session(:manage_bench)
+    post :index, {}, user_session(:steve)
     assert_response 401 # access denied
     
     post :index, {}, user_session(:mendel)
@@ -350,7 +350,7 @@ class UsersControllerTest < Test::Unit::TestCase
   end
   
   def test_redirect_user
-    get :redirect_user, {}, user_session(:manage_bench)
+    get :redirect_user, {}, user_session(:steve)
     assert_redirected_to :controller => "bench", :action => "index"
     
     get :redirect_user, {}, user_session(:calvin)

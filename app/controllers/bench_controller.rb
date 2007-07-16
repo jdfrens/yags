@@ -121,7 +121,7 @@ class BenchController < ApplicationController
   def destroy_vial
     if params[:id] && request.post?
       vial = Vial.find(params[:id])
-      if vial.user == current_user
+      if current_user.owns?(vial)
         vial.destroy
         flash[:notice] = "#{vial.label} has been deleted"
       else
@@ -200,8 +200,9 @@ class BenchController < ApplicationController
       @rack_labels_and_ids << [rack.label, rack.id]
     end
     if request.post?
-      if @vial.user == current_user and current_user.racks.include? Rack.find(params[:rack_id])
-        @vial.rack_id = params[:rack_id]
+      rack = Rack.find(params[:rack_id])
+      if current_user.owns?(@vial) and current_user.owns?(rack)
+        @vial.rack = rack
         @vial.save!
         redirect_to :action => "view_vial", :id => @vial.id
       else
@@ -225,9 +226,7 @@ class BenchController < ApplicationController
   end
   
   def valid_vial_to_view?
-    # TODO: I want current_user.owns?(Vial.find_by_id(params[:id]))
-    # could also current_user.owns?(some_rack)
-    params[:id] && Vial.find_by_id(params[:id]) && Vial.find(params[:id]).user == current_user
+    params[:id] && Vial.find_by_id(params[:id]) && current_user.owns?(Vial.find(params[:id]))
   end
   
 end

@@ -27,7 +27,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
-    assert_equal users(:steve), new_vial.user
+    assert_equal users(:steve), new_vial.owner
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
@@ -47,26 +47,33 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.count
     assert_equal 9, new_vial.flies.size
-    assert_equal users(:steve), new_vial.user
+    assert_equal users(:steve), new_vial.owner
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
   end
   
   def test_collect_field_vial_fails_when_NOT_logged_in
-    post :collect_field_vial, { :vial => { :label => "anonomous user's vial"}, :number => "8" }
-    assert_redirected_to_login
+    assert_no_added_vials do
+      post :collect_field_vial, {
+          :vial => {
+            :label => "anonomous user's vial",
+            :number_of_requested_flies => "8" } }
+      assert_redirected_to_login
+    end
   end
   
   def test_collect_field_vial_fails_if_number_invalid
-    post :collect_field_vial, {
-      :vial => {
-        :label => "some vial",
-        :number_of_requested_flies => "581" }
-    },
-    user_session(:manage_bench)
-    
-    vial = assigns(:vial)
-    assert vial.errors.invalid?(:number_of_requested_flies)
+    assert_no_added_vials do
+      post :collect_field_vial, {
+        :vial => {
+          :label => "some vial",
+          :number_of_requested_flies => "581" }
+      },
+      user_session(:steve)
+      
+      vial = assigns(:vial)
+      assert vial.errors.invalid?(:number_of_requested_flies)
+    end
   end
   
   def test_collect_field_vial_page
@@ -84,11 +91,14 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_add_rack
     number_of_old_racks =  Rack.find(:all).size
-    post :add_rack, { :rack => { :label => "super storage unit"} }, user_session(:manage_bench)
+    post :add_rack, {
+        :rack => { :label => "super storage unit"} },
+        user_session(:steve)
+        
     new_rack = Rack.find_by_label("super storage unit")
     assert_not_nil new_rack
     assert_equal number_of_old_racks + 1, Rack.find(:all).size
-    assert_equal 1, new_rack.user_id
+    assert_equal users(:steve), new_rack.owner
     assert_response :redirect
     assert_redirected_to :action => "list_vials"
   end
@@ -99,13 +109,16 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_add_rack_page
-    get :add_rack, {}, user_session(:manage_bench)
+    get :add_rack, {}, user_session(:steve)
+    
     assert_response :success
     assert_standard_layout
     
     assert_select "form" do
       assert_select "label", "Label:"
+      # TODO: this next assertion is useless because it finds the same label as the previous line
       assert_select "label"
+      # TODO: assert the input field(s)
     end
   end
   
@@ -148,7 +161,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_view_vial_with_a_fly
     vial = vials(:vial_with_a_fly)
     
-    get :view_vial, { :id => vial.id }, user_session(:manage_bench)
+    get :view_vial, { :id => vial.id }, user_session(:steve)
     
     assert_response :success
     assert_standard_layout
@@ -205,7 +218,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_view_vial_with_many_flies
     vial = vials(:vial_with_many_flies)
     
-    get :view_vial, { :id => vial.id }, user_session(:manage_bench)
+    get :view_vial, { :id => vial.id }, user_session(:steve)
     
     assert_response :success
     assert_standard_layout
@@ -263,7 +276,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_view_vial_one
     vial = vials(:vial_one)
     
-    get :view_vial, { :id => vial.id }, user_session(:manage_bench)
+    get :view_vial, { :id => vial.id }, user_session(:steve)
     
     assert_response :success
     assert_standard_layout
@@ -325,12 +338,12 @@ class BenchControllerTest < Test::Unit::TestCase
     get :view_vial, { :id => vials(:vial_one).id }, user_session(:jeremy)
     assert_redirected_to :action => "list_vials"
     
-    get :view_vial, { :id => 123123 }, user_session(:manage_bench)
+    get :view_vial, { :id => 123123 }, user_session(:steve)
     assert_redirected_to :action => "list_vials"
   end
   
   def test_steve_has_no_table_preference
-    get :view_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
+    get :view_vial, { :id => vials(:vial_one).id }, user_session(:steve)
     assert_response :success
     assert_select "img[src^=/images/blank_table.png]", true, "should have displayed an example image"
   end
@@ -362,7 +375,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_set_vial_label
-    xhr :post, :set_vial_label, { :id => vials(:vial_one).id, :value => '<Bob>' }, user_session(:manage_bench)
+    xhr :post, :set_vial_label, { :id => vials(:vial_one).id, :value => '<Bob>' }, user_session(:steve)
     
     assert_response :success
     assert_equal '&lt;Bob&gt;', @response.body
@@ -380,7 +393,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_set_as_solution
     vial = vials(:vial_with_many_flies)
     
-    xhr :post, :set_as_solution, { :solution => { :number => 1, :vial_id => vial.id } }, user_session(:manage_bench)
+    xhr :post, :set_as_solution, { :solution => { :number => 1, :vial_id => vial.id } }, user_session(:steve)
     assert_response :success
     
     vial.reload
@@ -435,7 +448,7 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_update_table
     xhr :post, :update_table, { :vial_id => vials(:vial_one).id, :character_col => "eye color", 
-      :character_row => "sex" }, user_session(:manage_bench)
+      :character_row => "sex" }, user_session(:steve)
     assert_response :success
     
     assert_select "table" do
@@ -447,17 +460,23 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_update_table_fails_when_NOT_logged_in
-    xhr :post, :update_table, { :vial_id => vials(:vial_one).id, :character_col => "legs", :character_row => "wings" }
+    xhr :post, :update_table,
+        { :vial_id => vials(:vial_one).id, :character_col => "legs",
+          :character_row => "wings" }
     assert_redirected_to_login
   end
   
   def test_update_parent_div
-    xhr :post, :update_parent_div, {:id => flies(:fly_dad).id, :sex => "dad" }, user_session(:manage_bench)
+    xhr :post, :update_parent_div,
+        {:id => flies(:fly_dad).id, :sex => "dad" },
+        user_session(:steve)
     assert_response :success
     
     assert_select "input[type=hidden][value=7]"
     
-    xhr :post, :update_parent_div, {:id => flies(:fly_mom).id, :sex => "mom" }, user_session(:manage_bench)
+    xhr :post, :update_parent_div,
+        {:id => flies(:fly_mom).id, :sex => "mom" },
+        user_session(:steve)
     assert_response :success
     
     assert_select "input[type=hidden][value=6]"
@@ -471,7 +490,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_delete_vial
     number_of_old_vials =  Vial.count
     
-    post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
+    post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:steve)
     
     assert_response :redirect
     assert_redirected_to :action => "list_vials"
@@ -490,7 +509,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_delete_vial_fails_when_deleted_by_non_owner
-    assert_equal users(:steve), vials(:vial_one).user
+    assert_equal users(:steve), vials(:vial_one).owner
     
     post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:jeremy)
     
@@ -499,7 +518,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_index_page
-    get :index, {}, user_session(:manage_bench)
+    get :index, {}, user_session(:steve)
     
     assert_response :success
     assert_standard_layout
@@ -635,7 +654,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_mate_flies_page
-    get :mate_flies, {}, user_session(:manage_bench)
+    get :mate_flies, {}, user_session(:steve)
     
     assert_response :success
     assert_standard_layout
@@ -688,7 +707,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "view_vial", :id => new_vial.id
     
     assert_equal [:white] * 8, phenotypes_of(new_vial, :"eye color")
-    assert_equal users(:steve), new_vial.user
+    assert_equal users(:steve), new_vial.owner
     assert_equal number_of_old_vials + 1, Vial.count
   end
   
@@ -709,7 +728,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "view_vial", :id => new_vial.id
     
     assert_equal [:red] * 3, phenotypes_of(new_vial, :"eye color")
-    assert_equal users(:steve), new_vial.user
+    assert_equal users(:steve), new_vial.owner
   end
   
   def test_mate_flies_fails_when_NOT_owned_by_current_user
@@ -831,7 +850,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_preferences_page
-    get :preferences, {}, user_session(:manage_bench)
+    get :preferences, {}, user_session(:steve)
     assert_response :success
     assert_standard_layout
     assert_select "form" do

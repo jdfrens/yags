@@ -30,7 +30,6 @@ class Test::Unit::TestCase
     fixtures :users, :groups, :privileges, :groups_privileges
   end
   
-  # eh, i think this might make our lives a bit easier
   def self.all_fixtures
     fixtures :users, :groups, :privileges, :groups_privileges, 
         :flies, :vials, :genotypes, :basic_preferences, :character_preferences, 
@@ -103,8 +102,6 @@ class Test::Unit::TestCase
   
   def user_session(privilege)
     case privilege
-    when :manage_bench
-      { :current_user_id => 1 }
     when :steve
       { :current_user_id => 1 }
     when :jeremy

@@ -95,12 +95,12 @@ class FlyTest < Test::Unit::TestCase
   end
   
   def test_owner
-    assert users(:steve), flies(:fly_00).user
-    assert users(:steve), flies(:fly_01).user
-    assert users(:steve), flies(:fly_mom).user
-    assert users(:jeremy), flies(:child_one).user
-    assert users(:jeremy), flies(:child_two).user
-    assert users(:jeremy), flies(:gamete_maker).user
+    assert users(:steve), flies(:fly_00).owner
+    assert users(:steve), flies(:fly_01).owner
+    assert users(:steve), flies(:fly_mom).owner
+    assert users(:jeremy), flies(:child_one).owner
+    assert users(:jeremy), flies(:child_two).owner
+    assert users(:jeremy), flies(:gamete_maker).owner
   end
   
 end

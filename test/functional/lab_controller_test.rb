@@ -87,7 +87,7 @@ class LabControllerTest < Test::Unit::TestCase
     post :add_course, { :course => { :name => "Byker's Bio Course" } }, user_session(:calvin)
     assert_response 401 # access denied
     
-    post :add_course, { :course => { :name => "The art of jean selection" } }, user_session(:manage_bench)
+    post :add_course, { :course => { :name => "The art of jean selection" } }, user_session(:steve)
     assert_response 401 # access denied
   end
   
@@ -114,7 +114,7 @@ class LabControllerTest < Test::Unit::TestCase
     get :view_course, {:id => 1 }, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :view_course, {:id => 1 }, user_session(:manage_bench)
+    get :view_course, {:id => 1 }, user_session(:steve)
     assert_response 401 # access denied
   end
   
@@ -151,7 +151,7 @@ class LabControllerTest < Test::Unit::TestCase
     get :choose_course_scenarios, {:id => 1 }, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :choose_course_scenarios, {:id => 1 }, user_session(:manage_bench)
+    get :choose_course_scenarios, {:id => 1 }, user_session(:steve)
     assert_response 401 # access denied
   end
   
@@ -188,7 +188,7 @@ class LabControllerTest < Test::Unit::TestCase
     post :delete_course, { :id => 3 }, user_session(:calvin)
     assert_response 401 # access denied
     
-    post :delete_course, { :id => 3 }, user_session(:manage_bench)
+    post :delete_course, { :id => 3 }, user_session(:steve)
     assert_response 401 # access denied
     
     assert_not_nil Course.find_by_id(1) # "Peas pay attention"
@@ -274,7 +274,7 @@ class LabControllerTest < Test::Unit::TestCase
     post :add_scenario, { :course => { :name => "Byker's Bio Scenario" } }, user_session(:calvin)
     assert_response 401 # access denied
     
-    post :add_scenario, { :course => { :name => "Easy full credit" } }, user_session(:manage_bench)
+    post :add_scenario, { :course => { :name => "Easy full credit" } }, user_session(:steve)
     assert_response 401 # access denied
     assert_equal number_of_old_scenarios, Scenario.find(:all)
   end
@@ -296,7 +296,7 @@ class LabControllerTest < Test::Unit::TestCase
     get :view_scenario, {:id => 1 }, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :view_scenario, {:id => 1 }, user_session(:manage_bench)
+    get :view_scenario, {:id => 1 }, user_session(:steve)
     assert_response 401 # access denied
   end
   
@@ -319,7 +319,7 @@ class LabControllerTest < Test::Unit::TestCase
     get :delete_scenario, { :id => 1 }, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :delete_scenario, { :id => 1 }, user_session(:manage_bench)
+    get :delete_scenario, { :id => 1 }, user_session(:steve)
     assert_response 401 # access denied
     
     assert_not_nil Scenario.find_by_id(1)
@@ -343,7 +343,7 @@ class LabControllerTest < Test::Unit::TestCase
     get :view_cheat_sheet, { }, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :view_cheat_sheet, { }, user_session(:manage_bench)
+    get :view_cheat_sheet, { }, user_session(:steve)
     assert_response 401 # access denied
   end
   

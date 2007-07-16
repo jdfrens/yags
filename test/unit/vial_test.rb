@@ -338,10 +338,10 @@ class VialTest < Test::Unit::TestCase
     assert  vial.errors.invalid?(:dad_id), "should not use fly not owned by creator"
   end
   
-  def test_belongs_to_user
-    assert_equal users(:steve), vials(:parents_vial).user
-    assert_equal users(:steve), vials(:vial_one).user
-    assert_equal users(:jeremy), vials(:destroyable_vial).user
+  def test_belongs_to_owner
+    assert_equal users(:steve), vials(:parents_vial).owner
+    assert_equal users(:steve), vials(:vial_one).owner
+    assert_equal users(:jeremy), vials(:destroyable_vial).owner
   end
 
   #

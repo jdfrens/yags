@@ -66,8 +66,8 @@ class Vial < ActiveRecord::Base
     mom
   end
   
-  def user
-    rack.user
+  def owner
+    rack.owner
   end
   
   def number_of_requested_flies_before_type_cast
@@ -106,7 +106,7 @@ class Vial < ActiveRecord::Base
     selection = flies
     characters.zup(phenotypes) do |character, phenotype|
       #
-      alternate = user.phenotype_alternates.select do |pa|
+      alternate = owner.phenotype_alternates.select do |pa|
         pa.affected_character.intern == character and pa.renamed_phenotype.intern == phenotype
       end
       phenotype = alternate.first.original_phenotype.intern if alternate != []
@@ -139,8 +139,8 @@ class Vial < ActiveRecord::Base
   
   # i don't know that this is the right location for this method...
   def renamed_phenotype(character, phenotype)
-    phenotype_alternate = user.phenotype_alternates.select do |pa|
-      pa.scenario_id == user.current_scenario.id and 
+    phenotype_alternate = owner.phenotype_alternates.select do |pa|
+      pa.scenario_id == owner.current_scenario.id and 
           pa.affected_character.intern == character and pa.original_phenotype.intern == phenotype
     end.first
     if phenotype_alternate

@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
   end
   
   def owns?(object)
-    self == object.user
+    self == object.owner
   end
   
   def students

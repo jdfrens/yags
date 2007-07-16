@@ -10,6 +10,7 @@
     <p>
         <label for="title"><strong>Title: </strong></label>
         <%= form.text_field :title, :size => 40 %>
+		<%= javascript_tag "$('scenario_title').focus()" %>
     </p>
     
     <!-- could this part become a partial that changes once we have multiple species? -->

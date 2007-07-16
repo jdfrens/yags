@@ -4,14 +4,12 @@
 <table id="parent-table">
     <% if @vial.has_parents? %>
         <tr>
-            <th></th>
             <% @visible_characters.each do |ch| -%>
                 <th><%= ch %></th>
             <% end -%>
             <th>source vial</th>
         </tr>
         <tr>
-            <th>Mom</th>
             <% @visible_characters.each do |ch| -%>
                 <td><%= @vial.mom.vial.renamed_phenotype(ch, @vial.mom.phenotype(ch)) %></td>
 				        <!-- yucky code here... -->
@@ -19,7 +17,6 @@
             <td><%= link_to @vial.mom.vial.label, :action => :view_vial, :id => @vial.mom.vial %></td>
         </tr>
         <tr>
-            <th>Dad</th>
             <% @visible_characters.each do |ch| -%>
                 <td><%= @vial.dad.vial.renamed_phenotype(ch, @vial.dad.phenotype(ch)) %></td>
 				        <!-- yucky here too... -->

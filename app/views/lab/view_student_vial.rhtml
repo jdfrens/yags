@@ -38,21 +38,18 @@ MochiKit.DOM.addLoadEvent(drawGraph);
         <table>
         	<% if @parents %>
             <tr>
-                <th></th>
                 <% @visible_characters.each do |ch| -%>
                     <th><%= ch %></th>
                 <% end -%>
                 <th>source vial</th>
             </tr>
             <tr>
-                <th>Mom</th>
                 <% @visible_characters.each do |ch| -%>
                     <td><%= @mom.vial.renamed_phenotype(ch, @mom.phenotype(ch)) %></td>
                 <% end -%>
                 <td><%= link_to @mom_vial.label, :action => :view_student_vial, :id => @mom_vial %></td>
             </tr>
             <tr>
-        	    <th>Dad</th>
                     <% @visible_characters.each do |ch| -%>
                         <td><%= @dad.vial.renamed_phenotype(ch, @dad.phenotype(ch)) %></td>
                     <% end -%>

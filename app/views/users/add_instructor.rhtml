@@ -6,6 +6,7 @@
     <p>
         <label for="username"><strong>Username: </strong></label>
         <%= form.text_field :username, :size => 20 %>
+		<%= javascript_tag "$('user_username').focus()" %>
     </p>
     <p>
         <label for="email address"><strong>Email Address: </strong></label>

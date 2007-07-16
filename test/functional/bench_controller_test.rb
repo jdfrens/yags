@@ -17,11 +17,11 @@ class BenchControllerTest < Test::Unit::TestCase
     number_of_old_vials =  Vial.count
     
     post :collect_field_vial, {
-        :vial => {
-            :label => "four fly vial",
-            :number_of_requested_flies => "4" }
-        },
-        user_session(:steve)
+      :vial => {
+        :label => "four fly vial",
+        :number_of_requested_flies => "4" }
+    },
+    user_session(:steve)
     
     new_vial = Vial.find_by_label("four fly vial")
     assert_not_nil new_vial
@@ -36,11 +36,11 @@ class BenchControllerTest < Test::Unit::TestCase
     number_of_old_vials =  Vial.count
     
     post :collect_field_vial, {
-        :vial => {
-            :label => "nine fly vial",
-            :number_of_requested_flies => "9"
-            } },
-        user_session(:steve)
+      :vial => {
+        :label => "nine fly vial",
+        :number_of_requested_flies => "9"
+      } },
+    user_session(:steve)
     
     assert logged_in?, "should be logged in"
     new_vial = Vial.find_by_label("nine fly vial")
@@ -56,28 +56,28 @@ class BenchControllerTest < Test::Unit::TestCase
     post :collect_field_vial, { :vial => { :label => "anonomous user's vial"}, :number => "8" }
     assert_redirected_to_login
   end
-
+  
   def test_collect_field_vial_fails_if_number_invalid
     post :collect_field_vial, {
-        :vial => {
-            :label => "some vial",
-            :number_of_requested_flies => "581" }
-        },
-        user_session(:manage_bench)
-        
+      :vial => {
+        :label => "some vial",
+        :number_of_requested_flies => "581" }
+    },
+    user_session(:manage_bench)
+    
     vial = assigns(:vial)
     assert vial.errors.invalid?(:number_of_requested_flies)
   end
-
+  
   def test_collect_field_vial_page
     post :collect_field_vial, {}, user_session(:steve)
     assert_response :success
     assert_standard_layout
     
     assert_select "form" do
-      assert_select "p", "Label:"
+      assert_select "label", "Label:"
       assert_select "input#vial_label"
-      assert_select "p", "Number of flies:"
+      assert_select "label", "Number of flies:"
       assert_select "input#vial_number_of_requested_flies"
     end
   end
@@ -97,14 +97,14 @@ class BenchControllerTest < Test::Unit::TestCase
     post :add_rack, { :rack => { :label => "super duper unit"} }
     assert_redirected_to_login
   end
-
+  
   def test_add_rack_page
     get :add_rack, {}, user_session(:manage_bench)
     assert_response :success
     assert_standard_layout
     
     assert_select "form" do
-      assert_select "p", "Label:"
+      assert_select "label", "Label:"
       assert_select "label"
     end
   end
@@ -156,16 +156,49 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "h1", /Vial #{vial.label}/
     assert_select "h1", "on rack #{vial.rack.label}"
     assert_select "span#vial_label_3_in_place_editor", vial.label
-        
+    
     assert_select "div#solution_notice", ""
     assert_select "div#vial-table" do
-      # TODO: what's in this table?
+      assert_select "img[src^=/images/blank_table.png]"
     end
+    
+    assert_select "form[action=/bench/update_table]" do
+      assert_select "select[name=character_col]" do
+        assert_select "option[value=sex]", "sex"
+        assert_select "option[value=eye color]", "eye color"
+        assert_select "option[value=wings]", "wings"
+        assert_select "option[value=legs]", "legs"
+        assert_select "option[value=antenna]", "antenna"
+      end
+      assert_select "select[name=character_row]" do
+        assert_select "option[value=sex]", "sex"
+        assert_select "option[value=eye color]", "eye color"
+        assert_select "option[value=wings]", "wings"
+        assert_select "option[value=legs]", "legs"
+        assert_select "option[value=antenna]", "antenna"
+      end
+    end
+    
     assert_select "div#parent-info table" do
       assert_select "p", "Parent information is unknown for field vials."
     end
     assert_select "div#vial_maintenance" do
-      # TODO: what's in this section?
+      assert_select "form[action=/bench/set_as_solution]" do 
+        assert_select "label", "Submit as a solution to Problem #"
+        assert_select "select#solution_number" do
+          assert_select "option[value=]", ""
+          assert_select "option[value=1]", "1"
+          assert_select "option[value=2]", "2"
+          assert_select "option[value=3]", "3"
+          assert_select "option[value=4]", "4"
+          assert_select "option[value=5]", "5"
+          assert_select "option[value=6]", "6"
+          assert_select "option[value=7]", "7"
+          assert_select "option[value=8]", "8"
+          assert_select "option[value=9]", "9"
+        end
+        assert_select "input[type=hidden][value=3]"
+      end
     end
   end
   
@@ -173,7 +206,7 @@ class BenchControllerTest < Test::Unit::TestCase
     vial = vials(:vial_with_many_flies)
     
     get :view_vial, { :id => vial.id }, user_session(:manage_bench)
-
+    
     assert_response :success
     assert_standard_layout
     
@@ -182,15 +215,48 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "span#vial_label_4_in_place_editor", vial.label
     
     assert_select "div#solution_notice", ""
-
+    
     assert_select "div#vial-table" do
-      # TODO: what's in this table?
+      assert_select "img[src^=/images/blank_table.png]"
     end
+    
+    assert_select "form[action=/bench/update_table]" do
+      assert_select "select[name=character_col]" do
+        assert_select "option[value=sex]", "sex"
+        assert_select "option[value=eye color]", "eye color"
+        assert_select "option[value=wings]", "wings"
+        assert_select "option[value=legs]", "legs"
+        assert_select "option[value=antenna]", "antenna"
+      end
+      assert_select "select[name=character_row]" do
+        assert_select "option[value=sex]", "sex"
+        assert_select "option[value=eye color]", "eye color"
+        assert_select "option[value=wings]", "wings"
+        assert_select "option[value=legs]", "legs"
+        assert_select "option[value=antenna]", "antenna"
+      end
+    end
+    
     assert_select "div#parent-info table" do
       assert_select "p", "Parent information is unknown for field vials."
     end
     assert_select "div#vial_maintenance" do
-      # TODO: what's in this section?
+      assert_select "form[action=/bench/set_as_solution]" do 
+        assert_select "label", "Submit as a solution to Problem #"
+        assert_select "select#solution_number" do
+          assert_select "option[value=]", ""
+          assert_select "option[value=1]", "1"
+          assert_select "option[value=2]", "2"
+          assert_select "option[value=3]", "3"
+          assert_select "option[value=4]", "4"
+          assert_select "option[value=5]", "5"
+          assert_select "option[value=6]", "6"
+          assert_select "option[value=7]", "7"
+          assert_select "option[value=8]", "8"
+          assert_select "option[value=9]", "9"
+        end
+        assert_select "input[type=hidden][value=4]"
+      end
     end
   end
   
@@ -198,22 +264,55 @@ class BenchControllerTest < Test::Unit::TestCase
     vial = vials(:vial_one)
     
     get :view_vial, { :id => vial.id }, user_session(:manage_bench)
-
+    
     assert_response :success
     assert_standard_layout
-
+    
     assert_select "h1", /Vial #{vial.label}/
     assert_select "h1", "on rack #{vial.rack.label}"
     assert_select "span#vial_label_1_in_place_editor", vial.label    
     assert_select "div#solution_notice", "This is a solution to Problem #8."
     assert_select "div#vial-table" do
-      # TODO: what's in this table?
+      assert_select "img[src^=/images/blank_table.png]"
     end
+    
+    assert_select "form[action=/bench/update_table]" do
+      assert_select "select[name=character_col]" do
+        assert_select "option[value=sex]", "sex"
+        assert_select "option[value=eye color]", "eye color"
+        assert_select "option[value=wings]", "wings"
+        assert_select "option[value=legs]", "legs"
+        assert_select "option[value=antenna]", "antenna"
+      end
+      assert_select "select[name=character_row]" do
+        assert_select "option[value=sex]", "sex"
+        assert_select "option[value=eye color]", "eye color"
+        assert_select "option[value=wings]", "wings"
+        assert_select "option[value=legs]", "legs"
+        assert_select "option[value=antenna]", "antenna"
+      end
+    end
+    
     assert_select "div#parent-info table" do
       assert_select "p", "Parent information is unknown for field vials."
     end
     assert_select "div#vial_maintenance" do
-      # TODO: what's in this section?
+      assert_select "form[action=/bench/set_as_solution]" do 
+        assert_select "label", "Submit as a solution to Problem #"
+        assert_select "select#solution_number" do
+          assert_select "option[value=]", ""
+          assert_select "option[value=1]", "1"
+          assert_select "option[value=2]", "2"
+          assert_select "option[value=3]", "3"
+          assert_select "option[value=4]", "4"
+          assert_select "option[value=5]", "5"
+          assert_select "option[value=6]", "6"
+          assert_select "option[value=7]", "7"
+          assert_select "option[value=8][selected=selected]", "8"
+          assert_select "option[value=9]", "9"
+        end
+        assert_select "input[type=hidden][value=1]"
+      end
     end
   end
   
@@ -233,7 +332,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_steve_has_no_table_preference
     get :view_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
     assert_response :success
-    assert_select "em#instruction", true, "should have displayed instructions"
+    assert_select "img[src^=/images/blank_table.png]", true, "should have displayed an example image"
   end
   
   def test_jeremy_has_table_preferences
@@ -287,7 +386,7 @@ class BenchControllerTest < Test::Unit::TestCase
     vial.reload
     assert_not_nil vial.solution
     assert_equal 1, vial.solution.number
-
+    
     assert_select_rjs "solution_notice", "img[src=/images/star.png]"
     assert_select_rjs "solution_notice", "This vial is now a solution for problem 1."
   end
@@ -305,7 +404,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_equal 9, vial.solution.number
     assert_equal original_2_count - 1, Solution.find_all_by_number(2).size
     assert_equal original_9_count + 1, Solution.find_all_by_number(9).size
-
+    
     assert_select_rjs "solution_notice", "img[src=/images/star.png]"
     assert_select_rjs "solution_notice", "This vial is now a solution for problem 9."
   end
@@ -324,7 +423,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_nil original_vial.solution
     assert_not_nil replacement_vial.solution
     assert_equal 2, replacement_vial.solution.number
-
+    
     assert_select_rjs "solution_notice", "img[src=/images/star.png]"
     assert_select_rjs "solution_notice", "This vial is now a solution for problem 2."
   end
@@ -336,7 +435,7 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_update_table
     xhr :post, :update_table, { :vial_id => vials(:vial_one).id, :character_col => "eye color", 
-        :character_row => "sex" }, user_session(:manage_bench)
+      :character_row => "sex" }, user_session(:manage_bench)
     assert_response :success
     
     assert_select "table" do
@@ -371,14 +470,14 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_delete_vial
     number_of_old_vials =  Vial.count
-
+    
     post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
-
+    
     assert_response :redirect
     assert_redirected_to :action => "list_vials"
     assert !flash.empty?
     assert_equal "First vial has been deleted",  flash[:notice]
-
+    
     assert_nil Vial.find_by_id(vials(:vial_one).id)
     assert_equal number_of_old_vials - 1, Vial.count
   end
@@ -432,11 +531,11 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "form[action=/bench/mate_flies]" do
-      assert_select "p", "Label for vial of offspring:"
+      assert_select "label", "Label for vial of offspring:"
       assert_select "input#vial_label"
-      assert_select "p", "Number of offspring:"
+      assert_select "label", "Number of offspring:"
       assert_select "input#vial_number_of_requested_flies"
-      assert_select "p", /^Store in rack named:/
+      assert_select "label", /^Store in rack named:/
       assert_select "select#vial_rack_id" do
         assert_select "option", 2, "steve should have two racks"
         assert_select "option", "steve stock"
@@ -444,7 +543,7 @@ class BenchControllerTest < Test::Unit::TestCase
       end
     end
   end
-
+  
   def test_show_mateable_flies
     xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }, user_session(:steve)
     assert_response :success
@@ -514,7 +613,7 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_list_vials_lists_only_current_users_vials
     get :list_vials, {}, user_session(:jeremy)
-
+    
     assert_response :success
     assert_standard_layout
     assert_select "h1", "Your Vials"
@@ -544,7 +643,11 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_nil flash[:error]
     assert_select "div#vial_selector_1" do
       assert_select "select[name=vial]" do
-        # TODO: what options are in this select?
+        assert_select "option[value=1]", "First vial"
+        assert_select "option[value=2]", "Empty vial"
+        assert_select "option[value=3]", "Single fly vial"
+        assert_select "option[value=4]", "Multiple fly vial"
+        assert_select "option[value=5]", "Parents vial"
       end
       assert_select "h2", "First Vial"
       assert_select "input[name=which_vial][value=1]"
@@ -552,7 +655,11 @@ class BenchControllerTest < Test::Unit::TestCase
     end
     assert_select "div#vial_selector_2" do
       assert_select "select[name=vial]" do
-        # TODO: what options are in this select?
+        assert_select "option[value=1]", "First vial"
+        assert_select "option[value=2]", "Empty vial"
+        assert_select "option[value=3]", "Single fly vial"
+        assert_select "option[value=4]", "Multiple fly vial"
+        assert_select "option[value=5]", "Parents vial"
       end
       assert_select "h2", "Second Vial"
       assert_select "input[name=which_vial][value=2]"
@@ -566,38 +673,38 @@ class BenchControllerTest < Test::Unit::TestCase
     number_of_old_vials = Vial.count
     
     post :mate_flies,
-        { :vial => {
-            :label => "children vial",
-            :mom_id => "6", :dad_id => "1",
-            :rack_id => "2",
-            :number_of_requested_flies => "8"
-            } },
-        user_session(:steve)
-          
+    { :vial => {
+        :label => "children vial",
+        :mom_id => "6", :dad_id => "1",
+        :rack_id => "2",
+        :number_of_requested_flies => "8"
+      } },
+    user_session(:steve)
+    
     new_vial = Vial.find_by_label("children vial")
     assert_not_nil new_vial
-
+    
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
-
+    
     assert_equal [:white] * 8, phenotypes_of(new_vial, :"eye color")
     assert_equal users(:steve), new_vial.user
     assert_equal number_of_old_vials + 1, Vial.count
   end
-    
+  
   def test_mate_flies_again  
     post :mate_flies,
-        { :vial => {
-            :label => "children 2",
-            :mom_id => "4", :dad_id => "3",
-            :rack_id => "1", 
-            :number_of_requested_flies => "3"
-            } },
-        user_session(:steve)
-        
+    { :vial => {
+        :label => "children 2",
+        :mom_id => "4", :dad_id => "3",
+        :rack_id => "1", 
+        :number_of_requested_flies => "3"
+      } },
+    user_session(:steve)
+    
     new_vial = Vial.find_by_label("children 2")
     assert_not_nil new_vial
-
+    
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
     
@@ -648,6 +755,24 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_template "bench/mate_flies"
       assert !assigns(:vial).valid?
       # other variations of this failure are tested in the unit tests
+    end
+  end
+  
+  def test_mate_flies_flashes_error_when_too_many_offspring_requested
+    assert_no_added_vials do
+      post :mate_flies,
+          { :vial => {
+              :label => "children vial",
+              :dad_id => "1", :mom_id => 6, 
+              :rack_id => "2",
+              :number_of_requested_flies => "256" } },
+          user_session(:steve)
+          
+      assert_response :success
+      assert_standard_layout
+      assert_template "bench/mate_flies"
+      vial = assigns(:vial)
+      assert vial.errors.invalid?(:number_of_requested_flies)
     end
   end
   
@@ -795,9 +920,9 @@ class BenchControllerTest < Test::Unit::TestCase
     users(:steve).reload
     assert_equal scenarios(:another_scenario), users(:steve).current_scenario
     assert_equal [:"eye color", :"eye color"], 
-        users(:steve).phenotype_alternates.map { |pa| pa.affected_character.intern }
+    users(:steve).phenotype_alternates.map { |pa| pa.affected_character.intern }
     assert_equal [:red, :white].to_set, 
-        users(:steve).phenotype_alternates.map { |pa| pa.original_phenotype.intern }.to_set
+    users(:steve).phenotype_alternates.map { |pa| pa.original_phenotype.intern }.to_set
   end
   
   def test_choose_scenario_fails_when_NOT_scenario_for_course
@@ -827,7 +952,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to :controller => 'bench', :action => 'index' # or something
     assert_equal old_scenario, users(:steve).current_scenario
   end
-  
+
   #
   # Helpers
   #
@@ -838,5 +963,4 @@ class BenchControllerTest < Test::Unit::TestCase
     yield
     assert_equal original_number_of_vials, Vial.count, "should have same number of vials"
   end
-  
 end

@@ -75,6 +75,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "form" do
       assert_select "label[for=username]"
+    assert_select "script[type=text/javascript]"
       assert_select "label[for=first_name]"
       assert_select "label[for=last_name]"
       assert_select "label[for=email address]"
@@ -127,10 +128,11 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "p", "Username:"
-      assert_select "p", "Email Address:"
-      assert_select "p", "Password:"
-      assert_select "p", "Password Confirmation:"
+      assert_select "label", "Username:"
+    assert_select "script[type=text/javascript]"
+      assert_select "label", "Email Address:"
+      assert_select "label", "Password:"
+      assert_select "label", "Password Confirmation:"
       assert_select "label", 4
     end
   end
@@ -201,9 +203,10 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "form" do
-      assert_select "p", "Old Password:"
-      assert_select "p", "Password:"
-      assert_select "p", "Password Confirmation:"
+      assert_select "label", "Old Password:"
+    assert_select "script[type=text/javascript]"
+      assert_select "label", "Password:"
+      assert_select "label", "Password Confirmation:"
     end
   end
   
@@ -253,8 +256,8 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "form" do
       assert_select "div#students_select", "Student: steve\njeremy\nrandy"
-      assert_select "p", "Password:"
-      assert_select "p", "Password Confirmation:"
+      assert_select "label", "Password:"
+      assert_select "label", "Password Confirmation:"
     end
   end
   
@@ -264,8 +267,8 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "form" do
       assert_select "div#students_select", "Student: jeremy\nrandy", "shouldn't have steve"
-      assert_select "p", "Password:"
-      assert_select "p", "Password Confirmation:"
+      assert_select "label", "Password:"
+      assert_select "label", "Password Confirmation:"
     end
   end
   

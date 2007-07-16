@@ -66,7 +66,8 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "p", "Course Name:"
+      assert_select "label", "Course Name:"
+    assert_select "script[type=text/javascript]"
       assert_select "label[for=name]"
     end
   end
@@ -232,6 +233,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_select "form" do
       assert_select "label[for=species]"
       assert_select "label[for=title]"
+    assert_select "script[type=text/javascript]"
       
       assert_select "input[value=sex][checked=checked]"
       assert_select "input[value=eye color][checked=checked]", 2

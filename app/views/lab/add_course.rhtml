@@ -6,6 +6,7 @@
     <p>
         <label for="name"><strong>Course Name: </strong></label>
         <%= form.text_field :name, :size => 40 %>
+		<%= javascript_tag "$('course_name').focus()" %>
     </p>
     
     <%= submit_tag "Add Course", :class => "submit" %>

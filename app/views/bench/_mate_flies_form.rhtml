@@ -7,11 +7,11 @@
         </p>
         <p>
             <label for="number_of_flies"><strong>Number of offspring: </strong></label>
-            <%= text_field_tag :number, nil, :size => 5 %>
+            <%= form.text_field :number_of_requested_flies, :size => 5 %>
         </p>
 		<p>
 			<label for="rack_id"><strong>Store in rack named: </strong></label>
-            <%= select_tag(:rack_id, options_for_select(@rack_labels_and_ids) )%>
+            <%= form.select(:rack_id, @rack_labels_and_ids)%>
 		</p>
 		<div id="dad"></div>
 		<div id="mom"></div>

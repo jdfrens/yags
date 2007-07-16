@@ -52,15 +52,11 @@ class BenchController < ApplicationController
   
   def collect_field_vial
     if (params[:vial])
+      # TODO: why isn't this a dropdown in the form?
       params[:vial][:rack_id] = current_user.racks.first.id
-      if number_valid?(params[:number])
-        @vial = Vial.collect_from_field(params[:vial], params[:number].to_i)
-        @vial.save!
-        redirect_to :action => "view_vial", :id => @vial.id
-      else
-        flash[:error] = "The number of flies should be between 0 and 255."
-        render
-      end
+      @vial = Vial.collect_from_field(params[:vial])
+      @vial.save!
+      redirect_to :action => "view_vial", :id => @vial.id
     else
       render
     end
@@ -78,17 +74,13 @@ class BenchController < ApplicationController
       @rack_labels_and_ids << [rack.label, rack.id]
     end
     if params[:vial]
-      if !number_valid?(params[:number])
-        flash[:error] = "The number of offspring should be between 0 and 255."
-        render
-      elsif params[:vial][:mom_id].nil? || params[:vial][:dad_id].nil?
+      # TODO: this next test is really a model issue
+      if params[:vial][:mom_id].nil? || params[:vial][:dad_id].nil?
         flash[:error] = "You didn't select two parents!"
-        # we're mixing the validation box and flash[:error] messages...
+      # TODO: current_user.owns?(mom) && current_user.owns?(dad)
       elsif Fly.find(params[:vial][:mom_id]).vial.user == current_user && 
         Fly.find(params[:vial][:dad_id]).vial.user == current_user
-        # TODO: this next line seems like a form is misformed...
-        params[:vial][:rack_id] = params[:rack_id]
-        @vial = Vial.make_babies_and_vial(params[:vial], params[:number].to_i)
+        @vial = Vial.make_babies_and_vial(params[:vial])
         @vial.save!
         redirect_to :action => "view_vial", :id => @vial.id
       else
@@ -140,9 +132,14 @@ class BenchController < ApplicationController
   
   def destroy_vial
     if params[:id] && request.post?
-      @vial = Vial.find(params[:id]).destroy      
+      vial = Vial.find(params[:id])
+      if vial.user == current_user
+        vial.destroy
+        flash[:notice] = "#{vial.label} has been deleted"
+      else
+        flash[:notice] = "You do not own that vial."
+      end
     end
-    flash[:notice] = "#{@vial.label} has been deleted"
     redirect_to :action => :list_vials
   end
   

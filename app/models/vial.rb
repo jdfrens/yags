@@ -9,8 +9,14 @@ class Vial < ActiveRecord::Base
   include CartesianProduct
   
   validates_presence_of :label
-  
-  def self.collect_from_field(vial_params, number, bit_generator = RandomBitGenerator.new, allele_frequencies = {})
+  # TODO: rack should be required.
+  validates_numericality_of :number_of_requested_flies, :only_integer => true,
+      :on => :create
+  validates_inclusion_of :number_of_requested_flies, :in => 0..255,
+      :message => "should be between 0 and 255",
+      :on => :create
+
+  def self.collect_from_field(vial_params, bit_generator = RandomBitGenerator.new, allele_frequencies = {})
     vial = Vial.new(vial_params)
     allele_frequencies[:sex] = 0.5 unless allele_frequencies[:sex]
     # or should we vary the sex ratios along with everything else?
@@ -18,18 +24,18 @@ class Vial < ActiveRecord::Base
       allele_frequencies[character] = 0.13 + (rand 37) / 100.0 unless allele_frequencies[character]
     end
     if vial.save
-      vial.fill_from_field(number, bit_generator, allele_frequencies)
+      vial.fill_from_field(bit_generator, allele_frequencies)
     end
     vial
   end
   
-  def self.make_babies_and_vial(vial_params, number, bit_generator = RandomBitGenerator.new)
+  def self.make_babies_and_vial(vial_params, bit_generator = RandomBitGenerator.new)
     vial = Vial.new(vial_params)
     species = vial.species
     mom = Fly.find vial.mom_id
     dad = Fly.find vial.dad_id
     if vial.save
-      number.times do |i|
+      vial.number_of_requested_flies.times do |i|
         vial.flies << mom.mate_with(dad, bit_generator)
       end
     end
@@ -46,6 +52,23 @@ class Vial < ActiveRecord::Base
   
   def user
     rack.user
+  end
+  
+  def number_of_requested_flies_before_type_cast
+    @raw_number_of_requested_flies
+  end
+  
+  def number_of_requested_flies
+    @number_of_requested_flies
+  end
+  
+  def number_of_requested_flies=(number)
+    @raw_number_of_requested_flies = number
+    if (number.blank?)
+      @number_of_requested_flies = -1
+    else
+      @number_of_requested_flies = number.to_i
+    end
   end
   
   def combinations_of_phenotypes(characters = species.characters)
@@ -111,8 +134,8 @@ class Vial < ActiveRecord::Base
     end
   end
 
-  def fill_from_field(number, bit_generator, allele_frequencies)
-    number.times do |i|
+  def fill_from_field(bit_generator, allele_frequencies)
+    number_of_requested_flies.times do |i|
        new_fly = Fly.create!
        species.characters.each do |character|
          if character == :sex # could this be handled better?

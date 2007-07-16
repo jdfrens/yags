@@ -14,8 +14,15 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_collect_field_vial_of_four_flies
-    number_of_old_vials =  Vial.find(:all).size
-    post :collect_field_vial, { :vial => { :label => "four fly vial"}, :number => "4" }, user_session(:steve)
+    number_of_old_vials =  Vial.count
+    
+    post :collect_field_vial, {
+        :vial => {
+            :label => "four fly vial",
+            :number_of_requested_flies => "4" }
+        },
+        user_session(:steve)
+    
     new_vial = Vial.find_by_label("four fly vial")
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
@@ -26,12 +33,19 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_collect_field_vial_of_nine_flies
-    number_of_old_vials =  Vial.find(:all).size
-    post :collect_field_vial, { :vial => { :label => "nine fly vial" }, :number => "9" }, user_session(:steve)
+    number_of_old_vials =  Vial.count
+    
+    post :collect_field_vial, {
+        :vial => {
+            :label => "nine fly vial",
+            :number_of_requested_flies => "9"
+            } },
+        user_session(:steve)
+    
     assert logged_in?, "should be logged in"
     new_vial = Vial.find_by_label("nine fly vial")
     assert_not_nil new_vial
-    assert_equal number_of_old_vials + 1, Vial.find(:all).size
+    assert_equal number_of_old_vials + 1, Vial.count
     assert_equal 9, new_vial.flies.size
     assert_equal users(:steve), new_vial.user
     assert_response :redirect
@@ -44,21 +58,27 @@ class BenchControllerTest < Test::Unit::TestCase
   end
 
   def test_collect_field_vial_fails_if_number_invalid
-    post :collect_field_vial, { :vial => { :label => "some vial"}, :number => "581" }, user_session(:manage_bench)
-    assert !flash.empty?
-    assert_equal "The number of flies should be between 0 and 255.",  flash[:error]
+    post :collect_field_vial, {
+        :vial => {
+            :label => "some vial",
+            :number_of_requested_flies => "581" }
+        },
+        user_session(:manage_bench)
+        
+    vial = assigns(:vial)
+    assert vial.errors.invalid?(:number_of_requested_flies)
   end
 
   def test_collect_field_vial_page
-    post :collect_field_vial, {}, user_session(:manage_bench)
+    post :collect_field_vial, {}, user_session(:steve)
     assert_response :success
     assert_standard_layout
     
     assert_select "form" do
       assert_select "p", "Label:"
-      assert_select "label"
+      assert_select "input#vial_label"
       assert_select "p", "Number of flies:"
-      assert_select "input"
+      assert_select "input#vial_number_of_requested_flies"
     end
   end
   
@@ -349,16 +369,18 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
-    def test_delete_vial
-    number_of_old_vials =  Vial.find(:all).size
+  def test_delete_vial
+    number_of_old_vials =  Vial.count
+
     post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:manage_bench)
-    assert logged_in?, "should be logged in"
-    assert_nil Vial.find_by_id(vials(:vial_one).id)
-    assert_equal number_of_old_vials - 1, Vial.find(:all).size
-    assert !flash.empty?
-    assert_equal "First vial has been deleted",  flash[:notice]
+
     assert_response :redirect
     assert_redirected_to :action => "list_vials"
+    assert !flash.empty?
+    assert_equal "First vial has been deleted",  flash[:notice]
+
+    assert_nil Vial.find_by_id(vials(:vial_one).id)
+    assert_equal number_of_old_vials - 1, Vial.count
   end
   
   def test_delete_vial_fails_when_NOT_logged_in
@@ -366,10 +388,15 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil Vial.find_by_id(vials(:vial_one).id)
     assert flash.empty?
     assert_redirected_to_login
+  end
+  
+  def test_delete_vial_fails_when_deleted_by_non_owner
+    assert_equal users(:steve), vials(:vial_one).user
     
-    post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:manage_student)
+    post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:jeremy)
+    
     assert_not_nil Vial.find_by_id(vials(:vial_one).id)
-    assert_response 401 # access denied
+    assert_equal "You do not own that vial.", flash[:notice]
   end
   
   def test_index_page
@@ -400,7 +427,7 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_collect_mate_data
-    get :mate_flies, {}, user_session(:manage_bench)
+    get :mate_flies, {}, user_session(:steve)
     assert_response :success
     assert_standard_layout
     
@@ -408,10 +435,12 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "p", "Label for vial of offspring:"
       assert_select "input#vial_label"
       assert_select "p", "Number of offspring:"
-      assert_select "input#number"
+      assert_select "input#vial_number_of_requested_flies"
       assert_select "p", /^Store in rack named:/
-      assert_select "select#rack_id" do
-        # TODO: what options are in this select?
+      assert_select "select#vial_rack_id" do
+        assert_select "option", 2, "steve should have two racks"
+        assert_select "option", "steve stock"
+        assert_select "option", "steve bench"
       end
     end
   end
@@ -534,26 +563,45 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_mate_flies
-    number_of_old_vials = Vial.find(:all).size
-    post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, 
-        :number => "8", :rack_id => "2"}, user_session(:steve)
+    number_of_old_vials = Vial.count
+    
+    post :mate_flies,
+        { :vial => {
+            :label => "children vial",
+            :mom_id => "6", :dad_id => "1",
+            :rack_id => "2",
+            :number_of_requested_flies => "8"
+            } },
+        user_session(:steve)
+          
     new_vial = Vial.find_by_label("children vial")
     assert_not_nil new_vial
-    assert_equal [:white] * 8, new_vial.flies.map {|fly| fly.phenotype(:"eye color")}
+
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
+
+    assert_equal [:white] * 8, phenotypes_of(new_vial, :"eye color")
     assert_equal users(:steve), new_vial.user
-    assert_equal number_of_old_vials + 1, Vial.find(:all).size
+    assert_equal number_of_old_vials + 1, Vial.count
   end
     
   def test_mate_flies_again  
-    post :mate_flies, { :vial => { :label => "children 2", :mom_id => "4", :dad_id => "3" }, 
-        :number => "3", :rack_id => "1" }, user_session(:steve)
+    post :mate_flies,
+        { :vial => {
+            :label => "children 2",
+            :mom_id => "4", :dad_id => "3",
+            :rack_id => "1", 
+            :number_of_requested_flies => "3"
+            } },
+        user_session(:steve)
+        
     new_vial = Vial.find_by_label("children 2")
     assert_not_nil new_vial
-    assert_equal [:red] * 3, new_vial.flies.map {|fly| fly.phenotype(:"eye color")}
+
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
+    
+    assert_equal [:red] * 3, phenotypes_of(new_vial, :"eye color")
     assert_equal users(:steve), new_vial.user
   end
   
@@ -597,35 +645,44 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_mate_flies_flashes_error_when_too_many_offspring_requested
     post :mate_flies,
-        { :vial => { :label => "children vial", :dad_id => "1", :mom_id => 6 }, 
-          :number => "256",
-          :rack_id => "2" },
+        { :vial => {
+            :label => "children vial",
+            :dad_id => "1", :mom_id => 6, 
+            :rack_id => "2",
+            :number_of_requested_flies => "256" } },
         user_session(:steve)
         
     assert_standard_layout
-    assert_equal "The number of offspring should be between 0 and 255.", flash[:error]
+    vial = assigns(:vial)
+    assert vial.errors.invalid?(:number_of_requested_flies)
   end
   
   def test_mate_flies_flashes_error_when_too_few_offspring_requested
     post :mate_flies,
-        { :vial => { :label => "children vial", :dad_id => "1", :mom_id => 6 }, 
-          :number => "-1",
-          :rack_id => "2" },
+        { :vial => {
+            :label => "children vial",
+            :dad_id => "1", :mom_id => 6, 
+            :rack_id => "2",
+            :number_of_requested_flies => "-1" } },
         user_session(:steve)
-        
+                
     assert_standard_layout
-    assert_equal "The number of offspring should be between 0 and 255.", flash[:error]
+    vial = assigns(:vial)
+    assert vial.errors.invalid?(:number_of_requested_flies)
   end
   
   def test_mate_flies_flashes_error_when_non_numeric_number_of_offspring_requested
     post :mate_flies,
-        { :vial => { :label => "children vial", :dad_id => "1", :mom_id => 6 }, 
-          :number => "abc",
-          :rack_id => "2" },
+        { :vial => {
+            :label => "children vial",
+            :dad_id => "1", :mom_id => 6, 
+            :rack_id => "2",
+            :number_of_requested_flies => "abc" } },
         user_session(:steve)
         
     assert_standard_layout
-    assert_equal "The number of offspring should be between 0 and 255.", flash[:error]
+    vial = assigns(:vial)
+    assert vial.errors.invalid?(:number_of_requested_flies)
   end
   
   def test_preferences_page

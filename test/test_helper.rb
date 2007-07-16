@@ -77,7 +77,18 @@ class Test::Unit::TestCase
       assert_equal fly1_genotype.dad_allele, fly2_genotype.dad_allele, "dad allele for #{fly1_genotype.gene_number}"
     end
   end
-  
+
+  # The container can be an array of flies or any general container that has
+  # a flies method (like a Vial).
+  def phenotypes_of(container, character)
+    if (container.respond_to?(:flies))
+      flies = container.flies
+    else
+      flies = container
+    end
+    flies.map { |fly| fly.phenotype(character) }
+  end
+
   def assert_equal_set(expected, actual, message=nil)
     assert_equal expected.sort_by { |p| p.to_s }, actual.sort_by { |p| p.to_s }, message
   end

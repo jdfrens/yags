@@ -40,6 +40,13 @@ class UserTest < Test::Unit::TestCase
     assert_nil users(:steve).solutions_as_hash[9]
   end
   
+  def test_owns?
+    assert  users(:jeremy).owns?(vials(:destroyable_vial))
+    assert !users(:steve).owns?(vials(:destroyable_vial))
+    assert !users(:jeremy).owns?(racks(:steve_bench_rack))
+    assert  users(:steve).owns?(racks(:steve_bench_rack))
+  end
+  
   def test_hidden_characters
     assert_equal [:"eye color", :wings, :antenna], users(:randy).hidden_characters
     assert_equal [:legs, :antenna, :seizure], users(:jeremy).hidden_characters

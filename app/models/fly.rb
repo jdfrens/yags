@@ -25,6 +25,10 @@ class Fly < ActiveRecord::Base
     (self.mom_of != [] || self.dad_of != [])
   end
   
+  def user
+    vial.user
+  end
+  
   def mate_with(partner, bit_gen = RandomBitGenerator.new)
     if self.male? 
       raise ArgumentError, "mating two males" if partner.male?

@@ -606,83 +606,103 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_mate_flies_fails_when_NOT_owned_by_current_user
-    number_of_old_vials = Vial.find(:all).size
-    post :mate_flies, { :vial => { :label => "stolen children", :mom_id => "4", :dad_id => "3" }, 
-        :number => "2", :rack_id => "2"  }, user_session(:jeremy)
-    assert_nil Vial.find_by_label("stolen children")
-    assert_redirected_to :controller => 'bench', :action => 'list_vials'
-    assert_equal number_of_old_vials, Vial.find(:all).size
+    assert_no_added_vials do
+      post :mate_flies, {
+          :vial => {
+            :label => "stolen children",
+            :mom_id => "4", :dad_id => "3", 
+            :number_of_requested_flies => "2",
+            :rack_id => "2"
+            } }, user_session(:jeremy)
+            
+      assert_response :success
+      assert_standard_layout
+      assert_template "bench/mate_flies"
+      assert_nil Vial.find_by_label("stolen children")
+    end
   end
   
-  def test_mate_flies_fails_when_NOT_logged_in
-    post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6", :dad_id => "1" }, :number => "8", :rack_id => "3"  }
-    assert_redirected_to_login
+  def test_mate_flies_redirects_when_NOT_logged_in
+    assert_no_added_vials do
+      post :mate_flies, {
+          :vial => {
+            :label => "children vial",
+            :mom_id => "6", :dad_id => "1",
+            :number_of_requested_flies => "8", :rack_id => "3" } }
+            
+      assert_redirected_to_login
+    end
   end
   
-  def test_mate_flies_flashes_error_when_ONLY_dad_selected
-    post :mate_flies, { :vial => { :label => "children vial", :dad_id => "1" }, 
-        :number => "8", :rack_id => "2"}, user_session(:steve)
-        
-    assert_standard_layout
-    assert flash[:error].include?("parent")
-  end
-  
-  def test_mate_flies_flashes_error_when_ONLY_mom_selected
-    post :mate_flies, { :vial => { :label => "children vial", :mom_id => "6" }, 
-        :number => "8", :rack_id => "2"}, user_session(:steve)
-        
-    assert_standard_layout
-    assert flash[:error].include?("parent")
-  end
-  
-  def test_mate_flies_flashes_error_when_NO_parents_are_selected
-    post :mate_flies, { :vial => { :label => "children vial" }, 
-        :number => "8", :rack_id => "2"}, user_session(:steve)
-        
-    assert_standard_layout
-    assert flash[:error].include?("parent")
+  def test_mate_flies_errors_when_NO_parents_are_selected
+    assert_no_added_vials do
+      post :mate_flies, {
+          :vial => {
+            :label => "children vial",
+            :number_of_requested_flies => "8",
+            :rack_id => "2" }
+          }, user_session(:steve)
+          
+      assert_response :success
+      assert_standard_layout
+      assert_template "bench/mate_flies"
+      assert !assigns(:vial).valid?
+      # other variations of this failure are tested in the unit tests
+    end
   end
   
   def test_mate_flies_flashes_error_when_too_many_offspring_requested
-    post :mate_flies,
-        { :vial => {
-            :label => "children vial",
-            :dad_id => "1", :mom_id => 6, 
-            :rack_id => "2",
-            :number_of_requested_flies => "256" } },
-        user_session(:steve)
-        
-    assert_standard_layout
-    vial = assigns(:vial)
-    assert vial.errors.invalid?(:number_of_requested_flies)
+    assert_no_added_vials do
+      post :mate_flies,
+          { :vial => {
+              :label => "children vial",
+              :dad_id => "1", :mom_id => 6, 
+              :rack_id => "2",
+              :number_of_requested_flies => "256" } },
+          user_session(:steve)
+          
+      assert_response :success
+      assert_standard_layout
+      assert_template "bench/mate_flies"
+      vial = assigns(:vial)
+      assert vial.errors.invalid?(:number_of_requested_flies)
+    end
   end
   
   def test_mate_flies_flashes_error_when_too_few_offspring_requested
-    post :mate_flies,
-        { :vial => {
-            :label => "children vial",
-            :dad_id => "1", :mom_id => 6, 
-            :rack_id => "2",
-            :number_of_requested_flies => "-1" } },
-        user_session(:steve)
-                
-    assert_standard_layout
-    vial = assigns(:vial)
-    assert vial.errors.invalid?(:number_of_requested_flies)
+    assert_no_added_vials do
+      post :mate_flies,
+          { :vial => {
+              :label => "children vial",
+              :dad_id => "1", :mom_id => 6, 
+              :rack_id => "2",
+              :number_of_requested_flies => "-1" } },
+          user_session(:steve)
+                  
+      assert_response :success
+      assert_standard_layout
+      assert_template "bench/mate_flies"
+      vial = assigns(:vial)
+      assert vial.errors.invalid?(:number_of_requested_flies)
+    end
   end
   
   def test_mate_flies_flashes_error_when_non_numeric_number_of_offspring_requested
-    post :mate_flies,
-        { :vial => {
-            :label => "children vial",
-            :dad_id => "1", :mom_id => 6, 
-            :rack_id => "2",
-            :number_of_requested_flies => "abc" } },
-        user_session(:steve)
-        
-    assert_standard_layout
-    vial = assigns(:vial)
-    assert vial.errors.invalid?(:number_of_requested_flies)
+    assert_no_added_vials do
+      post :mate_flies,
+          { :vial => {
+              :label => "children vial",
+              :dad_id => "1", :mom_id => 6, 
+              :rack_id => "2",
+              :number_of_requested_flies => "abc" } },
+          user_session(:steve)
+          
+      assert_response :success
+      assert_standard_layout
+      assert_template "bench/mate_flies"
+      vial = assigns(:vial)
+      assert vial.errors.invalid?(:number_of_requested_flies)
+    end
   end
   
   def test_preferences_page
@@ -806,6 +826,17 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index' # or something
     assert_equal old_scenario, users(:steve).current_scenario
+  end
+  
+  #
+  # Helpers
+  #
+  private
+  
+  def assert_no_added_vials
+    original_number_of_vials = Vial.count
+    yield
+    assert_equal original_number_of_vials, Vial.count, "should have same number of vials"
   end
   
 end

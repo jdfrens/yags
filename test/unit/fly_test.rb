@@ -1,7 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class FlyTest < Test::Unit::TestCase
-  fixtures :flies, :genotypes
+  
+  all_fixtures
 
   def test_phenotype_eye_color
     assert_equal :white, flies(:fly_00).phenotype(:"eye color")
@@ -91,6 +92,15 @@ class FlyTest < Test::Unit::TestCase
     assert Fly.find(7).used_as_parent?
     assert !Fly.find(1).used_as_parent?
     assert !Fly.find(2).used_as_parent?
+  end
+  
+  def test_owner
+    assert users(:steve), flies(:fly_00).user
+    assert users(:steve), flies(:fly_01).user
+    assert users(:steve), flies(:fly_mom).user
+    assert users(:jeremy), flies(:child_one).user
+    assert users(:jeremy), flies(:child_two).user
+    assert users(:jeremy), flies(:gamete_maker).user
   end
   
 end

@@ -9,12 +9,14 @@ class Vial < ActiveRecord::Base
   include CartesianProduct
   
   validates_presence_of :label
-  # TODO: rack should be required.
+  validates_presence_of :rack_id  # TODO: test this
   validates_numericality_of :number_of_requested_flies, :only_integer => true,
       :on => :create
   validates_inclusion_of :number_of_requested_flies, :in => 0..255,
       :message => "should be between 0 and 255",
       :on => :create
+  validates_presence_of :mom_id, :if => Proc.new { |vial| vial.offspring_vial? }
+  validates_presence_of :dad_id, :if => Proc.new { |vial| vial.offspring_vial? }
 
   def self.collect_from_field(vial_params, bit_generator = RandomBitGenerator.new, allele_frequencies = {})
     vial = Vial.new(vial_params)
@@ -30,16 +32,30 @@ class Vial < ActiveRecord::Base
   end
   
   def self.make_babies_and_vial(vial_params, bit_generator = RandomBitGenerator.new)
-    vial = Vial.new(vial_params)
-    species = vial.species
-    mom = Fly.find vial.mom_id
-    dad = Fly.find vial.dad_id
-    if vial.save
+    vial = Vial.new(vial_params.merge({ :offspring_vial => true }))
+    if vial.valid?
+      vial.save!
       vial.number_of_requested_flies.times do |i|
-        vial.flies << mom.mate_with(dad, bit_generator)
+        vial.flies << vial.mom.mate_with(vial.dad, bit_generator)
       end
     end
     vial
+  end
+  
+  def offspring_vial=(flag)
+    @offspring_vial = flag
+  end
+  
+  def offspring_vial?
+    new_record? ? @offspring_vial : has_parents?
+  end
+  
+  def creator=(user)
+    @creator = user
+  end
+  
+  def creator
+    @creator
   end
   
   def species
@@ -156,5 +172,28 @@ class Vial < ActiveRecord::Base
     end
     self
   end
+  
+  #
+  # Helpers
+  #
+  protected 
+  
+  def validate_on_create 
+    if offspring_vial?
+      if creator.nil?
+        errors.add(:creator, "must specify a user to create the vial")
+      else
+        if !creator.owns?(rack)
+          errors.add(:rack, "must be owned by the current user")
+        end
+        if mom && !creator.owns?(mom)
+          errors.add(:mom_id, "must be owned by the current user")
+        end
+        if dad && !creator.owns?(dad)
+          errors.add(:dad_id, "must be owned by the current user")
+        end
+      end
+    end
+  end 
   
 end

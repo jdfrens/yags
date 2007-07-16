@@ -74,18 +74,9 @@ class BenchController < ApplicationController
       @rack_labels_and_ids << [rack.label, rack.id]
     end
     if params[:vial]
-      # TODO: this next test is really a model issue
-      if params[:vial][:mom_id].nil? || params[:vial][:dad_id].nil?
-        flash[:error] = "You didn't select two parents!"
-      # TODO: current_user.owns?(mom) && current_user.owns?(dad)
-      elsif Fly.find(params[:vial][:mom_id]).vial.user == current_user && 
-        Fly.find(params[:vial][:dad_id]).vial.user == current_user
-        @vial = Vial.make_babies_and_vial(params[:vial])
-        @vial.save!
-        redirect_to :action => "view_vial", :id => @vial.id
-      else
-        redirect_to :action => "list_vials"
-      end
+      @vial = Vial.make_babies_and_vial(params[:vial].merge({ :creator => current_user }))
+      @vial.save!
+      redirect_to :action => "view_vial", :id => @vial.id
     else
       render
     end

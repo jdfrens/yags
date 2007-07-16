@@ -43,6 +43,10 @@ class User < ActiveRecord::Base
     group.name == "instructor"
   end
   
+  def owns?(object)
+    self == object.user
+  end
+  
   def students
     if instructor?
       instructs.map { |c| c.students }.flatten

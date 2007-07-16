@@ -15,19 +15,24 @@ class VialTest < Test::Unit::TestCase
     assert !vial.valid?
     assert  vial.errors.invalid?(:label)
     assert  vial.errors.invalid?(:number_of_requested_flies)
+    assert  vial.errors.invalid?(:rack_id)
   end
   
   def test_number_requested_validations
     ["4", "0", "255"].each do |number|
-      vial = Vial.new(:label => 'foo', :number_of_requested_flies => number)
+      vial = Vial.new(:label => 'foo', :rack_id => 1,
+                      :number_of_requested_flies => number
+                      )
       assert  vial.valid?, "should be valid"
       assert !vial.errors.invalid?(:number_of_requested_flies)
     end
         
     ['xxx', '-4', '-1', '256', '888'].each do |number|
-      vial = Vial.new(:label => 'foo', :number_of_requested_flies => number)
+      vial = Vial.new(:label => 'foo', :rack_id => 1,
+                      :number_of_requested_flies => number
+                      )
       assert !vial.valid?
-      assert vial.errors.invalid?(:number_of_requested_flies)
+      assert  vial.errors.invalid?(:number_of_requested_flies)
     end
   end
   
@@ -224,8 +229,11 @@ class VialTest < Test::Unit::TestCase
     new_vial = Vial.make_babies_and_vial({
                   :label => "three fly syblings", :rack_id => 1, 
                   :mom_id => "6", :dad_id => "1",
-                  :number_of_requested_flies => "3" }, 
+                  :number_of_requested_flies => "3",
+                  :creator => users(:steve) }, 
                   CookedBitGenerator.new([0]) )
+                  
+    assert new_vial.valid?
     assert_equal(([:female] * 3), phenotypes_of(new_vial, :sex))
     assert_equal(([:white] * 3), phenotypes_of(new_vial, :"eye color"))
     assert_equal(([:straight] * 3), phenotypes_of(new_vial, :wings))
@@ -236,8 +244,11 @@ class VialTest < Test::Unit::TestCase
     new_vial = Vial.make_babies_and_vial({
                   :label => "seven fly syblings", :rack_id => 1,
                   :mom_id => "4", :dad_id => "3",
-                  :number_of_requested_flies => "7" },
+                  :number_of_requested_flies => "7",
+                  :creator => users(:steve) },
                   CookedBitGenerator.new([0,1,1,0,0,0,1]) )
+                  
+    assert new_vial.valid?
     assert_equal_set(([:male] * 3 + [:female] * 4), 
         new_vial.flies.map {|fly| fly.phenotype(:sex)})
     assert_equal_set(([:red] * 7 + [:white] * 0),
@@ -251,6 +262,29 @@ class VialTest < Test::Unit::TestCase
     assert_equal_set(([:"no seizure"] * 1 + [:"20% seizure"] * 4 + [:"40% seizure"] * 2),
         new_vial.flies.map {|fly| fly.phenotype(:seizure)})
     assert_equal 2, new_vial.flies_of_type([:wings, :legs],[:curly, :smooth]).size
+  end
+  
+  def test_offspring_vial?
+    new_vial = Vial.make_babies_and_vial({
+                  :label => "three fly syblings", :rack_id => 1, 
+                  :mom_id => "6", :dad_id => "1",
+                  :number_of_requested_flies => "3" }, 
+                  CookedBitGenerator.new([0]) )
+    assert new_vial.offspring_vial?,
+        "should be an offspring vial because of the method called to create it"
+
+    new_vial = Vial.make_babies_and_vial({
+                  :label => "seven fly syblings", :rack_id => 1,
+                  :mom_id => "4", :dad_id => "3",
+                  :number_of_requested_flies => "7" },
+                  CookedBitGenerator.new([0,1,1,0,0,0,1]) )
+    assert new_vial.offspring_vial?,
+        "should be an offspring vial because of the method called to create it"
+    
+    assert !vials(:vial_one).offspring_vial?
+    assert !vials(:vial_with_many_flies).offspring_vial?
+    assert  vials(:destroyable_vial).offspring_vial?,
+        "should give sane answer for vials from database with parents"
   end
   
   def test_sex_linkage_of_antenna
@@ -269,6 +303,39 @@ class VialTest < Test::Unit::TestCase
         end
       end
     end
+  end
+  
+  def test_make_babies_and_vial_fails_missing_data_validations
+    vial = Vial.make_babies_and_vial({
+          :label => "failure", :rack_id => 1, 
+          :mom_id => nil, :dad_id => nil,
+          :number_of_requested_flies => -12,
+          :creator => users(:steve) })
+    assert !vial.valid?
+    assert  vial.errors.invalid?(:number_of_requested_flies)
+    assert  vial.errors.invalid?(:mom_id), "mom should not be missing"
+    assert  vial.errors.invalid?(:dad_id), "dad should not be missing"
+  end
+    
+  def test_make_babies_and_vial_fails_missing_creator
+    vial = Vial.make_babies_and_vial({
+          :label => "failure", :rack_id => 1, 
+          :mom_id => 6, :dad_id => 1,
+          :number_of_requested_flies => 12 })
+    assert !vial.valid?
+    assert  vial.errors.invalid?(:creator)
+  end
+    
+  def test_make_babies_and_vial_fails_security_validations
+    vial = Vial.make_babies_and_vial({
+          :label => "failure", :rack_id => 1, 
+          :mom_id => 6, :dad_id => 1,
+          :number_of_requested_flies => 12,
+          :creator => users(:jeremy) })
+    assert !vial.valid?
+    assert  vial.errors.invalid?(:rack), "should not put on rack not owned by creator"
+    assert  vial.errors.invalid?(:mom_id), "should not use fly not owned by creator"
+    assert  vial.errors.invalid?(:dad_id), "should not use fly not owned by creator"
   end
   
   def test_belongs_to_user

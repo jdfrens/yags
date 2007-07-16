@@ -76,8 +76,11 @@ class User < ActiveRecord::Base
   # hmm, the other method ^ doesn't have "_id" in it's name...
   def current_scenario_id=(new_id)
     if self.basic_preference
-      self.basic_preference.scenario_id = new_id
-      self.basic_preference.save!
+      if basic_preference.scenario_id != new_id
+        basic_preference.scenario_id = new_id
+        basic_preference.row, basic_preference.column = nil, nil
+        basic_preference.save!
+      end
     else
       self.basic_preference = BasicPreference.create!(:user_id => self.id, :scenario_id => new_id)
     end

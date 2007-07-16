@@ -160,7 +160,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => :index
   end
   
-  def view_student_vial
+  def test_view_student_vial
     get :view_student_vial, {:id => vials(:random_vial).id }, user_session(:mendel)
     assert_response :success
     assert_standard_layout
@@ -170,7 +170,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_select "p", "Solution to: 2"
     
     assert_select "div#pedigree-info table" do
-      assert_select "p", "No parents!"
+      assert_select "p", "This vial is a field vial.  There are no parents."
     end
   end
   

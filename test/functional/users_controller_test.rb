@@ -120,7 +120,7 @@ class UsersControllerTest < Test::Unit::TestCase
         :first_name => 'David', :last_name => 'Hansson'  }, user_session(:manage_student)
     new_student = User.find_by_username("david hansson")
     assert_not_nil new_student
-    assert_equal 2, new_student.racks.size
+    assert_equal ["Default"], new_student.racks.map { |r| r.label }
   end
   
   def test_add_instructor_form

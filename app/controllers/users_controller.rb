@@ -25,11 +25,10 @@ class UsersController < ApplicationController
     end
     if params[:user]
       params[:user][:group] = Group.find_by_name('student')
-      params[:user][:course_id] = params[:course_id] # this line is annoying to need
+      params[:user][:course_id] = params[:course_id]
       @user = User.new(params[:user])
       @user.save!
-      Rack.create! :user_id => @user.id, :label => 'bench'
-      Rack.create! :user_id => @user.id, :label => 'stock'
+      Rack.create! :user_id => @user.id, :label => 'Default'
       redirect_to :action => "list_users"
     else
       render

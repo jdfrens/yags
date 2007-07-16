@@ -6,8 +6,7 @@ class BenchController < ApplicationController
   
   restrict_to :manage_bench
   
-  def index
-  end
+  def index; end
   
   def preferences
     @user = current_user
@@ -15,7 +14,6 @@ class BenchController < ApplicationController
       @characters = current_user.current_scenario.visible_characters
     else
       @characters = Species.singleton.characters
-      # it would be nice if every user had a basic_preference...
     end
     if request.post?
       @characters.each do |character|
@@ -102,10 +100,9 @@ class BenchController < ApplicationController
     if valid_vial_to_view?
       @vial = Vial.find_by_id(params[:id])
       @visible_characters = current_user.visible_characters
-      # TODO: no assignments in condition!!!!
-      if @table = (current_user.basic_preference and 
-            current_user.basic_preference.row and current_user.basic_preference.column)
-            # um, maybe that if should be rewritten...
+      # TODO: no assignments in condition!!!!!!!
+      if @table = (current_user.basic_preference && 
+            current_user.basic_preference.row && current_user.basic_preference.column)
         @row_character = current_user.basic_preference.row.intern
         @column_character = current_user.basic_preference.column.intern
         @row_phenotypes = @vial.phenotypes_for_table(@row_character)

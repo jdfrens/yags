@@ -3,8 +3,7 @@ class LabController < ApplicationController
   :delete_course, :list_scenarios, :add_scenario, :delete_scenario, :view_scenario,
   :view_cheat_sheet, :choose_course_scenarios, :view_student_vial ]
   
-  def index 
-    @username = current_user.username
+  def index
   end
   
   def list_courses
@@ -38,7 +37,7 @@ class LabController < ApplicationController
     if params[:id] and @course = Course.find_by_id(params[:id]) and current_user == @course.instructor
       @scenarios = Scenario.find(:all)
       if request.post?
-        @course.scenarios.each { |s| @course.scenarios.delete s }
+        @course.scenarios.clear
         params[:scenario_ids].each do |scenario_id|
           @course.scenarios << Scenario.find_by_id(scenario_id)
         end

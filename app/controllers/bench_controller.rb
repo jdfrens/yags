@@ -5,6 +5,7 @@ class BenchController < ApplicationController
   in_place_edit_for :vial, :label
   in_place_edit_for :rack, :label
   restrict_to :manage_bench
+  before_filter :redirect_students_without_scenarios 
   
   def index; end
   
@@ -220,24 +221,31 @@ class BenchController < ApplicationController
   #
   private
 
-  def find_old_solution(options)
-    number = options[:number].to_i
-    vial_id = options[:vial_id].to_i
-    old_solution = current_user.solutions.find do |solution|
-      solution.number == number || solution.vial_id == vial_id
+    def find_old_solution(options)
+      number = options[:number].to_i
+      vial_id = options[:vial_id].to_i
+      old_solution = current_user.solutions.find do |solution|
+        solution.number == number || solution.vial_id == vial_id
+      end
     end
-  end
-  
-  def valid_vial_to_view?
-    params[:id] && Vial.find_by_id(params[:id]) && current_user.owns?(Vial.find(params[:id]))
-  end
-  
-  def phenotypes_to_flies(vial, visible_characters)
-    flies = {}
-    vial.combinations_of_phenotypes(visible_characters).each do |combination|
-      flies[combination] = vial.flies_of_type(visible_characters, combination)
+    
+    def valid_vial_to_view?
+      params[:id] && Vial.find_by_id(params[:id]) && current_user.owns?(Vial.find(params[:id]))
     end
-    flies
-  end
+    
+    def redirect_students_without_scenarios
+      unless current_user.current_scenario || params[:action] == "choose_scenario"
+        redirect_to :action => "choose_scenario"
+        # flash[:notice] = "Please choose a scenario"
+      end
+    end
+  
+    def phenotypes_to_flies(vial, visible_characters)
+      flies = {}
+      vial.combinations_of_phenotypes(visible_characters).each do |combination|
+        flies[combination] = vial.flies_of_type(visible_characters, combination)
+      end
+      flies
+    end
     
 end

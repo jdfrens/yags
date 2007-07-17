@@ -116,6 +116,8 @@ class Test::Unit::TestCase
       { :current_user_id => 2 }
     when :calvin
       { :current_user_id => 2 }
+    when :keith
+      { :current_user_id => 7 }
     else
       {}
     end

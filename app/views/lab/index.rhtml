@@ -1,4 +1,4 @@
-<p>Welcome <%= h(@username) -%></p>
+<p>Welcome <%= h(current_user.username) -%></p>
 <h2>Current Lab Functionality</h2>
 <ul class="list">
   <li><%= link_to "List Courses", :action => :list_courses %></li>

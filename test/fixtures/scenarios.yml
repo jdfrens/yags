@@ -8,3 +8,6 @@ another_scenario:
 only_sex_and_legs:
   id: 3
   title: only sex & legs
+everything_included:
+  id: 4
+  title: everything included

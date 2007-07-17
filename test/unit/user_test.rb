@@ -13,7 +13,7 @@ class UserTest < Test::Unit::TestCase
   def test_has_basic_preference
     assert_equal "eye color", users(:jeremy).basic_preference.column
     assert_equal "wings", users(:jeremy).basic_preference.row
-    assert_nil users(:steve).basic_preference
+    assert_nil users(:keith).basic_preference
   end
   
   def test_has_many_character_preferences
@@ -83,8 +83,7 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_students
-    # these tests could use some more fixture entries to make them more rigorous
-    assert_equal [users(:jeremy), users(:randy)], users(:mendel).students
+    assert_equal [users(:jeremy), users(:randy), users(:keith)], users(:mendel).students
     assert_equal [users(:steve)], users(:darwin).students
     assert_equal [], users(:calvin).students
     assert_equal [], users(:steve).students
@@ -110,7 +109,8 @@ class UserTest < Test::Unit::TestCase
   
   def test_current_scenario
     assert_equal scenarios(:another_scenario), users(:jeremy).current_scenario
-    assert_nil users(:steve).current_scenario
+    assert_equal scenarios(:everything_included), users(:steve).current_scenario
+    assert_nil users(:keith).current_scenario
     assert_nil users(:mendel).current_scenario
     assert_nil users(:calvin).current_scenario
   end

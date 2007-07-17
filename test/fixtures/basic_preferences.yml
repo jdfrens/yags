@@ -5,3 +5,15 @@ pref_for_eye_color_and_wings:
   column: eye color
   row: wings
   scenario_id: 2
+just_scenario_for_steve:
+  id: 2
+  user_id: 1
+  column: 
+  row: 
+  scenario_id: 4
+just_scenario_for_randy:
+  id: 3
+  user_id: 4
+  column: 
+  row: 
+  scenario_id: 4

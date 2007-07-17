@@ -55,3 +55,12 @@ darwin:
   email_address: theman@cdu.edu
   first_name: darwin
   last_name: darwin
+keith:
+  id: 7
+  username: keith
+  password_hash: <%= User.hash_password('keith_password') %>
+  group_id: 1
+  email_address: keith@calvin.foo
+  course_id: 1
+  first_name: keith
+  last_name: keith

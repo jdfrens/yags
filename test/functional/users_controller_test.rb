@@ -49,13 +49,14 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "div#list-users"
     assert_select "ul.list" do
-      assert_select "li", 6
+      assert_select "li", 7
       assert_select "li#1", "steve (student) [delete]"
       assert_select "li#2", "calvin (admin) [delete]"
       assert_select "li#3", "jeremy (student) [delete]"
       assert_select "li#4", "randy (student) [delete]"
       assert_select "li#5", "mendel (instructor) [delete]"
       assert_select "li#6", "darwin (instructor) [delete]"
+      assert_select "li#7", "keith (student) [delete]"
     end
   end
   
@@ -255,7 +256,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "div#students_select", "Student: steve\njeremy\nrandy"
+      assert_select "div#students_select", "Student: steve\njeremy\nrandy\nkeith"
       assert_select "label", "Password:"
       assert_select "label", "Password Confirmation:"
     end
@@ -266,7 +267,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "div#students_select", "Student: jeremy\nrandy", "shouldn't have steve"
+      assert_select "div#students_select", "Student: jeremy\nrandy\nkeith", "shouldn't have steve"
       assert_select "label", "Password:"
       assert_select "label", "Password Confirmation:"
     end

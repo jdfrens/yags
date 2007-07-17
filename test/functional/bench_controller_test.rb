@@ -1011,13 +1011,13 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "form" do
       assert_select "select#scenario_id" do
         assert_select "option[value=1]", "forgetful instructor"
-        assert_select "option", 1
+        assert_select "option", 2
       end
     end
   end
   
   def test_choose_scenario
-    assert_nil users(:steve).current_scenario
+    assert_equal scenarios(:everything_included), users(:steve).current_scenario
     assert_equal 0, users(:steve).phenotype_alternates.size
     post :choose_scenario, { :scenario_id => 2 }, user_session(:steve)
     assert_response :redirect
@@ -1025,18 +1025,28 @@ class BenchControllerTest < Test::Unit::TestCase
     users(:steve).reload
     assert_equal scenarios(:another_scenario), users(:steve).current_scenario
     assert_equal [:"eye color", :"eye color"], 
-    users(:steve).phenotype_alternates.map { |pa| pa.affected_character.intern }
+        users(:steve).phenotype_alternates.map { |pa| pa.affected_character.intern }
     assert_equal [:red, :white].to_set, 
-    users(:steve).phenotype_alternates.map { |pa| pa.original_phenotype.intern }.to_set
+        users(:steve).phenotype_alternates.map { |pa| pa.original_phenotype.intern }.to_set
+  end
+  
+  def test_choose_scenario_without_having_one_should_work
+    assert_nil users(:keith).current_scenario
+    assert_equal 0, users(:keith).phenotype_alternates.size
+    post :choose_scenario, { :scenario_id => 1 }, user_session(:keith)
+    assert_response :redirect
+    assert_redirected_to :controller => 'bench', :action => 'index'
+    users(:keith).reload
+    assert_equal scenarios(:first_scenario), users(:keith).current_scenario
   end
   
   def test_choose_scenario_fails_when_NOT_scenario_for_course
-    assert_nil users(:steve).current_scenario
-    post :choose_scenario, { :scenario_id => 1 }, user_session(:steve)
+    assert_nil users(:keith).current_scenario
+    post :choose_scenario, { :scenario_id => 2 }, user_session(:keith)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
-    users(:steve).reload
-    assert_nil users(:steve).current_scenario
+    users(:keith).reload
+    assert_nil users(:keith).current_scenario
   end
   
   def test_choose_scenario_fails_when_NOT_logged_in_as_student
@@ -1056,6 +1066,18 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index' # or something
     assert_equal old_scenario, users(:steve).current_scenario
+  end
+  
+  def test_students_should_be_redirected_if_they_dont_have_a_scenario
+    get :index, {}, user_session(:keith)
+    assert_redirected_to :action => "choose_scenario"
+    
+    get :add_rack, {}, user_session(:keith)
+    assert_redirected_to :action => "choose_scenario"
+    
+    post :collect_field_vial, {:vial => {:label => "a-vial-of-thunderous-birds",
+        :number_of_requested_flies => "7"} }, user_session(:keith)
+    assert_redirected_to :action => "choose_scenario"
   end
 
   #

@@ -134,16 +134,17 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "input[type=checkbox]", 3
-      assert_select "input[type=checkbox][checked=checked]", 1
+      assert_select "input[type=checkbox]", 4
+      assert_select "input[type=checkbox][checked=checked]", 2
     end
   end
   
   def test_choose_course_scenarios_works
-    assert_equal [1], Course.find(1).scenarios.map { |s| s.id }
+    assert_equal [1, 4], courses(:mendels_course).scenarios.map { |s| s.id }
     post :choose_course_scenarios, { :id => 1, :scenario_ids => [2, 3] }, user_session(:mendel)
     assert_redirected_to :action => :view_course, :id => 1
-    assert_equal [2, 3], Course.find(1).scenarios.map { |s| s.id }
+    courses(:mendels_course).reload
+    assert_equal [2, 3], courses(:mendels_course).scenarios.map { |s| s.id }
   end
   
   def test_choose_course_scenarios_fails_when_NOT_logged_in_as_instructor

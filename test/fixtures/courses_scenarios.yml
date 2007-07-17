@@ -8,3 +8,12 @@ Natural_selection_only_sex_and_legs:
 Party_day_and_a_field_trip:
   scenario_id: 2
   course_id: 3
+Peas_pay_attention_to_everything_included:
+  scenario_id: 4
+  course_id: 1
+Natural_selection_of_everything_included:
+  scenario_id: 4
+  course_id: 2
+Party_day_and_everything_included:
+  scenario_id: 4
+  course_id: 3

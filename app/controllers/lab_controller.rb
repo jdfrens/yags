@@ -1,7 +1,7 @@
 class LabController < ApplicationController
   restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course, 
   :delete_course, :list_scenarios, :add_scenario, :delete_scenario, :view_scenario,
-  :view_cheat_sheet, :choose_course_scenarios ]
+  :view_cheat_sheet, :choose_course_scenarios, :view_student_vial ]
   
   def index 
     @username = current_user.username
@@ -63,11 +63,11 @@ class LabController < ApplicationController
   
   def add_scenario
     @species = Species.singleton # the selected species later
-    @characters = Species.singleton.characters
+    @characters = @species.characters
     if request.post? and params[:scenario] and params[:characters]
       @scenario = Scenario.new params[:scenario]
       @scenario.save!
-      @species.characters.each do |character|
+      @characters.each do |character|
         if !params[:characters].include?(character.to_s)
           ScenarioPreference.create!(:scenario_id => @scenario.id, :hidden_character => character.to_s)
         elsif params[:alternates] and params[:alternates].include?(character.to_s)
@@ -111,7 +111,8 @@ class LabController < ApplicationController
   end
   
   def view_student_vial
-    if params[:id] && @vial = Vial.find_by_id(params[:id])
+    if (params[:id] && @vial = Vial.find_by_id(params[:id])) &&
+        (current_user.instructs.include?(@vial.owner.enrolled_in))
       @rack = Rack.find(@vial.rack_id)
       if @parents = (@vial.mom_id && @vial.dad_id)
         @mom, @dad = Fly.find(@vial.mom_id), Fly.find(@vial.dad_id)
@@ -120,7 +121,7 @@ class LabController < ApplicationController
       end
       @visible_characters = current_user.visible_characters
     else
-      redirect_to :action => 'view_course'
+      redirect_to :action => 'list_courses'
     end
   end
   

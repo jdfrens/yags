@@ -13,19 +13,10 @@ class BenchController < ApplicationController
     if current_user.current_scenario
       @characters = current_user.current_scenario.visible_characters
     else
-      @characters = Species.singleton.characters
+      @characters = Species.singleton.characters # or [] ?
     end
     if request.post?
-      @characters.each do |character|
-        if params[character] == "visible"
-          CharacterPreference.find(:all, :conditions => 
-              "user_id = #{current_user.id} AND hidden_character = \'#{character}\'").each { |p| p.destroy }
-        else 
-          if !current_user.hidden_characters.include?(character)
-            CharacterPreference.create!(:user_id => current_user.id, :hidden_character => character.to_s)
-          end
-        end
-      end
+      current_user.set_character_preferences(@characters, params[:characters])
       redirect_to :action => "index"
     end
   end

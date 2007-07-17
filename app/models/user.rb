@@ -95,6 +95,26 @@ class User < ActiveRecord::Base
     end
   end
   
+  def set_character_preferences(available_characters, chosen_characters)
+    available_characters.each do |character|
+      if chosen_characters.include?(character.to_s)
+        CharacterPreference.find(:all, :conditions => 
+            "user_id = #{self.id} AND hidden_character = \'#{character}\'").each { |p| p.destroy }
+      else
+        if !self.hidden_characters.include?(character)
+          CharacterPreference.create!(:user_id => self.id, :hidden_character => character.to_s)
+        end
+      end
+    end
+    if self.basic_preference
+      unless basic_preference.row && chosen_characters.include?(basic_preference.row) &&
+          basic_preference.column && chosen_characters.include?(basic_preference.column)
+        basic_preference.row, basic_preference.column = nil, nil
+        basic_preference.save!
+      end
+    end
+  end
+  
   # helper
   
   def make_phenotype_alternates(scenario_id, renamed_character, number_generator)

@@ -150,6 +150,25 @@ class UserTest < Test::Unit::TestCase
     assert_equal ["blue", "green"], users(:steve).phenotype_alternates.map { |pa| pa.renamed_phenotype }
   end
   
+  def test_set_character_preferences
+    steve = users(:steve)
+    steve.set_character_preferences(Species.singleton.characters, ["sex", "antenna"])
+    steve.reload
+    assert_equal [:sex, :antenna], steve.visible_characters
+    steve.set_character_preferences(Species.singleton.characters, ["wings", "antenna", "hooves"])
+    steve.reload
+    assert_equal [:wings, :antenna], steve.visible_characters
+  end
+  
+  def test_set_character_preferences_resets_table_preferences
+    jeremy = users(:jeremy)
+    jeremy.set_character_preferences(Species.singleton.characters, ["sex", "eye color"])
+    jeremy.reload
+    assert_equal [:sex, :"eye color"], jeremy.visible_characters
+    assert_nil jeremy.basic_preference.row
+    assert_nil jeremy.basic_preference.column
+  end
+  
   def test_destruction_of_courses_along_with_instructor
     number_of_old_users = User.find(:all).size
     number_of_old_courses = Course.find(:all).size

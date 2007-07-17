@@ -872,11 +872,11 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "input#sex[value=visible][checked=checked]"
-      assert_select "input[id=eye color][value=visible][checked=checked]"
-      assert_select "input#wings[value=visible][checked=checked]"
-      assert_select "input#legs[value=visible][checked=checked]"
-      assert_select "input#antenna[value=visible][checked=checked]"
+      assert_select "input[value=sex][checked=checked]"
+      assert_select "input[value=eye color][checked=checked]"
+      assert_select "input[value=wings][checked=checked]"
+      assert_select "input[value=legs][checked=checked]"
+      assert_select "input[value=antenna][checked=checked]"
       assert_select "input[type=checkbox][checked=checked]", 5
     end
   end
@@ -886,12 +886,12 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "input#sex[value=visible][type=checkbox][checked=checked]"
-      assert_select "input[id=eye color][value=visible][type=checkbox][checked=checked]", 0
-      assert_select "input#wings[value=visible][type=checkbox][checked=checked]", 0
-      assert_select "input#legs[value=visible][type=checkbox][checked=checked]"
-      assert_select "input#antenna[value=visible][type=checkbox][checked=checked]", 0
-      assert_select "input#seizure[value=visible][type=checkbox][checked=checked]"
+      assert_select "input[value=sex][type=checkbox][checked=checked]"
+      assert_select "input[value=eye color][type=checkbox][checked=checked]", 0
+      assert_select "input[value=wings][type=checkbox][checked=checked]", 0
+      assert_select "input[value=legs][type=checkbox][checked=checked]"
+      assert_select "input[value=antenna][type=checkbox][checked=checked]", 0
+      assert_select "input[value=seizure][type=checkbox][checked=checked]"
       assert_select "input[type=checkbox][checked=checked]", 3
     end
   end
@@ -901,10 +901,10 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "input#sex[value=visible][type=checkbox][checked=checked]"
-      assert_select "input[id=eye color][value=visible][type=checkbox][checked=checked]"
-      assert_select "input#wings[value=visible][type=checkbox][checked=checked]"
-      assert_select "input#legs[value=visible][type=checkbox][checked=checked]", 0
+      assert_select "input[value=sex][type=checkbox][checked=checked]"
+      assert_select "input[value=eye color][type=checkbox][checked=checked]"
+      assert_select "input[value=wings][type=checkbox][checked=checked]"
+      assert_select "input[value=legs][type=checkbox][checked=checked]", 0
       assert_select "input[type=checkbox][checked=checked]", 3
       assert_select "input[type=checkbox]", 4
     end
@@ -912,14 +912,14 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_change_preferences
     assert_equal 1, users(:steve).hidden_characters.size
-    post :preferences, {:sex => "visible", :wings => "visible", :antenna => "visible"}, user_session(:steve)
+    post :preferences, {:characters => ["sex", "wings", "antenna"]}, user_session(:steve)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
     assert_equal [ :seizure, :"eye color", :legs], users(:steve).hidden_characters
     assert_equal [:sex, :wings, :antenna], users(:steve).visible_characters
     
-    post :preferences, {:sex => "visible", :wings => "visible", :legs => "visible"}, user_session(:steve)
+    post :preferences, {:characters => ["sex", "wings", "legs"]}, user_session(:steve)
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
     assert_equal [:seizure, :"eye color", :antenna], users(:steve).hidden_characters
@@ -927,11 +927,11 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_change_preferences_fails_when_NOT_logged_in_as_student
-    post :preferences, {:sex => "visible", :wings => "visible"}
+    post :preferences, {:characters => ["sex", "wings"]}
     assert_redirected_to_login
     
     number_of_old_preferences = CharacterPreference.find(:all)
-    post :preferences, {:sex => "visible", :legs => "visible"}, user_session(:manage_student)
+    post :preferences, {:characters => ["sex", "legs"]}, user_session(:manage_student)
     assert_response 401 # access denied
     assert_equal number_of_old_preferences, CharacterPreference.find(:all)
   end

@@ -176,6 +176,25 @@ class LabControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_view_student_vial_fails_when_NOT_instructor
+    get :view_student_vial, {:id => vials(:random_vial).id}
+    assert_redirected_to_login
+    
+    get :view_student_vial, {:id => vials(:random_vial).id}, user_session(:calvin)
+    assert_response 401 # access denied
+    
+    get :view_student_vial, {:id => vials(:random_vial).id}, user_session(:randy)
+    assert_response 401 # access denied
+  end
+  
+  def test_view_student_vial_fails_when_NOT_instructors_students_vial
+    get :view_student_vial, {:id => vials(:random_vial).id }, user_session(:darwin)
+    assert_redirected_to :action => :list_courses # is that what we want?
+    
+    # note: an instructor gets an error when trying to view a vial that has not been
+    # submitted as a solution.
+  end
+  
   def test_delete_course
     assert_not_nil Course.find_by_id(2) # "Natural selection"
     post :delete_course, { :id => 2 }, user_session(:darwin)

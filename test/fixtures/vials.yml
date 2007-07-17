@@ -29,3 +29,7 @@ random_vial:
   id: 7
   label: Another vial
   rack_id: 4
+randy_vial:
+  id: 8
+  label: Randy vial
+  rack_id: 6

@@ -75,7 +75,13 @@ table {
 	display: inline;
 }
 
+/* TODO: this id should be phased out because many pages have multiple instructions. */
 #instruction {
+	color: #949494;
+	font: 14px Tahoma;
+}
+
+.instruction {
 	color: #949494;
 	font: 14px Tahoma;
 }

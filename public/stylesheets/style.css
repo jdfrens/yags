@@ -38,20 +38,35 @@ span.highlight {
 	width: 700px; 
 }
 
-#parent-info {
-	 width: 700px;
-}
-
-#parent-table td {
-	text-align: right;
-}
-
-#parent-table th {
+#two-way-table-section {
+	width: 350px;
 	text-align: justify;
+	padding-left: 5px;
 }
 
-table {
+#vial_maintenance {
+	border: 2px solid #aaa;
+	background: #E5FFFF;
+	width: 350px;
 	text-align: justify;
+	padding-left: 5px;
+	position: relative;
+	float: right;
+}
+
+#solution_flash_notice {
+	background: #DAFDD8;
+}
+
+#move_to_trash {
+	border: 2px solid #FF9999;
+	background: #FFDBDB;
+	width: 200px;
+	text-align: justify;
+	padding: 2px 0 2px 5px;
+	position: absolute;
+	right: 8px;
+	top: 400px;
 }
 
 #vial-table {
@@ -73,6 +88,22 @@ table {
 
 #character_rows, #character_cols {
 	display: inline;
+}
+
+#parent-info {
+	 width: 700px;
+}
+
+#parent-table td {
+	text-align: right;
+}
+
+#parent-table th {
+	text-align: justify;
+}
+
+table {
+	text-align: justify;
 }
 
 /* TODO: this id should be phased out because many pages have multiple instructions. */

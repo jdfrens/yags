@@ -91,6 +91,10 @@ class BenchController < ApplicationController
     if valid_vial_to_view?
       @vial = Vial.find_by_id(params[:id])
       @visible_characters = current_user.visible_characters
+      @rack_labels_and_ids = []
+      current_user.racks.each do |rack|
+        @rack_labels_and_ids << [rack.label, rack.id]
+      end
       # TODO: no assignments in condition!!!!!!!
       if @table = (current_user.basic_preference && 
             current_user.basic_preference.row && current_user.basic_preference.column)

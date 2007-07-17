@@ -1,15 +1,6 @@
 <div id="vial-info">
   <div class="vial-title">
     <h1>Vial <em><%= in_place_editor_field 'vial', 'label', {} %></em></h1>
-    <h1>on rack <em><%= @vial.rack.label %></em></h1>
   </div>
-  
-  <div id="solution_notice">
-    <% if @vial.solution && @vial.solution.number != nil %>
-      <p>
-        <img src='/images/star.png' />
-        This is a solution to Problem #<%= @vial.solution.number %>.
-      </p>
-    <% end %>
-  </div>
+
 </div>

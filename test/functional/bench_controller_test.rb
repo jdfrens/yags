@@ -167,7 +167,6 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "h1", /Vial #{vial.label}/
-    assert_select "h1", "on rack #{vial.rack.label}"
     assert_select "span#vial_label_3_in_place_editor", vial.label
     
     assert_select "div#solution_notice", ""
@@ -224,7 +223,6 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "h1", /Vial #{vial.label}/
-    assert_select "h1", "on rack #{vial.rack.label}"
     assert_select "span#vial_label_4_in_place_editor", vial.label
     
     assert_select "div#solution_notice", ""
@@ -282,7 +280,6 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "h1", /Vial #{vial.label}/
-    assert_select "h1", "on rack #{vial.rack.label}"
     assert_select "span#vial_label_1_in_place_editor", vial.label    
     assert_select "div#solution_notice", "This is a solution to Problem #8."
     assert_select "div#vial-table" do

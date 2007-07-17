@@ -1,6 +1,5 @@
+<div id="two-way-table-section">
 <h2>Two-Way Table</h2>
-
-<div>
     <% form_remote_tag :url => {:action => :update_table},
                :before => visual_effect(:appear, 'spinner'),
                :complete => visual_effect(:fade, 'spinner')  do -%>

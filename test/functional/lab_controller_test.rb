@@ -94,6 +94,8 @@ class LabControllerTest < Test::Unit::TestCase
   def test_view_course
     get :view_course, {:id => 1 }, user_session(:mendel)
     assert_response :success
+    assert_select "h1", "Course: Peas pay attention"
+    assert_select "script[type=text/javascript]"
     assert_select "ul" do
       assert_select "li", "jeremy"
       assert_select "li", "randy"

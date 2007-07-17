@@ -6,6 +6,7 @@
     <p>
         <label for="label"><strong>Label: </strong></label>
         <%= form.text_field :label, :size => 40 %>
+		<%= javascript_tag "$('rack_label').focus()" %>
     </p>
     
     <%= submit_tag "Add Rack", :class => "submit" %>

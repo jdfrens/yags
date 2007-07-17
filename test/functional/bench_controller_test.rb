@@ -390,6 +390,22 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
+  def test_set_rack_label
+    xhr :post, :set_rack_label, { :id => racks(:steve_bench_rack).id, :value => 'Stock > Bench'}, user_session(:steve)
+    
+    assert_response :success
+    assert_equal 'Stock &gt; Bench', @response.body
+    
+    rack = racks(:steve_bench_rack)
+    rack.reload
+    assert_equal 'Stock > Bench', rack.label
+  end
+  
+  def test_set_rack_label_fails_when_NOT_logged_in
+    get :set_rack_label, { :id => racks(:steve_stock_rack).id, :value => 'I am not logged in!' }
+    assert_redirected_to_login
+  end
+  
   def test_set_as_solution
     vial = vials(:vial_with_many_flies)
     
@@ -613,7 +629,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "h1", "Your Vials"
     assert_select "div#list-vials" do
-      assert_select "h2", "Vials on the steve bench rack:"
+      assert_select "h2", /Vials on the/
+      assert_select "span#rack_label_2_in_place_editor", "steve bench"
       assert_select "ul#rack_2" do
         assert_select "li", 5
         assert_select "li#vial_1", "First vial"
@@ -637,7 +654,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "h1", "Your Vials"
     assert_select "div#list-vials" do
-      assert_select "h2", "Vials on the jeremy bench rack:"
+      assert_select "h2", /Vials on the/
+      assert_select "span#rack_label_4_in_place_editor", "jeremy bench"
       assert_select "ul#rack_4" do
         assert_select "li", 2
         assert_select "li#vial_6", "Destroyable vial"

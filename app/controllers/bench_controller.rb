@@ -3,7 +3,7 @@ include ERB::Util
 
 class BenchController < ApplicationController
   in_place_edit_for :vial, :label
-  
+  in_place_edit_for :rack, :label
   restrict_to :manage_bench
   
   def index; end
@@ -137,6 +137,14 @@ class BenchController < ApplicationController
     @vial.label = params[:value]
     @vial.label = previous_label unless @vial.save
     render :text => h(@vial.label)
+  end
+  
+  def set_rack_label
+    @rack = Rack.find(params[:id])
+    previous_label = @rack.label
+    @rack.label = params[:value]
+    @rack.label = previous_label unless @rack.save
+    render :text => h(@rack.label)
   end
   
   def set_as_solution

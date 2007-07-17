@@ -3,6 +3,7 @@
 <% end -%>
 
 <h1>Course: <%= h(@course.name) -%></h1>
+<%= periodically_call_remote :url => { :action => 'view_course', :id => @course.id }, :frequency => 60 %>
 
 <div id="list-students">
 	<h3>Students</h3>
@@ -14,27 +15,7 @@
 </div>
 
 <div id="table_of_student_solutions">
-	<%= periodically_call_remote :url => { :action => 'view_course', :id => @course.id }, :frequency => 60 %>
-	<table>
-		<tr>
-			<th></th>
-			<% 1.upto(9) do |number| %>
-			<th><%= number %></th>
-			<% end %>
-		</tr>
-		<% for student in @students %>
-		<tr>
-			<th><%= student.username %></th>
-			<% 1.upto(9) do |solution_number| %>
-			<td>
-			<% if student.solutions_as_hash[solution_number] %>
-				<%= link_to 'X', :action => 'view_student_vial', :id => student.solutions_as_hash[solution_number].vial_id %>
-			<% end %>
-			</td>
-			<% end %>
-		</tr>
-		<% end -%>
-	</table>
+	<%= render :partial => "student_solutions_table" %>
 </div>
 
 <div id="choose_course_scenarios_link">

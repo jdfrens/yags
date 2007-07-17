@@ -5,10 +5,10 @@
 <h1>Your Vials</h1>
 
 <div id="list-vials">
-	<% for rack in @racks -%>
-		<h2>Vials on the <em><%= rack.label %></em> rack:</h2>
-		<ul id="rack_<%= rack.id %>">
-    		<% rack.vials.each do |vial| -%>
+	<% for @rack in @racks -%>
+		<h2>Vials on the <em><%= in_place_editor_field :rack, 'label', {} %></em> rack:</h2>
+		<ul id="rack_<%= @rack.id %>">
+    		<% @rack.vials.each do |vial| -%>
                 <li id="vial_<%= vial.id %>">
                   <%= link_to vial.label, :action => :view_vial, :id => vial %>
 				  <% if vial.solution && vial.solution.number != nil -%>

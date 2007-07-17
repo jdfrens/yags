@@ -1,0 +1,20 @@
+<table>
+	<tr>
+		<th></th>
+		<% 1.upto(9) do |number| %>
+		<th><%= number %></th>
+		<% end %>
+	</tr>
+	<% for student in @students %>
+	<tr>
+		<th><%= student.username %></th>
+		<% 1.upto(9) do |solution_number| %>
+		<td>
+		<% if student.solutions_as_hash[solution_number] %>
+			<%= link_to 'X', :action => 'view_student_vial', :id => student.solutions_as_hash[solution_number].vial_id %>
+		<% end %>
+		</td>
+		<% end %>
+	</tr>
+	<% end -%>
+</table>

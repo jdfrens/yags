@@ -565,61 +565,128 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     
+    assert_select "h2", "Cross the Flies"
     assert_select "form[action=/bench/mate_flies]" do
       assert_select "label", "Label for vial of offspring:"
       assert_select "input#vial_label"
       assert_select "label", "Number of offspring:"
       assert_select "input#vial_number_of_requested_flies"
-      assert_select "label", /^Store in rack named:/
+      assert_select "label", /^Store in the rack named:/
       assert_select "select#vial_rack_id" do
         assert_select "option", 2, "steve should have two racks"
         assert_select "option", "steve stock"
         assert_select "option", "steve bench"
       end
+      assert_select "input[type=submit][value=Cross]"
     end
   end
   
-  def test_show_mateable_flies
-    xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }, user_session(:steve)
+  def test_show_mateable_flies_for_first_vial
+    xhr :post, :show_mateable_flies,
+        { :vial_id => vials(:vial_one).id,
+          :which_vial => "1"
+          },
+        user_session(:steve)
+        
     assert_response :success
-    assert_select "table" do
-      assert_select "th", 32 * 5
-      assert_select "td", 32
-      assert_select "th", "female", 16
-      assert_select "th", "male", 16
-      assert_select "th", "red", 16
-      assert_select "th", "white", 16
-      assert_select "th", "straight", 16
-      assert_select "th", "curly", 16
-      assert_select "th", "smooth", 16
-      assert_select "th", "hairy", 16
-      assert_select "th", "short", 16
-      assert_select "th", "long", 16
+    assert_select_rjs :replace_html, "big-table-1" do
+      assert_select "table" do
+        assert_select "th", 32 * 5, "should have 2^5 * 5 table headers for 5 characters"
+        assert_select "td", 32
+        assert_select "th", :text => "female", :count => 16
+        assert_select "th", :text => "male", :count => 16
+        assert_select "th", :text => "red", :count => 16
+        assert_select "th", :text => "white", :count => 16
+        assert_select "th", :text => "straight", :count => 16
+        assert_select "th", :text => "curly", :count => 16
+        assert_select "th", :text => "smooth", :count => 16
+        assert_select "th", :text => "hairy", :count => 16
+        assert_select "th", :text => "short", :count => 16
+        assert_select "th", :text => "long", :count => 16
+        # TODO: need to assert radio buttons for flies
+      end
     end
   end
   
-  def test_show_mateable_flies_again
-    xhr :post, :show_mateable_flies, {:vial => vials(:vial_with_many_flies) }, user_session(:randy)
+  # TODO: assert radio buttons when showing mateable flies from vials(:vial_with_many_flies)
+  
+  def test_show_mateable_flies_for_second_vial
+    xhr :post, :show_mateable_flies,
+        { :vial_id => vials(:randy_vial).id,
+          :which_vial => "2" },
+        user_session(:randy)
+        
     assert_response :success
-    assert_select "table" do
-      assert_select "th", 12 * 3
-      assert_select "td", 12
-      assert_select "th", "female", 6
-      assert_select "th", "male", 6
-      assert_select "th", "smooth", 6
-      assert_select "th", "hairy", 6
-      assert_select "th", "no seizure", 4
-      assert_select "th", "20% seizure", 4
-      assert_select "th", "40% seizure", 4
+    assert_select_rjs :replace_html, "big-table-2" do
+      assert_select "table" do
+        assert_select "th", 12 * 3
+        assert_select "td", 12
+        assert_select "th", :text => "female", :count => 6
+        assert_select "th", :text => "male", :count => 6
+        assert_select "th", :text => "smooth", :count => 6
+        assert_select "th", :text => "hairy", :count => 6
+        assert_select "th", :text => "no seizure", :count => 4
+        assert_select "th", :text => "20% seizure", :count => 4
+        assert_select "th", :text => "40% seizure", :count => 4
+        # TODO: need to assert radio buttons for flies
+      end
     end
   end
   
-  def test_show_mateable_flies_fails_when_NOT_logged_in_as_student
-    xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }
-    assert_redirected_to_login
+  def test_show_mateable_flies_back_to_instructions_for_first_vial
+    xhr :post, :show_mateable_flies,
+        { :vial_id => "0",
+          :which_vial => "1" },
+        user_session(:steve)
+        
+    assert_response :success
+    assert_select_rjs :replace_html, "big-table-1" do
+      assert_select "em.instruction", /^Select a vial/
+    end
+  end
+  
+  def test_show_mateable_flies_back_to_instructions_for_second_vial
+    xhr :post, :show_mateable_flies,
+        { :vial_id => "0",
+          :which_vial => "2" },
+        user_session(:steve)
+        
+    assert_response :success
+    assert_select_rjs :replace_html, "big-table-2" do
+      assert_select "em.instruction", /^Select a vial/
+    end
+  end
+  
+  def test_show_mateable_flies_fails_for_wrong_users
+    good_params = {
+        :vial_id => vials(:vial_one).id,
+        :which_vial => "1"
+      }
+      
+    xhr :post, :show_mateable_flies, good_params
+    assert_redirected_to_login # no user logged in
     
-    xhr :post, :show_mateable_flies, {:vial => vials(:vial_one) }, user_session(:manage_student)
-    assert_response 401 # access denied
+    xhr :post, :show_mateable_flies, good_params, user_session(:manage_student)
+    assert_response 401, "should reject non student"
+
+    xhr :post, :show_mateable_flies, good_params, user_session(:randy)
+    assert_response 401, "should reject non owner"
+  end
+  
+  def test_show_mateable_flies_rejected_because_of_wrong_http_method
+    good_params = {
+        :vial_id => vials(:vial_one).id,
+        :which_vial => "1"
+      }
+      
+    xhr :get, :show_mateable_flies, good_params, user_session(:steve)
+    assert_response 401, "should reject any get"
+    
+    post :show_mateable_flies, good_params, user_session(:steve)
+    assert_response 401, "should reject normal post"
+    
+    get :show_mateable_flies, good_params, user_session(:steve)
+    assert_response 401, "should reject any get"
   end
   
   def test_list_vials
@@ -679,7 +746,9 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_nil flash[:error]
     assert_select "div#vial_selector_1" do
-      assert_select "select[name=vial]" do
+      assert_select "select#first_vial_selector[onchange=onsubmit()]" do
+        assert_select "option", 6
+        assert_select "option[value=0][selected=selected]", ""
         assert_select "option[value=1]", "First vial"
         assert_select "option[value=2]", "Empty vial"
         assert_select "option[value=3]", "Single fly vial"
@@ -691,7 +760,9 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "img#spinner_1[src^=/images/green-load.gif]"
     end
     assert_select "div#vial_selector_2" do
-      assert_select "select[name=vial]" do
+      assert_select "select#second_vial_selector[onchange=onsubmit()]" do
+        assert_select "option", 6
+        assert_select "option[value=0][selected=selected]", ""
         assert_select "option[value=1]", "First vial"
         assert_select "option[value=2]", "Empty vial"
         assert_select "option[value=3]", "Single fly vial"

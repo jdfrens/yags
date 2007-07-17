@@ -1,15 +1,25 @@
 <div class="mate_<%= number %>" id="vial_selector_<%= number %>">
-	<% form_remote_tag :url => {:action => :show_mateable_flies},
-                       :before => visual_effect(:appear, "spinner_#{number}"),
-                       :complete => visual_effect(:fade, "spinner_#{number}") do -%>
-        <h2><%= ["", "First", "Second"][number] %> Vial</h2>
+  <% form_remote_tag :url => {:action => :show_mateable_flies},
+         :before => visual_effect(:appear, "spinner_#{number}"),
+         :complete => visual_effect(:fade, "spinner_#{number}") do -%>
+    <h2>
+      <%= "#{cardinal(number).capitalize} Vial" %>
+      <div style="display: inline;">
+        <%= image_tag '/images/green-load.gif', :id => "spinner_#{number}", :style => 'display: none;' %>
+      </div>
+    </h2>
         
-        <p>
-          <%= select_tag(:vial, options_for_select(@vial_labels_and_ids)) %>
-          <%= hidden_field_tag 'which_vial', number %>
-		  <%= submit_tag 'Retreive vial' %>
-  		  <div style="display: inline;"><%= image_tag '/images/green-load.gif', :id => "spinner_#{number}", :style => 'display: none;' %></div>
-        </p>
-    <% end -%>
-	    
+    <p>
+      <select
+          id="<%= cardinal(number) %>_vial_selector"
+          name="vial_id"
+          onchange="onsubmit()">
+        <option value="0" selected="selected"></option>
+        <% current_user.vials.each do |vial| -%>
+          <option value="<%= vial.id %>"><%= h(vial.label) %></option>
+        <% end -%>
+      </select>
+      <%= hidden_field_tag 'which_vial', number %>
+    </p>
+  <% end -%>  
 </div>

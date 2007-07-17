@@ -54,14 +54,6 @@ class BenchController < ApplicationController
   end
   
   def mate_flies
-    @vial_labels_and_ids = []
-    current_user.vials.each do |vial|
-      @vial_labels_and_ids << [vial.label, vial.id]
-    end
-    @rack_labels_and_ids = []
-    current_user.racks.each do |rack|
-      @rack_labels_and_ids << [rack.label, rack.id]
-    end
     if params[:vial]
       @vial = Vial.make_babies_and_vial(params[:vial].merge({ :creator => current_user }))
       @vial.save!
@@ -69,22 +61,30 @@ class BenchController < ApplicationController
     else
       render
     end
-    rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid
     render
   end
   
   def show_mateable_flies
-    if request.post?
-      @vial = Vial.find(params[:vial])
-      # TODO: why isn't @vial nil below sometimes?
+    if request.xhr? && request.post?
+      @which_vial = params[:which_vial]
+      id = params[:vial_id]
+      if id.to_i.zero?
+        render :update do |page|
+          page.replace_html  "big-table-#{@which_vial}", :partial => "vial_listing_instructions"
+        end
+      else
+        @vial = Vial.find(id)
+        if current_user.owns? @vial
+          @phenotypes_to_flies = phenotypes_to_flies(@vial, current_user.visible_characters)
+          render
+        else
+          render :nothing => true, :status => 401
+        end
+      end
+    else
+      render :nothing => true, :status => 401
     end
-    @phenotypes_to_flies = {}
-    @vial.combinations_of_phenotypes(current_user.visible_characters).each do |combination|
-      @phenotypes_to_flies[combination] = @vial.flies_of_type(current_user.visible_characters, combination)
-    end
-    @which_vial = params[:which_vial]
-    redirect_to :action => "mate_flies" unless request.xhr? 
-    # TODO: what if it's not xhr?
   end
   
   def view_vial
@@ -228,4 +228,12 @@ class BenchController < ApplicationController
     params[:id] && Vial.find_by_id(params[:id]) && current_user.owns?(Vial.find(params[:id]))
   end
   
+  def phenotypes_to_flies(vial, visible_characters)
+    flies = {}
+    vial.combinations_of_phenotypes(visible_characters).each do |combination|
+      flies[combination] = vial.flies_of_type(visible_characters, combination)
+    end
+    flies
+  end
+    
 end

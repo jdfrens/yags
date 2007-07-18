@@ -130,7 +130,7 @@ class LabControllerTest < Test::Unit::TestCase
   end
   
   def test_choose_course_scenarios_page
-    get :choose_course_scenarios, { :id => 1 }, user_session(:mendel)
+    get :choose_course_scenarios, { :id => 3 }, user_session(:darwin)
     assert_response :success
     assert_standard_layout
     assert_select "form" do
@@ -140,7 +140,7 @@ class LabControllerTest < Test::Unit::TestCase
   end
   
   def test_choose_course_scenarios_works
-    assert_equal [1, 4], courses(:mendels_course).scenarios.map { |s| s.id }
+    assert_equal [1, 2, 4], courses(:mendels_course).scenarios.map { |s| s.id }
     post :choose_course_scenarios, { :id => 1, :scenario_ids => [2, 3] }, user_session(:mendel)
     assert_redirected_to :action => :view_course, :id => 1
     courses(:mendels_course).reload

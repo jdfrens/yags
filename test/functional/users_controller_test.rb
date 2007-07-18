@@ -98,7 +98,6 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_equal number_of_old_users + 1, User.find(:all).size
     assert_equal "student", new_user.group.name
     assert_equal Course.find(1), new_user.enrolled_in
-    assert_response :redirect
     assert_redirected_to :action => "list_users"
   end
   
@@ -115,13 +114,13 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response 401 # access denied
   end
   
-  def test_new_student_has_racks
+  def test_new_student_doesnt_have_racks
     post :add_student, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals', 
         :password => 'rails', :password_confirmation => 'rails' }, :course_id => 1, 
         :first_name => 'David', :last_name => 'Hansson'  }, user_session(:manage_student)
     new_student = User.find_by_username("david hansson")
     assert_not_nil new_student
-    assert_equal ["Default"], new_student.racks.map { |r| r.label }
+    assert_equal [], new_student.racks
   end
   
   def test_add_instructor_form

@@ -4,7 +4,7 @@ class CourseTest < Test::Unit::TestCase
   all_fixtures
   
   def test_has_and_belongs_to_many_scenarios
-    assert_equal [scenarios(:first_scenario), scenarios(:everything_included)], 
+    assert_equal [scenarios(:first_scenario), scenarios(:another_scenario), scenarios(:everything_included)], 
         courses(:mendels_course).scenarios
     assert_equal [scenarios(:only_sex_and_legs), scenarios(:everything_included)],
         courses(:darwins_first_course).scenarios

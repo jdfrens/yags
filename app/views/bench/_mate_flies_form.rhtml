@@ -30,7 +30,7 @@
         <label for="rack_id"><strong>Store in the rack named: </strong></label>                
       </td>
       <td>
-        <%= form.collection_select(:rack_id, current_user.racks, :id, :label) %>
+        <%= form.collection_select(:rack_id, current_user.current_racks, :id, :label) %>
       </td>
     </tr>        
   </table>

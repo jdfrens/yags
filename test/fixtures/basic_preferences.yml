@@ -1,5 +1,5 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-pref_for_eye_color_and_wings:
+jeremys_basic_preference:
   id: 1
   user_id: 3
   column: eye color

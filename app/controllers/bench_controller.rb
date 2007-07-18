@@ -43,7 +43,7 @@ class BenchController < ApplicationController
   def collect_field_vial
     if (params[:vial])
       # TODO: why isn't this a dropdown in the form?
-      params[:vial][:rack_id] = current_user.racks.first.id
+      params[:vial][:rack_id] = current_user.current_racks.first.id
       @vial = Vial.collect_from_field(params[:vial])
       @vial.save!
       redirect_to :action => "view_vial", :id => @vial.id
@@ -103,11 +103,12 @@ class BenchController < ApplicationController
   end
   
   def view_vial
+    # TODO make the Trash rack hidden
     if valid_vial_to_view?
       @vial = Vial.find_by_id(params[:id])
       @visible_characters = current_user.visible_characters
       @rack_labels_and_ids = []
-      current_user.racks.each do |rack|
+      current_user.current_racks.each do |rack|
         @rack_labels_and_ids << [rack.label, rack.id]
       end
       # TODO: no assignments in condition!!!!!!!
@@ -125,12 +126,13 @@ class BenchController < ApplicationController
   end
   
   def list_vials
-    @racks = current_user.racks
+    @racks = current_user.current_racks
   end
   
   def destroy_vial
     if params[:id] && request.post?
       vial = Vial.find(params[:id])
+      # TODO move vial to the Trash rack instead of destroying it.
       if current_user.owns?(vial)
         vial.destroy
         flash[:notice] = "#{vial.label} has been deleted"
@@ -196,6 +198,7 @@ class BenchController < ApplicationController
   def add_rack
     if params[:rack]
       params[:rack][:user_id] = current_user.id
+      params[:rack][:scenario_id] = current_user.current_scenario.id
       @rack = Rack.new params[:rack]
       @rack.save!
       redirect_to :action => "list_vials"
@@ -209,7 +212,7 @@ class BenchController < ApplicationController
   def move_vial_to_another_rack
     @vial = Vial.find(params[:id])
     @rack_labels_and_ids = []
-    current_user.racks.each do |rack|
+    current_user.current_racks.each do |rack|
       @rack_labels_and_ids << [rack.label, rack.id]
     end
     if request.post?

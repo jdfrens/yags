@@ -71,17 +71,35 @@ class User < ActiveRecord::Base
     end
   end
   
-  # i wish we could generate these next two methods.  but i didn't know how
+  def current_racks
+    # TODO throw an exception when there is no current_scenario
+    if current_scenario
+      self.racks.find_all_by_scenario_id(self.current_scenario.id)
+    else 
+      [] 
+    end
+  end
+  
+  # this method is only used by set_scenario_to below.  so, it could be a helper.
+  def add_default_racks_for_current_scenario
+    if current_racks.empty?
+      self.racks << Rack.new(:scenario_id => current_scenario.id, :label => "Default")
+    end
+    if current_racks.select{ |r| r.label == "Trash" }.empty?
+      self.racks << Rack.new(:scenario_id => current_scenario.id, :label => "Trash")
+    end
+  end
+  
   def current_scenario
     if self.group.name == "student" and self.basic_preference
-      Scenario.find_by_id basic_preference.scenario_id
-      # change if a basic_preference belongs_to :senario relationship is set up
+      basic_preference.scenario
     else
       nil
     end
   end
   
   # hmm, the other method ^ doesn't have "_id" in it's name...
+  # and now this is like a helper too.
   def current_scenario_id=(new_id)
     if self.basic_preference
       if basic_preference.scenario_id != new_id
@@ -96,6 +114,8 @@ class User < ActiveRecord::Base
   
   def set_scenario_to(scenario_id, number_generator = RandomNumberGenerator.new)
     self.current_scenario_id = scenario_id
+    self.reload
+    self.add_default_racks_for_current_scenario
     if scenario_id and self.phenotype_alternates.select { |pa| pa.scenario_id == scenario_id }.size == 0
       Scenario.find(scenario_id).renamed_characters.map { |rc| rc.renamed_character }.each do |renamed_character|
         make_phenotype_alternates scenario_id, renamed_character, number_generator

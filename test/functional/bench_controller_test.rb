@@ -97,6 +97,7 @@ class BenchControllerTest < Test::Unit::TestCase
         
     new_rack = Rack.find_by_label("super storage unit")
     assert_not_nil new_rack
+    assert_equal users(:steve).current_scenario, new_rack.scenario
     assert_equal number_of_old_racks + 1, Rack.find(:all).size
     assert_equal users(:steve), new_rack.owner
     assert_response :redirect
@@ -129,7 +130,7 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_select "form" do
       assert_select "select#rack_id" do
-        assert_select "option", 2
+        assert_select "option", 2, "steve should have 2 racks for current scenario"
       end
     end
   end
@@ -208,7 +209,7 @@ class BenchControllerTest < Test::Unit::TestCase
       end
       assert_select "form" do
         assert_select "select#rack_id" do
-          assert_select "option", 2
+          assert_select "option", 2, "steve should have 2 racks for current scenario"
         end
       end
     end
@@ -260,7 +261,7 @@ class BenchControllerTest < Test::Unit::TestCase
       end
       assert_select "form" do
         assert_select "select#rack_id" do
-          assert_select "option", 2
+          assert_select "option", 2, "steve should have 2 racks for current scenario"
         end
       end
     end
@@ -312,7 +313,7 @@ class BenchControllerTest < Test::Unit::TestCase
       end
       assert_select "form" do
         assert_select "select#rack_id" do
-          assert_select "option", 2
+          assert_select "option", 2, "steve should have two racks for current scenario"
         end
       end
     end
@@ -558,6 +559,7 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "li#vial_5", "Parents vial"
         assert_select "li#vial_5 img[src^=/images/star.png][title=Solves Problem #1]"
       end
+      assert_select "ul", 2, "steve should have 2 racks for current scenario"
     end
   end
   
@@ -600,7 +602,7 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "input#vial_number_of_requested_flies"
       assert_select "label", /^Store in the rack named:/
       assert_select "select#vial_rack_id" do
-        assert_select "option", 2, "steve should have two racks"
+        assert_select "option", 2, "steve should have two racks in current scenario"
         assert_select "option", "steve stock"
         assert_select "option", "steve bench"
       end
@@ -1007,7 +1009,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "form" do
       assert_select "select#scenario_id" do
         assert_select "option[value=1]", "forgetful instructor"
-        assert_select "option", 2
+        assert_select "option", 3
       end
     end
   end
@@ -1015,11 +1017,15 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_choose_scenario
     assert_equal scenarios(:everything_included), users(:steve).current_scenario
     assert_equal 0, users(:steve).phenotype_alternates.size
+    
     post :choose_scenario, { :scenario_id => 2 }, user_session(:steve)
+    
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
     assert_equal scenarios(:another_scenario), users(:steve).current_scenario
+    assert_equal ["Trash", "steve rack for party day"], 
+        users(:steve).current_racks.map { |r| r.label }.sort
     assert_equal [:"eye color", :"eye color"], 
         users(:steve).phenotype_alternates.map { |pa| pa.affected_character.intern }
     assert_equal [:red, :white].to_set, 
@@ -1034,15 +1040,17 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:keith).reload
     assert_equal scenarios(:first_scenario), users(:keith).current_scenario
+    assert_equal ["Default", "Trash"], users(:keith).current_racks.map { |r| r.label }.sort
   end
   
   def test_choose_scenario_fails_when_NOT_scenario_for_course
     assert_nil users(:keith).current_scenario
-    post :choose_scenario, { :scenario_id => 2 }, user_session(:keith)
+    post :choose_scenario, { :scenario_id => 3 }, user_session(:keith)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:keith).reload
     assert_nil users(:keith).current_scenario
+    assert users(:keith).racks.empty?
   end
   
   def test_choose_scenario_fails_when_NOT_logged_in_as_student

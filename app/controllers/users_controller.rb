@@ -28,7 +28,6 @@ class UsersController < ApplicationController
       params[:user][:course_id] = params[:course_id]
       @user = User.new(params[:user])
       @user.save!
-      Rack.create! :user_id => @user.id, :label => 'Default'
       redirect_to :action => "list_users"
     else
       render

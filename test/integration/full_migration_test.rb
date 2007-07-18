@@ -65,6 +65,7 @@ class FullMigrationTest < ActionController::IntegrationTest
         t.column :id,          :integer
         t.column :user_id,     :integer
         t.column :label,       :string
+        t.column :scenario_id, :integer
       end
       
       s.table :solutions do |t|

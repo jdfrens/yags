@@ -2,24 +2,35 @@
 steve_stock_rack:
   id: 1
   user_id: 1
+  scenario_id: 4
   label: "steve stock"
 steve_bench_rack:
   id: 2
   user_id: 1
+  scenario_id: 4
   label: "steve bench"
 jeremy_stock_rack:
   id: 3
   user_id: 3
+  scenario_id: 2
   label: "jeremy stock"
 jeremy_bench_rack:
   id: 4
   user_id: 3
+  scenario_id: 2
   label: "jeremy bench"
 randy_stock_rack:
   id: 5
   user_id: 4
+  scenario_id: 4
   label: "randy stock"
 randy_bench_rack:
   id: 6
   user_id: 4
+  scenario_id: 4
   label: "randy bench"
+steve_rack_for_party_day:
+  id: 7
+  user_id: 1
+  scenario_id: 2
+  label: "steve rack for party day"

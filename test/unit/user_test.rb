@@ -76,10 +76,22 @@ class UserTest < Test::Unit::TestCase
     assert !users(:jeremy).visible?(:internal_bleeding)
   end
   
+  def test_student?
+    assert !users(:mendel).student?
+    assert !users(:calvin).student?
+    assert users(:steve).student?
+  end
+  
   def test_instructor?
     assert users(:mendel).instructor?
     assert !users(:calvin).instructor?
     assert !users(:steve).instructor?
+  end
+  
+  def test_admin?
+    assert !users(:mendel).admin?
+    assert users(:calvin).admin?
+    assert !users(:steve).admin?
   end
   
   def test_students

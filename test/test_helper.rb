@@ -38,16 +38,34 @@ class Test::Unit::TestCase
   end
   
   def assert_standard_layout
-    assert_select "h1", "YAGS"
-    assert_select "div#session-info" do
-      if logged_in?
-        assert_select "a[href=/users/logout]", /logout/i
-      else
-        assert_select "a[href=/users/login]", /login/i
+    assert_select "div.bar" do
+      assert_select "h1", "YAGS"
+      assert_select "div#session-info" do
+        if logged_in?
+          assert_select "a[href=/users/logout]", /logout/i
+        else
+          assert_select "a[href=/users/login]", /login/i
+        end
       end
     end
-  assert_select "a[href=/bench]", /bench/i
-
+    assert_select "div.menu-bar" do
+      if current_test_user.instructor?
+        assert_select "a[href=/lab]", /lab/i
+        assert_select "a[href=/lab/list_courses]", /list\scourses/i
+        assert_select "a[href=/lab/add_scenario]", /add\sscenario/i
+        assert_select "a[href=/users/add_student]", /add\sstudent/i
+      elsif current_test_user.admin?
+        assert_select "a[href=/users]", /users/i
+        assert_select "a[href=/users/list_users]", /list\s.*users/i
+        assert_select "a[href=/users/add_instructor]", /add\sinstructor/i
+        assert_select "a[href=/users/change_student_password]", /change\sstudent\spassword/i
+      else
+        assert_select "a[href=/bench]", /bench/i
+        assert_select "a[href=/bench/list_vials]", /list\svials/i
+        assert_select "a[href=/bench/mate_flies]", /mate\sflies/i
+        assert_select "a[href=/bench/add_rack]", /.*rack/i
+      end
+    end
   end
   
   def assert_redirected_to_login

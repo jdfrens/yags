@@ -17,14 +17,10 @@
 </head>
 
 <body>
-	
-	<% logged_in = (session[:current_user_id] ? true : false) -%>
-	<% current_user = User.find(session[:current_user_id]) if logged_in -%>
-	<!-- it would be nice to have this come in from somewhere else -->
 
   <div class="bar">
       <div id="session-info">
-          <% if logged_in -%>
+          <% if current_user -%>
             Logged in as: <%= current_user.username -%><br />
             <%= link_to "Logout", :controller => 'users', :action => "logout" %>
           <% else %>
@@ -37,10 +33,22 @@
   
   <div class="menu-bar">
   	<ul class="menu">
-  		<li class="first"><strong><%= link_to "Bench", :controller => 'bench', :action => "index" %></strong></li>
-		<li><%= link_to "List Vials", :controller => 'bench', :action => 'list_vials' %></li>
-		<li><%= link_to "Mate Flies", :controller => 'bench', :action => 'mate_flies' %></li>
-		<li><%= link_to "Create New Rack", :controller => 'bench', :action => 'add_rack' %></li>
+  		<% if current_user && current_user.instructor? -%>
+			<li class="first"><strong><%= link_to "Lab", :controller => 'lab', :action => "index" %></strong></li>
+			<li><%= link_to "List Courses", :controller => 'lab', :action => 'list_courses' %></li>
+			<li><%= link_to "Add Scenario", :controller => 'lab', :action => 'add_scenario' %></li>
+			<li><%= link_to "Add Student", :controller => 'users', :action => 'add_student' %></li>
+		<% elsif current_user && current_user.admin? -%>
+	  		<li class="first"><strong><%= link_to "Users", :controller => 'users', :action => "index" %></strong></li>
+			<li><%= link_to "List All Users", :controller => 'users', :action => 'list_users' %></li>
+			<li><%= link_to "Add Instructor", :controller => 'users', :action => 'add_instructor' %></li>
+			<li><%= link_to "Change Student Password", :controller => 'users', :action => 'change_student_password' %></li>
+		<% else -%>
+	  		<li class="first"><strong><%= link_to "Bench", :controller => 'bench', :action => "index" %></strong></li>
+			<li><%= link_to "List Vials", :controller => 'bench', :action => 'list_vials' %></li>
+			<li><%= link_to "Mate Flies", :controller => 'bench', :action => 'mate_flies' %></li>
+			<li><%= link_to "Create New Rack", :controller => 'bench', :action => 'add_rack' %></li>
+		<% end -%>
   	</ul>
   </div>
   

@@ -39,8 +39,16 @@ class User < ActiveRecord::Base
     visible_characters.include? character
   end
   
+  def student?
+    group.name == "student"
+  end
+  
   def instructor?
     group.name == "instructor"
+  end
+  
+  def admin?
+    group.name == "admin"
   end
   
   def owns?(object)

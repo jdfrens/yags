@@ -88,6 +88,16 @@ class BenchController < ApplicationController
     end
   end
   
+  def update_parent_div
+    raise InvalidAccess unless request.xhr? && request.post?
+    @fly = Fly.find(params[:id])
+    raise InvalidAccess unless current_user.owns?(@fly)
+    @sex = params[:sex]
+    render
+  rescue
+    render :nothing => true, :status => 401
+  end
+  
   def view_vial
     if valid_vial_to_view?
       @vial = Vial.find_by_id(params[:id])
@@ -177,16 +187,6 @@ class BenchController < ApplicationController
       end
     end
     redirect_to :action => "view_vial", :id => @vial unless request.xhr?
-  end
-  
-  def update_parent_div
-    raise InvalidAccess unless request.xhr? && request.post?
-    @fly = Fly.find(params[:id])
-    raise InvalidAccess unless current_user.owns?(@fly)
-    @sex = params[:sex]
-    render
-  rescue
-    render :nothing => true, :status => 401
   end
   
   def add_rack

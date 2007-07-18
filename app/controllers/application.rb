@@ -7,8 +7,15 @@ class ApplicationController < ActionController::Base
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_YAGS_session_id'
   
-  # i think that these methods are supposed to be private -Greg
-  # private
+  filter_parameter_logging "password"
+  
+  class InvalidAccess < RuntimeError 
+  end
+  
+  #
+  # Helpers
+  #
+  private
    
   # this is so that we don't have to live on the edge
   # can (should!) remove after upgrading to Rails 2
@@ -17,9 +24,4 @@ class ApplicationController < ActionController::Base
     nil
   end
         
-  filter_parameter_logging "password"
-  
-  class InvalidAccess < RuntimeError 
-  end
-  
 end

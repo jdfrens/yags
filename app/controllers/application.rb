@@ -9,13 +9,24 @@ class ApplicationController < ActionController::Base
   
   filter_parameter_logging "password"
   
-  class InvalidAccess < RuntimeError 
+  class InvalidHttpMethod < RuntimeError 
+  end
+  
+  class InvalidOwner < RuntimeError 
   end
   
   #
   # Helpers
   #
-  private
+  protected
+  
+  def must_use_xhr_post
+    raise InvalidHttpMethod unless request.xhr? && request.post?
+  end
+  
+  def current_user_must_own(object)
+    raise InvalidOwner unless current_user.owns?(object)
+  end
    
   # this is so that we don't have to live on the edge
   # can (should!) remove after upgrading to Rails 2

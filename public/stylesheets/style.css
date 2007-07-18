@@ -277,3 +277,15 @@ div #table_of_student_solutions th {
 .menu-bar a:hover {
 	color: #ffff80;
 }	
+
+/* Mate Flies Styling */
+
+#mate-flies table, #mate-flies table h2 {
+  margin: 0;
+  padding: 0;
+}
+
+#mate-flies h1 {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}

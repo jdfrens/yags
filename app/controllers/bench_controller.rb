@@ -55,46 +55,41 @@ class BenchController < ApplicationController
   end
   
   def mate_flies
-    if params[:vial]
+    if request.get?
+      render
+    else
       @vial = Vial.make_babies_and_vial(params[:vial].merge({ :creator => current_user }))
       @vial.save!
       redirect_to :action => "view_vial", :id => @vial.id
-    else
-      render
     end
   rescue ActiveRecord::RecordInvalid
     render
   end
   
   def show_mateable_flies
-    if request.xhr? && request.post?
-      @which_vial = params[:which_vial]
-      id = params[:vial_id]
-      if id.to_i.zero?
-        render :update do |page|
-          page.replace_html  "big-table-#{@which_vial}", :partial => "vial_listing_instructions"
-        end
-      else
-        @vial = Vial.find(id)
-        if current_user.owns? @vial
-          @phenotypes_to_flies = phenotypes_to_flies(@vial, current_user.visible_characters)
-          render
-        else
-          render :nothing => true, :status => 401
-        end
-      end
+    must_use_xhr_post
+    @which_vial = params[:which_vial]
+    if params[:vial_id].to_i.zero?
+      render :partial => 'redisplay_vial_selector_instructions'
     else
-      render :nothing => true, :status => 401
+      @vial = Vial.find(params[:vial_id].to_i, :include => [ { :rack => :owner }, { :flies => :genotypes } ])
+      current_user_must_own @vial
+      @phenotypes_to_flies = phenotypes_to_flies(@vial, current_user.visible_characters)
+      render
     end
+  rescue InvalidHttpMethod, InvalidOwner
+    render :nothing => true, :status => 401
   end
   
   def update_parent_div
-    raise InvalidAccess unless request.xhr? && request.post?
+    must_use_xhr_post
     @fly = Fly.find(params[:id])
-    raise InvalidAccess unless current_user.owns?(@fly)
+    current_user_must_own(@fly)
     @sex = params[:sex]
     render
-  rescue
+  rescue InvalidHttpMethod, InvalidOwner
+    render :nothing => true, :status => 401
+  rescue # fly not found
     render :nothing => true, :status => 401
   end
   

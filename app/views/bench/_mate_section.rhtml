@@ -1,26 +1,25 @@
 <h1>Crossing Flies</h1>
 
 <table width="100%">
-
-<tr>
-	<td width="50%">
-	<%= render :partial => 'vial_selector', :locals => { :number => 1 } %>
-	</td>
-	<td width="50%">
-	<%= render :partial => 'vial_selector', :locals => { :number => 2 } %>
-	</td>
-</tr>
-<tr>
-	<td>
-	<%= render :partial => 'vial_listing', :locals => { :number => 1 } %>
-	</td>
-	<td>
-	<%= render :partial => 'vial_listing', :locals => { :number => 2 } %>
-	</td>
-</tr>
-<tr>
-<td colspan="2">
-	<%= render :partial => 'mate_flies_form' %>
-</td>
-</tr>
+  <tr>
+  	<td width="50%">
+  	  <%= render :partial => 'vial_selector', :locals => { :number => 1 } %>
+  	</td>
+  	<td width="50%">
+  	  <%= render :partial => 'vial_selector', :locals => { :number => 2 } %>
+  	</td>
+  </tr>
+  <tr>
+  	<td>
+  	  <%= render :partial => 'vial_listing', :locals => { :number => 1 } %>
+  	</td>
+  	<td>
+  	  <%= render :partial => 'vial_listing', :locals => { :number => 2 } %>
+  	</td>
+  </tr>
+  <tr>
+    <td colspan="2">
+  	  <%= render :partial => 'mate_flies_form' %>
+    </td>
+  </tr>
 </table>	

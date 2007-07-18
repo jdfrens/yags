@@ -23,7 +23,7 @@ class Fly < ActiveRecord::Base
   end
   
   def used_as_parent?
-    (self.mom_of != [] || self.dad_of != [])
+    (self.mom_of.count != 0 || self.dad_of.count != 0)
   end
   
   def owner

@@ -326,16 +326,34 @@ class VialTest < Test::Unit::TestCase
     assert  vial.errors.invalid?(:creator)
   end
     
-  def test_make_babies_and_vial_fails_security_validations
-    vial = Vial.make_babies_and_vial({
-          :label => "failure", :rack_id => 1, 
-          :mom_id => 6, :dad_id => 1,
-          :number_of_requested_flies => 12,
-          :creator => users(:jeremy) })
-    assert !vial.valid?
-    assert  vial.errors.invalid?(:rack), "should not put on rack not owned by creator"
-    assert  vial.errors.invalid?(:mom_id), "should not use fly not owned by creator"
-    assert  vial.errors.invalid?(:dad_id), "should not use fly not owned by creator"
+  def test_make_babies_and_vial_fails_when_creator_does_not_own_rack
+    assert_raise ApplicationController::InvalidOwner do
+      Vial.make_babies_and_vial({
+            :label => "failure", :rack_id => 1, 
+            :mom_id => 8, :dad_id => 9,
+            :number_of_requested_flies => 12,
+            :creator => users(:jeremy) })
+    end
+  end
+  
+  def test_make_babies_and_vial_fails_when_creator_does_not_own_mom
+    assert_raise ApplicationController::InvalidOwner do
+      Vial.make_babies_and_vial({
+            :label => "failure", :rack_id => 4, 
+            :mom_id => 4, :dad_id => 9,
+            :number_of_requested_flies => 12,
+            :creator => users(:jeremy) })
+    end
+  end
+  
+  def test_make_babies_and_vial_fails_when_creator_does_not_own_dad
+    assert_raise ApplicationController::InvalidOwner do
+      Vial.make_babies_and_vial({
+            :label => "failure", :rack_id => 4, 
+            :mom_id => 8, :dad_id => 1,
+            :number_of_requested_flies => 12,
+            :creator => users(:jeremy) })
+    end
   end
   
   def test_belongs_to_owner

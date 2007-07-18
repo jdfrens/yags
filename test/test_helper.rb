@@ -72,6 +72,12 @@ class Test::Unit::TestCase
     assert_redirected_to :controller => 'users', :action => 'login'
   end
   
+  # could be generalized easily
+  # presently only works with :controller, :action, and :id explicitly set
+  def assert_rjs_redirect(options = {})
+    assert_equal "window.location.href = \"/#{options[:controller]}/#{options[:action]}/#{options[:id]}\";", @response.body
+  end
+  
   def assert_dependents_destroyed(main_class, dependent_class, options)
     number_of_old_objects = main_class.find(:all).size
     number_of_old_dependents = dependent_class.find(:all).size
@@ -95,15 +101,27 @@ class Test::Unit::TestCase
     end
   end
   
-  def assert_xhr_post_only(action, params, session)
-    xhr :get, action, params, session
-    assert_response 401, "should reject xhr get of action #{action.to_s}"
-    
-    post action, params, session
-    assert_response 401, "should reject normal post of action #{action.to_s}"
-    
-    get action, params, session
-    assert_response 401, "should reject normal get of action #{action.to_s}"
+  def assert_xhr_post_only(action, params = {}, session = {})
+    assert_rejected_http_methods [:xhr_get, :post, :get], action, params, session
+  end
+  
+  def assert_rejected_http_methods(rejected_methods, action, params = {}, session = {})
+    if rejected_methods.include?(:xhr_get)
+      xhr :get, action, params, session
+      assert_response 401, "should reject xhr get of action #{action.to_s}"
+    end
+    if rejected_methods.include?(:xhr_post)
+      xhr :post, action, params, session
+      assert_response 401, "should reject xhr post of action #{action.to_s}"
+    end
+    if rejected_methods.include?(:post)
+      post action, params, session
+      assert_response 401, "should reject normal post of action #{action.to_s}"
+    end
+    if rejected_methods.include?(:get)
+      get action, params, session
+      assert_response 401, "should reject normal get of action #{action.to_s}"    
+    end
   end
 
   # The container can be an array of flies or any general container that has

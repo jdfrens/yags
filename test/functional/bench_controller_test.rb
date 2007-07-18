@@ -591,6 +591,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "h2", "Cross the Flies"
+    assert_select "form[onsubmit*=Ajax.Request]", 3
+    assert_select "form[onsubmit*=disabled = true]"
     assert_select "form[action=/bench/mate_flies]" do
       assert_select "label", "Label for vial of offspring:"
       assert_select "input#vial_label"
@@ -760,6 +762,9 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_nil flash[:error]
     assert_select "div#vial_selector_1" do
+      assert_select "h2", "First Vial"
+      assert_select "input[name=which_vial][value=1]"
+      assert_select "img#spinner_1[src^=/images/green-load.gif]"
       assert_select "select#first_vial_selector[onchange=onsubmit()]" do
         assert_select "option", 6
         assert_select "option[value=0][selected=selected]", ""
@@ -769,11 +774,11 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "option[value=4]", "Multiple fly vial"
         assert_select "option[value=5]", "Parents vial"
       end
-      assert_select "h2", "First Vial"
-      assert_select "input[name=which_vial][value=1]"
-      assert_select "img#spinner_1[src^=/images/green-load.gif]"
     end
     assert_select "div#vial_selector_2" do
+      assert_select "h2", "Second Vial"
+      assert_select "input[name=which_vial][value=2]"
+      assert_select "img#spinner_2[src^=/images/green-load.gif]"
       assert_select "select#second_vial_selector[onchange=onsubmit()]" do
         assert_select "option", 6
         assert_select "option[value=0][selected=selected]", ""
@@ -783,9 +788,6 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "option[value=4]", "Multiple fly vial"
         assert_select "option[value=5]", "Parents vial"
       end
-      assert_select "h2", "Second Vial"
-      assert_select "input[name=which_vial][value=2]"
-      assert_select "img#spinner_2[src^=/images/green-load.gif]"
     end
     assert_select "div#big-table-1"
     assert_select "div#big-table-2"
@@ -794,20 +796,21 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_mate_flies
     number_of_old_vials = Vial.count
     
-    post :mate_flies,
-    { :vial => {
-        :label => "children vial",
-        :mom_id => "6", :dad_id => "1",
-        :rack_id => "2",
-        :number_of_requested_flies => "8"
-      } },
-    user_session(:steve)
+    xhr :post, :mate_flies,
+        { :vial => {
+            :label => "children vial",
+            :mom_id => "6", :dad_id => "1",
+            :rack_id => "2",
+            :number_of_requested_flies => "8"
+          } },
+        user_session(:steve)
     
     new_vial = Vial.find_by_label("children vial")
     assert_not_nil new_vial
     
-    assert_response :redirect
-    assert_redirected_to :action => "view_vial", :id => new_vial.id
+    assert_response :success
+    assert_rjs_redirect :controller => 'bench',
+        :action => 'view_vial', :id => new_vial.id
     
     assert_equal [:white] * 8, phenotypes_of(new_vial, :"eye color")
     assert_equal users(:steve), new_vial.owner
@@ -815,28 +818,40 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_mate_flies_again  
-    post :mate_flies,
-    { :vial => {
-        :label => "children 2",
-        :mom_id => "4", :dad_id => "3",
-        :rack_id => "1", 
-        :number_of_requested_flies => "3"
-      } },
-    user_session(:steve)
+    xhr :post, :mate_flies,
+        { :vial => {
+            :label => "children 2",
+            :mom_id => "4", :dad_id => "3",
+            :rack_id => "1", 
+            :number_of_requested_flies => "3"
+          } },
+        user_session(:steve)
     
     new_vial = Vial.find_by_label("children 2")
     assert_not_nil new_vial
     
-    assert_response :redirect
-    assert_redirected_to :action => "view_vial", :id => new_vial.id
+    assert_response :success
+    assert_rjs_redirect :controller => 'bench',
+        :action => 'view_vial', :id => new_vial.id
     
     assert_equal [:red] * 3, phenotypes_of(new_vial, :"eye color")
     assert_equal users(:steve), new_vial.owner
   end
   
+  def test_mate_flies_fails_for_some_protocols
+    assert_rejected_http_methods [ :xhr_get, :post ], :mate_flies,
+        { :vial => {
+            :label => "children 2",
+            :mom_id => "4", :dad_id => "3",
+            :rack_id => "1", 
+            :number_of_requested_flies => "3"
+        } },
+        user_session(:steve)
+  end
+  
   def test_mate_flies_fails_when_NOT_owned_by_current_user
     assert_no_added_vials do
-      post :mate_flies, {
+      xhr :post, :mate_flies, {
           :vial => {
             :label => "stolen children",
             :mom_id => "4", :dad_id => "3", 
@@ -844,9 +859,8 @@ class BenchControllerTest < Test::Unit::TestCase
             :rack_id => "2"
             } }, user_session(:jeremy)
             
-      assert_response :success
-      assert_standard_layout
-      assert_template "bench/mate_flies"
+      assert_response 401 # access denied!
+
       assert_nil Vial.find_by_label("stolen children")
     end
   end
@@ -865,24 +879,34 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_mate_flies_errors_when_NO_parents_are_selected
     assert_no_added_vials do
-      post :mate_flies, {
+      xhr :post, :mate_flies, {
           :vial => {
             :label => "children vial",
             :number_of_requested_flies => "8",
             :rack_id => "2" }
           }, user_session(:steve)
-          
+      
       assert_response :success
-      assert_standard_layout
-      assert_template "bench/mate_flies"
+      assert_select_rjs do
+        assert_match(/^Element.update\(\"errors/, @response.body,
+            "should update the right element")
+        assert_select "li", /dad/i, "should mention missing dad in error"
+        assert_select "li", /dad/i, "should mention missing mom in error"
+        assert_match(/disabled = false;$/, @response.body,
+            "should enable submit button")
+      end
+      
       assert !assigns(:vial).valid?
-      # other variations of this failure are tested in the unit tests
+      assert assigns(:vial).errors.invalid?(:mom_id)
+      assert assigns(:vial).errors.invalid?(:dad_id)
     end
+
+    # missing mom xor missing dad yields same result as tested in unit tests
   end
   
-  def test_mate_flies_flashes_error_when_too_many_offspring_requested
+  def test_mate_flies_errors_when_number_of_flies_is_invalid
     assert_no_added_vials do
-      post :mate_flies,
+      xhr :post, :mate_flies,
           { :vial => {
               :label => "children vial",
               :dad_id => "1", :mom_id => 6, 
@@ -891,67 +915,22 @@ class BenchControllerTest < Test::Unit::TestCase
           user_session(:steve)
           
       assert_response :success
-      assert_standard_layout
-      assert_template "bench/mate_flies"
+      assert_select_rjs do
+        assert_match(/^Element.update\(\"errors/, @response.body,
+            "should update the right element")
+        assert_select "li", /number of requested flies/i,
+            "should mention number of flies error"
+        assert_match(/disabled = false;$/, @response.body,
+            "should enable submit button")
+      end
+      
       vial = assigns(:vial)
       assert vial.errors.invalid?(:number_of_requested_flies)
     end
+    
+    # other types of numeric failures are tested in the unit tests
   end
-  
-  def test_mate_flies_flashes_error_when_too_many_offspring_requested
-    assert_no_added_vials do
-      post :mate_flies,
-          { :vial => {
-              :label => "children vial",
-              :dad_id => "1", :mom_id => 6, 
-              :rack_id => "2",
-              :number_of_requested_flies => "256" } },
-          user_session(:steve)
-          
-      assert_response :success
-      assert_standard_layout
-      assert_template "bench/mate_flies"
-      vial = assigns(:vial)
-      assert vial.errors.invalid?(:number_of_requested_flies)
-    end
-  end
-  
-  def test_mate_flies_flashes_error_when_too_few_offspring_requested
-    assert_no_added_vials do
-      post :mate_flies,
-          { :vial => {
-              :label => "children vial",
-              :dad_id => "1", :mom_id => 6, 
-              :rack_id => "2",
-              :number_of_requested_flies => "-1" } },
-          user_session(:steve)
-                  
-      assert_response :success
-      assert_standard_layout
-      assert_template "bench/mate_flies"
-      vial = assigns(:vial)
-      assert vial.errors.invalid?(:number_of_requested_flies)
-    end
-  end
-  
-  def test_mate_flies_flashes_error_when_non_numeric_number_of_offspring_requested
-    assert_no_added_vials do
-      post :mate_flies,
-          { :vial => {
-              :label => "children vial",
-              :dad_id => "1", :mom_id => 6, 
-              :rack_id => "2",
-              :number_of_requested_flies => "abc" } },
-          user_session(:steve)
-          
-      assert_response :success
-      assert_standard_layout
-      assert_template "bench/mate_flies"
-      vial = assigns(:vial)
-      assert vial.errors.invalid?(:number_of_requested_flies)
-    end
-  end
-  
+      
   def test_preferences_page
     get :preferences, {}, user_session(:steve)
     assert_response :success

@@ -1,6 +1,13 @@
 <h2>Cross the Flies</h2>
 
-<% form_for :vial, :url => { :action => :mate_flies } do |form| -%>
+<div id="errors">
+</div>
+
+<% remote_form_for :vial, :url => { :action => :mate_flies },
+         :before => [
+             "$('cross_button').disabled = true;",
+             visual_effect(:appear, "spinner_cross")
+         ] do |form| -%>
   <table>
     <tr>
       <td>
@@ -29,5 +36,8 @@
   </table>
 	<div id="dad"></div>
 	<div id="mom"></div>
-  <%= submit_tag "Cross", :class => "submit" %>
+  <%= submit_tag "Cross", :class => "submit", :id => "cross_button" %>
+  <div style="display: inline;">
+    <%= image_tag '/images/green-load.gif', :id => "spinner_cross", :style => 'display: none;' %>
+  </div>
 <% end -%>

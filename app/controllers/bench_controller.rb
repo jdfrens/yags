@@ -55,15 +55,24 @@ class BenchController < ApplicationController
   end
   
   def mate_flies
-    if request.get?
+    if request.get? && !request.xhr?
       render
     else
+      must_use_xhr_post
       @vial = Vial.make_babies_and_vial(params[:vial].merge({ :creator => current_user }))
       @vial.save!
-      redirect_to :action => "view_vial", :id => @vial.id
+      render :update do |page|
+        page.redirect_to :action => "view_vial", :id => @vial.id
+      end
     end
+  rescue InvalidHttpMethod, InvalidOwner
+    render :nothing => true, :status => 401
   rescue ActiveRecord::RecordInvalid
-    render
+    render :update do |page|
+      page.replace_html :errors, :inline => "<%= error_messages_for 'vial' %>"
+      page.visual_effect :fade, "spinner_cross"
+      page['cross_button'].disabled = false
+    end
   end
   
   def show_mateable_flies

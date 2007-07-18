@@ -180,20 +180,24 @@ class Vial < ActiveRecord::Base
   
   def validate_on_create 
     if offspring_vial?
-      if creator.nil?
-        errors.add(:creator, "must specify a user to create the vial")
-      else
-        if !creator.owns?(rack)
-          errors.add(:rack, "must be owned by the current user")
-        end
-        if mom && !creator.owns?(mom)
-          errors.add(:mom_id, "must be owned by the current user")
-        end
-        if dad && !creator.owns?(dad)
-          errors.add(:dad_id, "must be owned by the current user")
-        end
-      end
+      offspring_vial_validations
     end
   end 
+  
+  def offspring_vial_validations
+    if creator.nil?
+      errors.add(:creator, "must specify a user to create the vial")
+    else
+      if !creator.owns?(rack)
+        raise ApplicationController::InvalidOwner.new("rack not owned by the creator")
+      end
+      if mom && !creator.owns?(mom)
+        raise ApplicationController::InvalidOwner.new("mom not owned by the creator")
+      end
+      if dad && !creator.owns?(dad)
+        raise ApplicationController::InvalidOwner.new("dad not owned by the creator")
+      end
+    end
+  end
   
 end

@@ -289,3 +289,7 @@ div #table_of_student_solutions th {
   margin-bottom: 0;
   padding-bottom: 0;
 }
+
+#mate-flies #errors {
+  float: right;
+}

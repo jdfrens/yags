@@ -387,6 +387,10 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
+  def test_set_vial_label_fails_when_NOT_owned_by_current_user
+    # TODO: test_set_vial_label_fails_when_NOT_owned_by_current_user
+  end
+  
   def test_set_rack_label
     xhr :post, :set_rack_label, { :id => racks(:steve_bench_rack).id, :value => 'Stock > Bench'}, user_session(:steve)
     
@@ -479,25 +483,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
-  def test_update_parent_div
-    xhr :post, :update_parent_div,
-        {:id => flies(:fly_dad).id, :sex => "dad" },
-        user_session(:steve)
-    assert_response :success
-    
-    assert_select "input[type=hidden][value=7]"
-    
-    xhr :post, :update_parent_div,
-        {:id => flies(:fly_mom).id, :sex => "mom" },
-        user_session(:steve)
-    assert_response :success
-    
-    assert_select "input[type=hidden][value=6]"
-  end
-  
-  def test_update_parent_div_fails_when_NOT_logged_in
-    xhr :post, :update_parent_div, {:id => flies(:fly_mom).id, :sex => "mom" }
-    assert_redirected_to_login
+  def test_update_table_fails_when_NOT_owner_of_vial
+    # TODO: test_update_table_fails_when_NOT_owner_of_vial
   end
   
   def test_delete_vial
@@ -555,6 +542,55 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "li a[href=/bench/choose_scenario]", "Choose a scenario"
       assert_select "li a[href=/users/change_password]", "Change your password"
     end
+  end
+    
+  def test_list_vials
+    get :list_vials, {}, user_session(:steve)
+    
+    assert_response :success
+    assert_standard_layout
+    assert_select "h1", "Your Vials"
+    assert_select "div#list-vials" do
+      assert_select "h2", /Vials on the/
+      assert_select "span#rack_label_2_in_place_editor", "steve bench"
+      assert_select "ul#rack_2" do
+        assert_select "li", 5
+        assert_select "li#vial_1", "First vial"
+        assert_select "li#vial_1 img[src^=/images/star.png][title=Solves Problem #8]"
+        assert_select "li#vial_2", "Empty vial"
+        assert_select "li#vial_2 img", false
+        assert_select "li#vial_3", "Single fly vial"
+        assert_select "li#vial_3 img", false
+        assert_select "li#vial_4", "Multiple fly vial"
+        assert_select "li#vial_4 img", false
+        assert_select "li#vial_5", "Parents vial"
+        assert_select "li#vial_5 img[src^=/images/star.png][title=Solves Problem #1]"
+      end
+    end
+  end
+  
+  def test_list_vials_lists_only_current_users_vials
+    get :list_vials, {}, user_session(:jeremy)
+    
+    assert_response :success
+    assert_standard_layout
+    assert_select "h1", "Your Vials"
+    assert_select "div#list-vials" do
+      assert_select "h2", /Vials on the/
+      assert_select "span#rack_label_4_in_place_editor", "jeremy bench"
+      assert_select "ul#rack_4" do
+        assert_select "li", 2
+        assert_select "li#vial_6", "Destroyable vial"
+        assert_select "li#vial_6 img", false
+        assert_select "li#vial_7", "Another vial"
+        assert_select "li#vial_7 img[src^=/images/star.png]"
+      end
+    end
+  end
+  
+  def test_list_vials_fails_when_NOT_logged_in
+    get :list_vials
+    assert_redirected_to_login
   end
   
   def test_collect_mate_data
@@ -671,68 +707,57 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_show_mateable_flies_rejected_because_of_wrong_http_method
-    good_params = {
-        :vial_id => vials(:vial_one).id,
-        :which_vial => "1"
-      }
-      
-    xhr :get, :show_mateable_flies, good_params, user_session(:steve)
-    assert_response 401, "should reject any get"
-    
-    post :show_mateable_flies, good_params, user_session(:steve)
-    assert_response 401, "should reject normal post"
-    
-    get :show_mateable_flies, good_params, user_session(:steve)
-    assert_response 401, "should reject any get"
+    assert_xhr_post_only :show_mateable_flies,
+        { :vial_id => vials(:vial_one).id,
+          :which_vial => "1" },
+        user_session(:steve)
   end
-  
-  def test_list_vials
-    get :list_vials, {}, user_session(:steve)
-    
+
+  def test_update_parent_div_for_dad
+    xhr :post, :update_parent_div,
+        { :id => flies(:fly_dad).id, :sex => "dad" },
+        user_session(:steve)
+        
     assert_response :success
-    assert_standard_layout
-    assert_select "h1", "Your Vials"
-    assert_select "div#list-vials" do
-      assert_select "h2", /Vials on the/
-      assert_select "span#rack_label_2_in_place_editor", "steve bench"
-      assert_select "ul#rack_2" do
-        assert_select "li", 5
-        assert_select "li#vial_1", "First vial"
-        assert_select "li#vial_1 img[src^=/images/star.png][title=Solves Problem #8]"
-        assert_select "li#vial_2", "Empty vial"
-        assert_select "li#vial_2 img", false
-        assert_select "li#vial_3", "Single fly vial"
-        assert_select "li#vial_3 img", false
-        assert_select "li#vial_4", "Multiple fly vial"
-        assert_select "li#vial_4 img", false
-        assert_select "li#vial_5", "Parents vial"
-        assert_select "li#vial_5 img[src^=/images/star.png][title=Solves Problem #1]"
-      end
+    assert_select_rjs :replace_html, "dad" do
+      assert_select "input[type=hidden][value=7]"
+    end
+  end
+
+  def test_update_parent_div_for_mom
+    xhr :post, :update_parent_div,
+        { :id => flies(:fly_mom).id, :sex => "mom" },
+        user_session(:steve)
+        
+    assert_response :success
+    assert_select_rjs :replace_html, "mom" do
+      assert_select "input[type=hidden][value=6]"
     end
   end
   
-  def test_list_vials_lists_only_current_users_vials
-    get :list_vials, {}, user_session(:jeremy)
-    
-    assert_response :success
-    assert_standard_layout
-    assert_select "h1", "Your Vials"
-    assert_select "div#list-vials" do
-      assert_select "h2", /Vials on the/
-      assert_select "span#rack_label_4_in_place_editor", "jeremy bench"
-      assert_select "ul#rack_4" do
-        assert_select "li", 2
-        assert_select "li#vial_6", "Destroyable vial"
-        assert_select "li#vial_6 img", false
-        assert_select "li#vial_7", "Another vial"
-        assert_select "li#vial_7 img[src^=/images/star.png]"
-      end
-    end
-  end
-  
-  def test_list_vials_fails_when_NOT_logged_in
-    get :list_vials
+  def test_update_parent_div_fails_when_NOT_logged_in
+    xhr :post, :update_parent_div, {:id => flies(:fly_mom).id, :sex => "mom" }
     assert_redirected_to_login
+  end
+  
+  def test_update_parent_div_fails_when_NOT_owner_of_fly
+    xhr :post, :update_parent_div,
+        { :id => flies(:fly_mom).id, :sex => "mom" },
+        user_session(:randy)
+    assert_response 401, "should be denied access"    
+  end
+  
+  def test_update_parent_div_fails_fly_does_not_exist
+    xhr :post, :update_parent_div,
+        { :id => 665, :sex => "mom" },
+        user_session(:steve)
+    assert_response 401, "should be denied access"    
+  end
+  
+  def test_update_parent_div_restricted_to_xhr_post_only
+    assert_xhr_post_only :update_parent_div,
+        { :id => flies(:fly_dad).id, :sex => "dad" },
+        user_session(:steve)
   end
   
   def test_mate_flies_page

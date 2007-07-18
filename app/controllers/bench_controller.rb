@@ -180,8 +180,13 @@ class BenchController < ApplicationController
   end
   
   def update_parent_div
-    @fly = params[:id]
+    raise InvalidAccess unless request.xhr? && request.post?
+    @fly = Fly.find(params[:id])
+    raise InvalidAccess unless current_user.owns?(@fly)
     @sex = params[:sex]
+    render
+  rescue
+    render :nothing => true, :status => 401
   end
   
   def add_rack

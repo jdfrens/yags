@@ -76,6 +76,17 @@ class Test::Unit::TestCase
       assert_equal fly1_genotype.dad_allele, fly2_genotype.dad_allele, "dad allele for #{fly1_genotype.gene_number}"
     end
   end
+  
+  def assert_xhr_post_only(action, params, session)
+    xhr :get, action, params, session
+    assert_response 401, "should reject xhr get of action #{action.to_s}"
+    
+    post action, params, session
+    assert_response 401, "should reject normal post of action #{action.to_s}"
+    
+    get action, params, session
+    assert_response 401, "should reject normal get of action #{action.to_s}"
+  end
 
   # The container can be an array of flies or any general container that has
   # a flies method (like a Vial).

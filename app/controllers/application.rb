@@ -18,5 +18,8 @@ class ApplicationController < ActionController::Base
   end
         
   filter_parameter_logging "password"
-
+  
+  class InvalidAccess < RuntimeError 
+  end
+  
 end

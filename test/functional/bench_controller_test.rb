@@ -136,11 +136,15 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_move_vial_to_another_rack
     number_of_old_vials_in_rack = Rack.find(1).vials.size
-    post :move_vial_to_another_rack, { :id => 5, :rack_id => 1 }, user_session(:steve)
+    xhr :post, :move_vial_to_another_rack, { :id => 5, :rack_id => 1 }, user_session(:steve)
     assert_equal number_of_old_vials_in_rack + 1, Rack.find(1).vials.size
     assert_equal 1, Vial.find(5).rack_id
-    assert_response :redirect
-    assert_redirected_to :action => "view_vial", :id => 5
+    assert_response :success
+    assert_select_rjs :replace_html, "move_notice"
+    assert_select_rjs "move_notice" do
+      assert_select "img[src^=/images/pill_go.png]"
+      assert_select "p", "#{Vial.find(5).label} was moved to #{Rack.find(1).label}."
+    end
   end
   
   def test_move_vial_to_another_rack_fails_when_NOT_logged_in
@@ -169,7 +173,6 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "h1", /Vial #{vial.label}/
     assert_select "span#vial_label_3_in_place_editor", vial.label
     
-    assert_select "div#solution_notice", ""
     assert_select "div#vial-table" do
       assert_select "img[src^=/images/blank_table.png]"
     end
@@ -195,21 +198,18 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "p", "Parent information is unknown for field vials."
     end
     assert_select "div#vial_maintenance" do
+      assert_select "div#solution_notice", ""
       assert_select "form[action=/bench/set_as_solution]" do 
         assert_select "label", "Submit as a solution to Problem #"
         assert_select "select#solution_number" do
-          assert_select "option[value=]", ""
-          assert_select "option[value=1]", "1"
-          assert_select "option[value=2]", "2"
-          assert_select "option[value=3]", "3"
-          assert_select "option[value=4]", "4"
-          assert_select "option[value=5]", "5"
-          assert_select "option[value=6]", "6"
-          assert_select "option[value=7]", "7"
-          assert_select "option[value=8]", "8"
-          assert_select "option[value=9]", "9"
+          assert_select "option", 10
         end
         assert_select "input[type=hidden][value=3]"
+      end
+      assert_select "form" do
+        assert_select "select#rack_id" do
+          assert_select "option", 2
+        end
       end
     end
   end
@@ -224,9 +224,7 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_select "h1", /Vial #{vial.label}/
     assert_select "span#vial_label_4_in_place_editor", vial.label
-    
-    assert_select "div#solution_notice", ""
-    
+        
     assert_select "div#vial-table" do
       assert_select "img[src^=/images/blank_table.png]"
     end
@@ -252,21 +250,18 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "p", "Parent information is unknown for field vials."
     end
     assert_select "div#vial_maintenance" do
+    assert_select "div#solution_notice", ""
       assert_select "form[action=/bench/set_as_solution]" do 
         assert_select "label", "Submit as a solution to Problem #"
         assert_select "select#solution_number" do
-          assert_select "option[value=]", ""
-          assert_select "option[value=1]", "1"
-          assert_select "option[value=2]", "2"
-          assert_select "option[value=3]", "3"
-          assert_select "option[value=4]", "4"
-          assert_select "option[value=5]", "5"
-          assert_select "option[value=6]", "6"
-          assert_select "option[value=7]", "7"
-          assert_select "option[value=8]", "8"
-          assert_select "option[value=9]", "9"
+          assert_select "option", 10
         end
         assert_select "input[type=hidden][value=4]"
+      end
+      assert_select "form" do
+        assert_select "select#rack_id" do
+          assert_select "option", 2
+        end
       end
     end
   end
@@ -280,8 +275,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "h1", /Vial #{vial.label}/
-    assert_select "span#vial_label_1_in_place_editor", vial.label    
-    assert_select "div#solution_notice", "This is a solution to Problem #8."
+    assert_select "span#vial_label_1_in_place_editor", vial.label
     assert_select "div#vial-table" do
       assert_select "img[src^=/images/blank_table.png]"
     end
@@ -306,22 +300,20 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#parent-info table" do
       assert_select "p", "Parent information is unknown for field vials."
     end
-    assert_select "div#vial_maintenance" do
+    assert_select "div#vial_maintenance" do    
+      assert_select "div#solution_notice", "This is a solution to Problem #8."
       assert_select "form[action=/bench/set_as_solution]" do 
         assert_select "label", "Submit as a solution to Problem #"
         assert_select "select#solution_number" do
-          assert_select "option[value=]", ""
-          assert_select "option[value=1]", "1"
-          assert_select "option[value=2]", "2"
-          assert_select "option[value=3]", "3"
-          assert_select "option[value=4]", "4"
-          assert_select "option[value=5]", "5"
-          assert_select "option[value=6]", "6"
-          assert_select "option[value=7]", "7"
+          assert_select "option", 10
           assert_select "option[value=8][selected=selected]", "8"
-          assert_select "option[value=9]", "9"
         end
         assert_select "input[type=hidden][value=1]"
+      end
+      assert_select "form" do
+        assert_select "select#rack_id" do
+          assert_select "option", 2
+        end
       end
     end
   end

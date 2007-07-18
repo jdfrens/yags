@@ -29,6 +29,7 @@
 		<%= select_tag(:rack_id, options_for_select(@rack_labels_and_ids), :onchange => "onsubmit()" )%>
 		<div style="display: inline;"><%= image_tag '/images/green-load.gif', :id => 'spinner_for_move', :style => 'display: none;' %></div>
 	<% end %>
+	<div id="move_notice"></div>
   </div>
 </div>
 

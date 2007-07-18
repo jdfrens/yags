@@ -1,2 +1,2 @@
 page.replace_html 'solution_notice', :partial => 'solution_notice'
-page['solution_notice'].visual_effect :highlight, :startcolor => "#68F85D", :endcolor => "#FFFFFF", :duration => 2
+page['solution_notice'].visual_effect :highlight, :startcolor => "#68F85D", :endcolor => "#E5FFFF", :duration => 2

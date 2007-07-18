@@ -209,11 +209,13 @@ class BenchController < ApplicationController
       @rack_labels_and_ids << [rack.label, rack.id]
     end
     if request.post?
-      rack = Rack.find(params[:rack_id])
-      if current_user.owns?(@vial) and current_user.owns?(rack)
-        @vial.rack = rack
+      @rack = Rack.find(params[:rack_id])
+      if current_user.owns?(@vial) and current_user.owns?(@rack)
+        @vial.rack = @rack
         @vial.save!
-        redirect_to :action => "view_vial", :id => @vial.id
+        render :update do |page|
+          page.replace_html 'move_notice', :partial => 'move_vial_notice'
+        end
       else
         # flash[:notice] = "Action failed - bad parameters" # or something
         redirect_to :action => "list_vials"

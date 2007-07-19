@@ -25,6 +25,11 @@ class ScenarioTest < Test::Unit::TestCase
         :fixture_id => 2, :number_of_dependents => 1)
   end
   
+  def test_racks_are_dependently_destroyed
+    assert_dependents_destroyed(Scenario, Rack, :foreign_key => "scenario_id", 
+        :fixture_id => 4, :number_of_dependents => 4)
+  end
+  
   def test_has_renamed?
     assert scenarios(:another_scenario).has_renamed?(:"eye color")
     

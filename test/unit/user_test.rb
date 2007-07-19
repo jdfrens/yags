@@ -120,11 +120,20 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_current_racks
-    assert_equal [], users(:keith).current_racks
+    assert_raise Exception do users(:keith).current_racks end
     assert_equal ["jeremy bench","jeremy stock"], users(:jeremy).current_racks.map { |r| r.label }.sort
     assert_equal ["steve bench","steve stock"], users(:steve).current_racks.map { |r| r.label }.sort
-    assert_equal [], users(:mendel).current_racks
-    assert_equal [], users(:calvin).current_racks
+    assert_raise Exception do users(:mendel).current_racks end
+    assert_raise Exception do users(:calvin).current_racks end
+  end
+  
+  def test_current_vials
+    assert_raise Exception do users(:keith).current_vials end
+    assert_equal ["Another vial","Destroyable vial"], users(:jeremy).current_vials.map { |r| r.label }.sort
+    assert_equal ["Empty vial", "First vial", "Multiple fly vial", "Parents vial", "Single fly vial"],
+        users(:steve).current_vials.map { |r| r.label }.sort
+    assert_raise Exception do users(:mendel).current_vials end
+    assert_raise Exception do users(:calvin).current_vials end
   end
   
   def test_add_default_racks_for_current_scenario
@@ -134,8 +143,8 @@ class UserTest < Test::Unit::TestCase
     assert_equal 1, users(:randy).current_racks.select{ |r| r.label == "Trash" }.size
     assert users(:randy).current_racks.select{ |r| r.label == "Default" }.empty?
     
-    assert users(:keith).current_racks.select{ |r| r.label == "Trash" }.empty?
-    assert users(:keith).current_racks.select{ |r| r.label == "Default" }.empty?
+    assert users(:keith).racks.select{ |r| r.label == "Trash" }.empty?
+    assert users(:keith).racks.select{ |r| r.label == "Default" }.empty?
     users(:keith).current_scenario_id = 4
     users(:keith).add_default_racks_for_current_scenario
     assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Trash" }.size
@@ -191,8 +200,8 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_assert_set_scenario_to_adds_default_racks
-    assert users(:keith).current_racks.select{ |r| r.label == "Trash" }.empty?
-    assert users(:keith).current_racks.select{ |r| r.label == "Default" }.empty?
+    assert users(:keith).racks.select{ |r| r.label == "Trash" }.empty?
+    assert users(:keith).racks.select{ |r| r.label == "Default" }.empty?
     users(:keith).set_scenario_to(4)
     assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Trash" }.size
     assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Default" }.size

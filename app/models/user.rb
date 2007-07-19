@@ -72,15 +72,16 @@ class User < ActiveRecord::Base
   end
   
   def current_racks
-    # TODO throw an exception when there is no current_scenario
-    if current_scenario
-      self.racks.find_all_by_scenario_id(self.current_scenario.id)
-    else 
-      [] 
-    end
+    raise Exception.new("cannot get racks when user has no scenario") unless current_scenario
+    self.racks.find_all_by_scenario_id(current_scenario.id)
+    # TODO are we hiding the trash rack at this level or not here?
   end
   
-  # this method is only used by set_scenario_to below.  so, it could be a helper.
+  def current_vials
+    raise Exception.new("cannot get vials when user has no scenario") unless current_scenario
+    self.racks.find_all_by_scenario_id(current_scenario.id).map { |r| r.vials}.flatten
+  end
+  
   def add_default_racks_for_current_scenario
     if current_racks.empty?
       self.racks << Rack.new(:scenario_id => current_scenario.id, :label => "Default")

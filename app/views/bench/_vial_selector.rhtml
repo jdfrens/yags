@@ -15,7 +15,7 @@
           name="vial_id"
           onchange="onsubmit()">
         <option value="0" selected="selected"></option>
-        <% current_user.vials.each do |vial| -%>
+        <% current_user.current_vials.each do |vial| -%>
           <option value="<%= vial.id %>"><%= h(vial.label) %></option>
         <% end -%>
       </select>

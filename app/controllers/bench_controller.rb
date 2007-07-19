@@ -5,7 +5,7 @@ class BenchController < ApplicationController
   in_place_edit_for :vial, :label
   in_place_edit_for :rack, :label
   restrict_to :manage_bench
-  before_filter :redirect_students_without_scenarios 
+  before_filter :redirect_students_without_scenarios, :except => "choose_scenario"
   
   def index; end
   
@@ -248,7 +248,7 @@ class BenchController < ApplicationController
     end
     
     def redirect_students_without_scenarios
-      unless current_user.current_scenario || params[:action] == "choose_scenario"
+      unless current_user.current_scenario
         redirect_to :action => "choose_scenario"
         # flash[:notice] = "Please choose a scenario"
       end

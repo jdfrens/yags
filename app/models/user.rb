@@ -64,43 +64,35 @@ class User < ActiveRecord::Base
   end
   
   def has_authority_over(other_user)
-    if group.name == "admin" or self == other_user or students.include?(other_user)
-      true
-    else
-      false
-    end
+    group.name == "admin" || self == other_user || students.include?(other_user)
   end
   
   def current_racks
-    raise Exception.new("cannot get racks when user has no scenario") unless current_scenario
+    must_have_current_scenario
     self.racks.find_all_by_scenario_id(current_scenario.id)
     # TODO are we hiding the trash rack at this level or not here?
   end
   
   def current_vials
-    raise Exception.new("cannot get vials when user has no scenario") unless current_scenario
-    self.racks.find_all_by_scenario_id(current_scenario.id).map { |r| r.vials}.flatten
+    must_have_current_scenario
+    self.racks.find_all_by_scenario_id(current_scenario.id).map(&:vials).flatten
   end
   
   def add_default_racks_for_current_scenario
     if current_racks.empty?
-      self.racks << Rack.new(:scenario_id => current_scenario.id, :label => "Default")
+      add_rack_with_current_scenario("Default")
     end
-    if current_racks.select{ |r| r.label == "Trash" }.empty?
-      self.racks << Rack.new(:scenario_id => current_scenario.id, :label => "Trash")
-    end
+    add_rack_with_current_scenario("Trash")
   end
   
   def current_scenario
-    if self.group.name == "student" and self.basic_preference
+    if self.group.name == "student" && self.basic_preference
       basic_preference.scenario
     else
       nil
     end
   end
   
-  # hmm, the other method ^ doesn't have "_id" in it's name...
-  # and now this is like a helper too.
   def current_scenario_id=(new_id)
     if self.basic_preference
       if basic_preference.scenario_id != new_id
@@ -109,7 +101,7 @@ class User < ActiveRecord::Base
         basic_preference.save!
       end
     else
-      self.basic_preference = BasicPreference.create!(:user_id => self.id, :scenario_id => new_id)
+      self.create_basic_preference(:user_id => self.id, :scenario_id => new_id)
     end
   end
   
@@ -127,8 +119,9 @@ class User < ActiveRecord::Base
   def set_character_preferences(available_characters, chosen_characters)
     available_characters.each do |character|
       if chosen_characters.include?(character.to_s)
-        CharacterPreference.find(:all, :conditions => 
-            "user_id = #{self.id} AND hidden_character = \'#{character}\'").each { |p| p.destroy }
+        CharacterPreference.destroy_all(
+            ["user_id = :user_id AND hidden_character = :character",
+             { :user_id => self.id, :character => character.to_s }])
       else
         if !self.hidden_characters.include?(character)
           CharacterPreference.create!(:user_id => self.id, :hidden_character => character.to_s)
@@ -153,10 +146,24 @@ class User < ActiveRecord::Base
           used_up_alternates
       alternate_name = alternate_phenotypes[number_generator.random_number(alternate_phenotypes.size - 
           used_up_alternates.size)]
-      phenotype_alternates << PhenotypeAlternate.create!( :user_id => self.id,
+      phenotype_alternates.create!( :user_id => self.id,
           :scenario_id => scenario_id, :affected_character => renamed_character,
           :original_phenotype => phenotype.to_s, :renamed_phenotype => alternate_name.to_s )
       used_up_alternates << alternate_name
+    end
+  end
+  
+  private
+  
+  def must_have_current_scenario
+    raise Exception.new("must have a current scenario") unless current_scenario
+  end
+  
+  def add_rack_with_current_scenario(label)
+    if !current_racks.detect{ |r| r.label == label }
+      rack = self.racks.build(:label => label)
+      rack.scenario = current_scenario
+      rack.save!
     end
   end
   

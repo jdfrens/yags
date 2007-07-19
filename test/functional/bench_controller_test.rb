@@ -109,6 +109,25 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
+  def test_add_rack_protects_vials
+    post :add_rack, {
+      :rack => {
+        :label => "Been caught stealing!",
+        :vial_ids => [1, 2, 3, 4, 5, 6, 7]
+      }
+    }, user_session(:randy)
+    
+    assert_response :redirect
+    assert_redirected_to :action => "list_vials"
+
+    new_rack = Rack.find_by_label("Been caught stealing!")
+    assert_not_nil new_rack
+    assert_equal users(:randy), new_rack.owner
+    Vial.find([1, 2, 3, 4, 5, 6, 7]).each do |vial|      
+      assert_not_equal users(:randy), vial.owner, "should not own vial #{vial.id}"
+    end
+  end
+  
   def test_add_rack_page
     get :add_rack, {}, user_session(:steve)
     

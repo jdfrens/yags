@@ -18,18 +18,11 @@ class UsersController < ApplicationController
   end
   
   def add_student
-    @course_names_and_ids = []
-    courses = (current_user.instructor? ? current_user.instructs : Course.find(:all))
-    courses.each do |course|
-      @course_names_and_ids << [course.name, course.id]
-    end
-    if params[:user]
-      params[:user][:group] = Group.find_by_name('student')
-      params[:user][:course_id] = params[:course_id]
-      @user = User.new(params[:user])
-      @user.save!
+    if request.post?
+      @user = create_student(params[:user])
       redirect_to :action => "list_users"
     else
+      @courses = (current_user.instructor? ? current_user.instructs : Course.find(:all))
       render
     end
   rescue ActiveRecord::RecordInvalid
@@ -38,7 +31,7 @@ class UsersController < ApplicationController
   
   # this isn't very DRY.  maybe it could be combined with the above method somehow
   def add_instructor
-    if params[:user]
+    if request.post?
       params[:user][:group] = Group.find_by_name('instructor')
       @user = User.new(params[:user])
       @user.save!
@@ -114,6 +107,18 @@ class UsersController < ApplicationController
     else
       redirect_to :controller => "users", :action => "login"
     end
+  end
+  
+  #
+  # Helpers
+  #
+  private 
+  
+  def create_student(attributes)
+    user = User.new(attributes)
+    user.group = Group.find_by_name('student')
+    user.save!
+    user
   end
   
 end

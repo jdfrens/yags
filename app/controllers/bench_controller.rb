@@ -198,8 +198,9 @@ class BenchController < ApplicationController
   def add_rack
     if params[:rack]
       params[:rack][:user_id] = current_user.id
-      params[:rack][:scenario_id] = current_user.current_scenario.id
       @rack = Rack.new params[:rack]
+      @rack.owner = current_user
+      @rack.scenario = current_user.current_scenario
       @rack.save!
       redirect_to :action => "list_vials"
     else

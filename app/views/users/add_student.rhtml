@@ -30,7 +30,7 @@
     </p>
     <p>
         <label for="course_id"><strong>Course: </strong></label>
-        <%= select_tag :course_id, options_for_select(@course_names_and_ids) %>
+        <%= collection_select :user, :course_id, @courses, :id, :name %>
 	</p>
     
     <%= submit_tag "Add Student", :class => "submit" %>

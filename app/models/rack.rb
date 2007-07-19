@@ -8,4 +8,6 @@ class Rack < ActiveRecord::Base
   validates_presence_of :user_id
   validates_presence_of :scenario_id
   
+  attr_accessible :label
+  
 end

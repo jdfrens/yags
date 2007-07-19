@@ -165,6 +165,10 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_response 401 # access denied
   end
   
+  def test_batch_add_students
+    # TODO: Test and create this method!
+  end
+  
   def test_delete_user
     number_of_old_users = User.find(:all).size
     assert_not_nil User.find_by_username("steve")

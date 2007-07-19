@@ -1,6 +1,4 @@
 <div id="vial_maintenance">
-  <h2>Vial Maintenance</h2>
-  
   <div id="solution_notice">
     <% if @vial.solution && @vial.solution.number != nil %>
       <p>
@@ -12,15 +10,15 @@
   
   <div id="submit_as_solution">
 	<% remote_form_for :solution, @vial.solution, :url => {:action => :set_as_solution },
-               :before => visual_effect(:appear, 'spinner'),
-               :complete => visual_effect(:fade, 'spinner') do |form| -%>
+               :before => visual_effect(:appear, 'spinner_for_solution'),
+               :complete => visual_effect(:fade, 'spinner_for_solution') do |form| -%>
 	    <label for="solution_number"><strong>Submit as a solution to Problem # </strong></label>
 		<%= form.select('number', 1..9, {:include_blank => true}, :onchange => "onsubmit()" ) %>
-  		<div style="display: inline;"><%= image_tag '/images/green-load.gif', :id => 'spinner', :style => 'display: none;' %></div>
+  		<div style="display: inline;"><%= image_tag '/images/green-load.gif', :id => 'spinner_for_solution', :style => 'display: none;' %></div>
 		<%= form.hidden_field(:vial_id, :value => @vial.id) %>
 	<% end -%>
   </div>
-    
+  <br />  
   <div id="move_vial_to_new_rack">
 	<% remote_form_for :vial, :url => { :action => :move_vial_to_another_rack, :id => @vial.id },
                :before => visual_effect(:appear, 'spinner_for_move'),

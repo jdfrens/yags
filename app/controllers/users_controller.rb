@@ -50,6 +50,11 @@ class UsersController < ApplicationController
     render
   end
   
+  
+  def batch_add_students
+    # TODO: build this using Ruby's CSV to parse a field and batch add students
+  end
+  
   def delete_user
     if params[:id] and request.post? and 
         current_user.has_authority_over(User.find(params[:id]))

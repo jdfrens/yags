@@ -21,13 +21,13 @@ class Vial < ActiveRecord::Base
   def self.collect_from_field(vial_params, bit_generator = RandomBitGenerator.new, allele_frequencies = {})
     vial = Vial.new(vial_params)
     allele_frequencies[:sex] = 0.5 unless allele_frequencies[:sex]
-    # or should we vary the sex ratios along with everything else?
     vial.species.characters.each do |character|
       allele_frequencies[character] = 0.13 + (rand 37) / 100.0 unless allele_frequencies[character]
     end
     if vial.save
       vial.fill_from_field(bit_generator, allele_frequencies)
     end
+    vial.set_pedigree_number
     vial
   end
   
@@ -39,6 +39,7 @@ class Vial < ActiveRecord::Base
         vial.flies << vial.mom.mate_with(vial.dad, bit_generator)
       end
     end
+    vial.set_pedigree_number
     vial
   end
   
@@ -84,6 +85,19 @@ class Vial < ActiveRecord::Base
       @number_of_requested_flies = -1
     else
       @number_of_requested_flies = number.to_i
+    end
+  end
+  
+  def get_pedigree_number
+    self.set_pedigree_number if self.pedigree_number.nil?
+    self.pedigree_number
+  end
+  
+  def set_pedigree_number
+    if mom_id.nil? or dad_id.nil?
+      self.pedigree_number = 1
+    else
+      self.pedigree_number = mom.vial.get_pedigree_number + dad.vial.get_pedigree_number
     end
   end
   

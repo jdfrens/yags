@@ -26,11 +26,12 @@ class FullMigrationTest < ActionController::IntegrationTest
       end
       
       s.table :vials do |t|
-        t.column :id,           :integer
-        t.column :label,        :string
-        t.column :mom_id,       :integer
-        t.column :dad_id,       :integer
-        t.column :rack_id,      :integer
+        t.column :id,              :integer
+        t.column :label,           :string
+        t.column :mom_id,          :integer
+        t.column :dad_id,          :integer
+        t.column :rack_id,         :integer
+        t.column :pedigree_number, :integer
       end
       
       s.table :genotypes do |t|

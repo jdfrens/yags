@@ -45,7 +45,7 @@ class VialTest < Test::Unit::TestCase
     assert_equal Fly.find(6), vials(:destroyable_vial).mom
   end
   
-  def test_mom
+  def test_dad
     assert_nil vials(:vial_one).dad
     assert_equal Fly.find(7), vials(:destroyable_vial).dad
   end
@@ -53,6 +53,20 @@ class VialTest < Test::Unit::TestCase
   def test_has_parents?
     assert !vials(:vial_one).has_parents?
     assert  vials(:destroyable_vial).has_parents?
+  end
+  
+  def test_get_pedigree_number
+    assert_equal 1, vials(:vial_one).get_pedigree_number
+    assert_equal 1, vials(:vial_empty).get_pedigree_number
+    assert_equal 1, vials(:parents_vial).get_pedigree_number
+    assert_equal 2, vials(:destroyable_vial).get_pedigree_number
+  end
+  
+  def test_set_pedigree_number
+    vials(:vial_with_many_flies).set_pedigree_number
+    assert_equal 1, vials(:vial_with_many_flies).pedigree_number
+    vials(:destroyable_vial).set_pedigree_number
+    assert_equal 2, vials(:destroyable_vial).pedigree_number
   end
   
   def test_vial_has_many_flies
@@ -162,6 +176,7 @@ class VialTest < Test::Unit::TestCase
     assert_equal(([:red] * 4), phenotypes_of(new_vial, :"eye color"))
     assert_equal(([:straight] * 4), phenotypes_of(new_vial, :wings))
     assert_equal(([:hairy] * 4),phenotypes_of(new_vial, :legs))
+    assert_equal 1, new_vial.pedigree_number
   end
   
   def test_collect_nine_flies_from_field
@@ -180,6 +195,7 @@ class VialTest < Test::Unit::TestCase
     assert_equal_set(([:long] * 4 + [:short] * 5),
         new_vial.flies.map {|fly| fly.phenotype(:antenna)})
     assert_equal 2, new_vial.flies_of_type([:sex, :legs],[:female, :smooth]).size
+    assert_equal 1, new_vial.pedigree_number
   end
   
   def test_collecting_field_vial_with_allele_frequencies
@@ -238,6 +254,7 @@ class VialTest < Test::Unit::TestCase
     assert_equal(([:white] * 3), phenotypes_of(new_vial, :"eye color"))
     assert_equal(([:straight] * 3), phenotypes_of(new_vial, :wings))
     assert_equal(([:smooth] * 3), phenotypes_of(new_vial, :legs))
+    assert_equal 2, new_vial.pedigree_number
   end
   
   def test_making_seven_babies_and_a_vial
@@ -262,6 +279,7 @@ class VialTest < Test::Unit::TestCase
     assert_equal_set(([:"no seizure"] * 1 + [:"20% seizure"] * 4 + [:"40% seizure"] * 2),
         new_vial.flies.map {|fly| fly.phenotype(:seizure)})
     assert_equal 2, new_vial.flies_of_type([:wings, :legs],[:curly, :smooth]).size
+    assert_equal 2, new_vial.pedigree_number
   end
   
   def test_offspring_vial?

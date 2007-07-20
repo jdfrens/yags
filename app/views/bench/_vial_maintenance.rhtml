@@ -24,7 +24,7 @@
                :before => visual_effect(:appear, 'spinner_for_move'),
                :complete => visual_effect(:fade, 'spinner_for_move') do |form| %>
 		<label for="rack_id"><strong>Move this vial to</strong></label>
-		<%= form.collection_select(:rack_id, current_user.current_racks, :id, :label, {}, :onchange => "onsubmit()" )%>
+		<%= form.collection_select(:rack_id, current_user.current_racks_without_trash, :id, :label, {}, :onchange => "onsubmit()" )%>
 		<div style="display: inline;"><%= image_tag '/images/green-load.gif', :id => 'spinner_for_move', :style => 'display: none;' %></div>
 	<% end %>
 	<div id="move_notice"></div>

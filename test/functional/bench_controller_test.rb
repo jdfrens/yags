@@ -219,7 +219,7 @@ class BenchControllerTest < Test::Unit::TestCase
       end
       assert_select "form" do
         assert_select "select#vial_rack_id" do
-          assert_select "option", 3, "steve should have 3 racks for current scenario"
+          assert_select "option", 2, "steve should have 2 visible racks for current scenario"
         end
       end
     end
@@ -275,7 +275,7 @@ class BenchControllerTest < Test::Unit::TestCase
       end
       assert_select "form" do
         assert_select "select#vial_rack_id" do
-          assert_select "option", 3, "steve should have 3 racks for current scenario"
+          assert_select "option", 2, "steve should have 2 visible racks for current scenario"
         end
       end
     end
@@ -331,7 +331,7 @@ class BenchControllerTest < Test::Unit::TestCase
       end
       assert_select "form" do
         assert_select "select#vial_rack_id" do
-          assert_select "option", 3, "steve should have three racks for current scenario"
+          assert_select "option", 2, "steve should have two visible racks for current scenario"
         end
       end
     end
@@ -574,7 +574,7 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "li#vial_5", "Parents vial"
         assert_select "li#vial_5 img[src^=/images/star.png][title=Solves Problem #1]"
       end
-      assert_select "ul", 3, "steve should have 3 racks for current scenario"
+      assert_select "ul", 2, "steve should have 2 visible racks for current scenario"
     end
   end
   
@@ -617,10 +617,9 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "input#vial_number_of_requested_flies"
       assert_select "label", /^Store in the rack named:/
       assert_select "select#vial_rack_id" do
-        assert_select "option", 3, "steve should have three racks in current scenario"
+        assert_select "option", 2, "steve should have two visible racks in current scenario"
         assert_select "option", "steve stock"
         assert_select "option", "steve bench"
-        assert_select "option", "Trash"
       end
       assert_select "input[type=submit][value=Cross]"
     end

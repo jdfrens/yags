@@ -127,6 +127,14 @@ class UserTest < Test::Unit::TestCase
     assert_raise Exception do users(:calvin).current_racks end
   end
   
+  def test_current_racks_without_trash
+    assert_raise Exception do users(:keith).current_racks_without_trash end
+    assert_equal ["jeremy bench", "jeremy stock"], users(:jeremy).current_racks_without_trash.map{ |r| r.label }.sort
+    assert_equal ["steve bench","steve stock"], users(:steve).current_racks_without_trash.map { |r| r.label }.sort
+    assert_raise Exception do users(:mendel).current_racks_without_trash end
+    assert_raise Exception do users(:calvin).current_racks_without_trash end
+  end
+  
   def trash_rack
     assert_raise Exception do users(:keith).trash_rack end
     assert_equal racks(:steve_trash_rack), users(:steve).trash_rack

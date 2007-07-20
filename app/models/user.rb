@@ -73,6 +73,10 @@ class User < ActiveRecord::Base
     # TODO are we hiding the trash rack at this level or not here?
   end
   
+  def current_racks_without_trash
+    current_racks - [trash_rack]
+  end
+  
   def trash_rack
     trash = current_racks.select { |r| r.trash? }.first
     if trash.nil?

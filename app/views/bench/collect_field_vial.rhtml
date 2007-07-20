@@ -17,7 +17,7 @@
     </p>
 	<p>
 		<label for="rack_id"><strong>Rack:</strong> </label>
-		<%= collection_select(:vial, :rack_id, current_user.current_racks, :id, :label) %>
+		<%= collection_select(:vial, :rack_id, current_user.current_racks_without_trash, :id, :label) %>
 	</p>
     
     <%= submit_tag "Collect field vial", :class => "submit" %>

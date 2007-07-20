@@ -96,7 +96,6 @@ class BenchController < ApplicationController
   end
   
   def view_vial
-    # TODO make the Trash rack hidden
     if valid_vial_to_view?
       @vial = Vial.find_by_id(params[:id])
       @visible_characters = current_user.visible_characters
@@ -114,7 +113,7 @@ class BenchController < ApplicationController
   end
   
   def list_vials
-    @racks = current_user.current_racks
+    @racks = current_user.current_racks_without_trash
   end
   
   def destroy_vial

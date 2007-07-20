@@ -100,7 +100,6 @@ class BenchController < ApplicationController
     if valid_vial_to_view?
       @vial = Vial.find_by_id(params[:id])
       @visible_characters = current_user.visible_characters
-      @trash_rack = current_user.trash_rack.id
       @table = current_user.row && current_user.column
       if @table
         @row_character = current_user.row.intern
@@ -120,13 +119,10 @@ class BenchController < ApplicationController
   
   def destroy_vial
     if request.post?
-      @vial = Vial.find(params[:vial_id])
-      @rack = Rack.find(params[:rack_id])
-      if current_user.owns?(@vial) and current_user.owns?(@rack)
-        @vial.rack = @rack
+      @vial = Vial.find(params[:vial_id])    
+      if current_user.owns?(@vial)
+        @vial.rack = current_user.trash_rack
         @vial.save!
-      else
-        redirect_to :action => "list_vials" and return
       end
       redirect_to :action => "list_vials"
     end
@@ -173,20 +169,13 @@ class BenchController < ApplicationController
       @column_phenotypes = @vial.phenotypes_for_table(@column_character)
       @row_phenotypes = @vial.phenotypes_for_table(@row_character)
       @counts = @vial.counts_for_table(@row_character, @column_character)
-      if current_user.basic_preference.nil?
-        BasicPreference.create!(:user_id => current_user.id, :row => @row_character.to_s, :column => @column_character.to_s)
-      else
-        current_user.basic_preference.row = @row_character.to_s
-        current_user.basic_preference.column = @column_character.to_s
-        current_user.basic_preference.save!
-      end
+      current_user.set_table_preference @row_character.to_s, @column_character.to_s
     end
     redirect_to :action => "view_vial", :id => @vial unless request.xhr?
   end
   
   def add_rack
     if params[:rack]
-      params[:rack][:user_id] = current_user.id
       @rack = Rack.new params[:rack]
       @rack.owner = current_user
       @rack.scenario = current_user.current_scenario

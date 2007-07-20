@@ -135,6 +135,12 @@ class User < ActiveRecord::Base
     end
   end
   
+  def set_table_preference(row, column)
+    must_have_current_scenario
+    basic_preference.row, basic_preference.column = row, column
+    basic_preference.save!
+  end
+  
   def set_character_preferences(available_characters, chosen_characters)
     available_characters.each do |character|
       if chosen_characters.include?(character.to_s)
@@ -147,12 +153,9 @@ class User < ActiveRecord::Base
         end
       end
     end
-    if self.basic_preference
-      unless basic_preference.row && chosen_characters.include?(basic_preference.row) &&
-          basic_preference.column && chosen_characters.include?(basic_preference.column)
-        basic_preference.row, basic_preference.column = nil, nil
-        basic_preference.save!
-      end
+    unless row && chosen_characters.include?(row) &&
+        column && chosen_characters.include?(column)
+      set_table_preference nil, nil
     end
   end
   

@@ -230,6 +230,18 @@ class UserTest < Test::Unit::TestCase
     assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Default" }.size
   end
   
+  def test_set_table_preference
+    assert_equal "wings", users(:jeremy).basic_preference.row
+    assert_equal "eye color", users(:jeremy).basic_preference.column
+    users(:jeremy).set_table_preference "antenna", "wings"
+    assert_equal "antenna", users(:jeremy).basic_preference.row
+    assert_equal "wings", users(:jeremy).basic_preference.column
+    
+    assert_raise Exception do users(:keith).set_table_preference "antenna", "wings" end
+    assert_raise Exception do users(:calvin).set_table_preference "antenna", "wings" end
+    assert_raise Exception do users(:mendel).set_table_preference "antenna", "wings" end
+  end
+  
   def test_set_character_preferences
     steve = users(:steve)
     steve.set_character_preferences(Species.singleton.characters, ["sex", "antenna"])

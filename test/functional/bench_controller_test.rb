@@ -225,7 +225,7 @@ class BenchControllerTest < Test::Unit::TestCase
     end
     assert_select "div#move_to_trash" do
       assert_select "img[src^=/images/bin_empty.png]"
-      assert_select "a.negative[href^=/bench/destroy_vial?rack_id=8&amp;vial_id=3]", /Move to Trash/
+      assert_select "a.negative[href^=/bench/destroy_vial?vial_id=3]", /Move to Trash/
     end
   end
   
@@ -281,7 +281,7 @@ class BenchControllerTest < Test::Unit::TestCase
     end
     assert_select "div#move_to_trash" do
       assert_select "img[src^=/images/bin_empty.png]"
-      assert_select "a.negative[href^=/bench/destroy_vial?rack_id=8&amp;vial_id=4]", /Move to Trash/
+      assert_select "a.negative[href^=/bench/destroy_vial?vial_id=4]", /Move to Trash/
     end
   end
   
@@ -337,7 +337,7 @@ class BenchControllerTest < Test::Unit::TestCase
     end
     assert_select "div#move_to_trash" do
       assert_select "img[src^=/images/bin_empty.png]"
-      assert_select "a.negative[href^=/bench/destroy_vial?rack_id=8&amp;vial_id=1]", /Move to Trash/
+      assert_select "a.negative[href^=/bench/destroy_vial?vial_id=1]", /Move to Trash/
     end
   end
   

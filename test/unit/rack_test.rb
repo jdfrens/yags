@@ -11,6 +11,11 @@ class RackTest < Test::Unit::TestCase
     assert  rack.errors.invalid?(:label)
     assert  rack.errors.invalid?(:user_id)
   end
+  
+  def test_trash?
+    assert racks(:steve_trash_rack).trash?
+    assert !racks(:steve_stock_rack).trash?
+  end
 
   def test_rack_has_many_vials
     assert_equal [vials(:vial_one), vials(:vial_empty), vials(:vial_with_a_fly),

@@ -100,19 +100,11 @@ class BenchController < ApplicationController
     if valid_vial_to_view?
       @vial = Vial.find_by_id(params[:id])
       @visible_characters = current_user.visible_characters
-      @rack_labels_and_ids = []
-      current_user.current_racks.each do |rack|
-        @rack_labels_and_ids << [rack.label, rack.id]
-      end
-      @trash_rack = []
-      current_user.current_racks.each do |r|
-        @trash_rack << [r.id] if r.label == "Trash"
-      end
-      # TODO: no assignments in condition!!!!!!!
-      if @table = (current_user.basic_preference && 
-            current_user.basic_preference.row && current_user.basic_preference.column)
-        @row_character = current_user.basic_preference.row.intern
-        @column_character = current_user.basic_preference.column.intern
+      @trash_rack = current_user.trash_rack.id
+      @table = current_user.row && current_user.column
+      if @table
+        @row_character = current_user.row.intern
+        @column_character = current_user.column.intern
         @row_phenotypes = @vial.phenotypes_for_table(@row_character)
         @column_phenotypes = @vial.phenotypes_for_table(@column_character)
         @counts = @vial.counts_for_table(@row_character, @column_character)
@@ -169,7 +161,7 @@ class BenchController < ApplicationController
     else
       render :nothing => true
     end
-    rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid
     render
   end
   
@@ -208,10 +200,6 @@ class BenchController < ApplicationController
   end
   
   def move_vial_to_another_rack
-    @rack_labels_and_ids = []
-    current_user.current_racks.each do |rack|
-      @rack_labels_and_ids << [rack.label, rack.id]
-    end
     if request.post?
       @vial = Vial.find(params[:id])
       @rack = Rack.find(params[:vial][:rack_id])
@@ -225,6 +213,8 @@ class BenchController < ApplicationController
         # flash[:notice] = "Action failed - bad parameters" # or something
         redirect_to :action => "list_vials"
       end
+    else
+      render :nothing => true
     end
   end
 

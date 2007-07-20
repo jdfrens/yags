@@ -127,6 +127,13 @@ class UserTest < Test::Unit::TestCase
     assert_raise Exception do users(:calvin).current_racks end
   end
   
+  def trash_rack
+    assert_raise Exception do users(:keith).trash_rack end
+    assert_equal racks(:steve_trash_rack), users(:steve).trash_rack
+    assert_raise Exception do users(:mendel).trash_rack end
+    assert_raise Exception do users(:calvin).trash_rack end
+  end
+  
   def test_current_vials
     assert_raise Exception do users(:keith).current_vials end
     assert_equal ["Another vial","Destroyable vial"], users(:jeremy).current_vials.map { |r| r.label }.sort
@@ -149,6 +156,16 @@ class UserTest < Test::Unit::TestCase
     users(:keith).add_default_racks_for_current_scenario
     assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Trash" }.size
     assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Default" }.size
+  end
+  
+  def test_row
+    assert_equal "wings", users(:jeremy).row
+    assert_nil users(:steve).row
+  end
+  
+  def test_column
+    assert_equal "eye color", users(:jeremy).column
+    assert_nil users(:steve).column
   end
   
   def test_current_scenario

@@ -73,6 +73,15 @@ class User < ActiveRecord::Base
     # TODO are we hiding the trash rack at this level or not here?
   end
   
+  def trash_rack
+    trash = current_racks.select { |r| r.trash? }.first
+    if trash.nil?
+      self.add_default_racks_for_current_scenario
+      trash = current_racks.select { |r| r.trash? }.first
+    end
+    trash
+  end
+  
   def current_vials
     must_have_current_scenario
     self.racks.find_all_by_scenario_id(current_scenario.id).map(&:vials).flatten
@@ -83,6 +92,14 @@ class User < ActiveRecord::Base
       add_rack_with_current_scenario("Default")
     end
     add_rack_with_current_scenario("Trash")
+  end
+  
+  def row
+    basic_preference.row
+  end
+  
+  def column
+    basic_preference.column
   end
   
   def current_scenario

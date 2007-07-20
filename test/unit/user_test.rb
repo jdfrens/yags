@@ -180,9 +180,9 @@ class UserTest < Test::Unit::TestCase
     assert_equal :turquoise, users(:steve).vials.first.renamed_phenotype(:"eye color", :red)
     assert_equal :beige, users(:steve).vials.first.renamed_phenotype(:"eye color", :white)
     assert_equal ["beige", "turquoise"], users(:steve).phenotype_alternates.map { |pa| pa.renamed_phenotype }
-    users(:steve).set_scenario_to(1)
+    users(:steve).set_scenario_to(4)
     users(:steve).reload
-    assert_equal Scenario.find(1), users(:steve).current_scenario
+    assert_equal Scenario.find(4), users(:steve).current_scenario
     assert_equal :red, users(:steve).vials.first.renamed_phenotype(:"eye color", :red)
     assert_equal :white, users(:steve).vials.first.renamed_phenotype(:"eye color", :white)
     users(:steve).set_scenario_to(2, CookedNumberGenerator.new([0,4]))
@@ -199,7 +199,13 @@ class UserTest < Test::Unit::TestCase
     assert_equal ["blue", "green"], users(:steve).phenotype_alternates.map { |pa| pa.renamed_phenotype }
   end
   
-  def test_assert_set_scenario_to_adds_default_racks
+  def test_set_scenario_to_validates_scenario_id
+    users(:steve).set_scenario_to(1)
+    users(:steve).reload
+    assert_equal Scenario.find(4), users(:steve).current_scenario
+  end
+  
+  def test_set_scenario_to_adds_default_racks
     assert users(:keith).racks.select{ |r| r.label == "Trash" }.empty?
     assert users(:keith).racks.select{ |r| r.label == "Default" }.empty?
     users(:keith).set_scenario_to(4)

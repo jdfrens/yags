@@ -19,8 +19,9 @@ class BenchControllerTest < Test::Unit::TestCase
     post :collect_field_vial, {
       :vial => {
         :label => "four fly vial",
-        :number_of_requested_flies => "4" }
-    },
+        :number_of_requested_flies => "4",
+        :rack_id => "2"
+      } },
     user_session(:steve)
     
     new_vial = Vial.find_by_label("four fly vial")
@@ -38,7 +39,8 @@ class BenchControllerTest < Test::Unit::TestCase
     post :collect_field_vial, {
       :vial => {
         :label => "nine fly vial",
-        :number_of_requested_flies => "9"
+        :number_of_requested_flies => "9",
+        :rack_id => "2"
       } },
     user_session(:steve)
     
@@ -85,6 +87,7 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "label", "Label:"
       assert_select "input#vial_label"
       assert_select "label", "Number of flies:"
+      assert_select "select#vial_rack_id"
       assert_select "input#vial_number_of_requested_flies"
     end
   end
@@ -1026,7 +1029,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "form" do
-      assert_select "select#scenario_id" do
+      assert_select "select#basic_preference_scenario_id" do
         assert_select "option[value=1]", "forgetful instructor"
         assert_select "option", 3
       end
@@ -1037,7 +1040,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_equal scenarios(:everything_included), users(:steve).current_scenario
     assert_equal 0, users(:steve).phenotype_alternates.size
     
-    post :choose_scenario, { :scenario_id => 2 }, user_session(:steve)
+    post :choose_scenario, { :basic_preference => { :scenario_id => 2 } }, user_session(:steve)
     
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
@@ -1054,7 +1057,7 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_choose_scenario_without_having_one_should_work
     assert_nil users(:keith).current_scenario
     assert_equal 0, users(:keith).phenotype_alternates.size
-    post :choose_scenario, { :scenario_id => 1 }, user_session(:keith)
+    post :choose_scenario, { :basic_preference => { :scenario_id => 1 } }, user_session(:keith)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:keith).reload
@@ -1064,7 +1067,7 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_choose_scenario_fails_when_NOT_scenario_for_course
     assert_nil users(:keith).current_scenario
-    post :choose_scenario, { :scenario_id => 3 }, user_session(:keith)
+    post :choose_scenario, { :basic_preference => { :scenario_id => 3 } }, user_session(:keith)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:keith).reload
@@ -1085,7 +1088,7 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_choose_scenario_fails_when_NOT_valid_scenario_id
     old_scenario = users(:steve).current_scenario
-    post :choose_scenario, { :scenario_id => 99999999999 }, user_session(:steve)
+    post :choose_scenario, { :basic_preference => { :scenario_id => 99999999999 } }, user_session(:steve)
     assert_response :redirect
     assert_redirected_to :controller => 'bench', :action => 'index' # or something
     assert_equal old_scenario, users(:steve).current_scenario

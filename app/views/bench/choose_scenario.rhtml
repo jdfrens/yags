@@ -10,7 +10,7 @@
 <% form_tag :url => {:action => :index} do %>
     <p>
 		<label for="scenario_id"><strong>Scenario:</strong> </label>
-		<%= select_tag(:scenario_id, options_for_select(@scenario_titles_and_ids) )%>
+		<%= collection_select(:basic_preference, :scenario_id, current_user.enrolled_in.scenarios, :id, :title) %>
 	</p>
   <%= submit_tag "Update", :class => "submit" -%>
 <% end -%>

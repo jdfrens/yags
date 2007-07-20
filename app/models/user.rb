@@ -106,12 +106,14 @@ class User < ActiveRecord::Base
   end
   
   def set_scenario_to(scenario_id, number_generator = RandomNumberGenerator.new)
-    self.current_scenario_id = scenario_id
-    self.reload
-    self.add_default_racks_for_current_scenario
-    if scenario_id and self.phenotype_alternates.select { |pa| pa.scenario_id == scenario_id }.size == 0
-      Scenario.find(scenario_id).renamed_characters.map { |rc| rc.renamed_character }.each do |renamed_character|
-        make_phenotype_alternates scenario_id, renamed_character, number_generator
+    if enrolled_in.scenario_ids.include? scenario_id
+      self.current_scenario_id = scenario_id
+      self.reload
+      self.add_default_racks_for_current_scenario
+      if scenario_id and self.phenotype_alternates.select { |pa| pa.scenario_id == scenario_id }.size == 0
+        Scenario.find(scenario_id).renamed_characters.map { |rc| rc.renamed_character }.each do |renamed_character|
+          make_phenotype_alternates scenario_id, renamed_character, number_generator
+        end
       end
     end
   end

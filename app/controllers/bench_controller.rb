@@ -28,29 +28,22 @@ class BenchController < ApplicationController
     else
       @current_scenario_title = "None Selected"
     end
-    @scenario_titles_and_ids = []
-    current_user.enrolled_in.scenarios.each do |scenario|
-      @scenario_titles_and_ids << [scenario.title, scenario.id]
-    end
     if request.post?
-      if @scenario_titles_and_ids.map { |d| d[1] }.include? params[:scenario_id].to_i
-        current_user.set_scenario_to params[:scenario_id].to_i
-      end
+      current_user.set_scenario_to params[:basic_preference][:scenario_id].to_i
       redirect_to :action => "index"
     end
   end
   
   def collect_field_vial
-    if (params[:vial])
-      # TODO: why isn't this a dropdown in the form?
-      params[:vial][:rack_id] = current_user.current_racks.first.id
+    if params[:vial]
+      # TODO validate that the rack is owned by current user either here or in the model
       @vial = Vial.collect_from_field(params[:vial])
       @vial.save!
       redirect_to :action => "view_vial", :id => @vial.id
     else
       render
     end
-    rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid
     render
   end
   

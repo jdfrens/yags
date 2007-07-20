@@ -27,7 +27,7 @@ class ScenarioTest < Test::Unit::TestCase
   
   def test_racks_are_dependently_destroyed
     assert_dependents_destroyed(Scenario, Rack, :foreign_key => "scenario_id", 
-        :fixture_id => 4, :number_of_dependents => 4)
+        :fixture_id => 4, :number_of_dependents => 5)
   end
   
   def test_has_renamed?

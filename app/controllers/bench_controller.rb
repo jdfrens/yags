@@ -104,6 +104,10 @@ class BenchController < ApplicationController
       current_user.current_racks.each do |rack|
         @rack_labels_and_ids << [rack.label, rack.id]
       end
+      @trash_rack = []
+      current_user.current_racks.each do |r|
+        @trash_rack << [r.id] if r.label == "Trash"
+      end
       # TODO: no assignments in condition!!!!!!!
       if @table = (current_user.basic_preference && 
             current_user.basic_preference.row && current_user.basic_preference.column)
@@ -123,17 +127,17 @@ class BenchController < ApplicationController
   end
   
   def destroy_vial
-    if params[:id] && request.post?
-      vial = Vial.find(params[:id])
-      # TODO move vial to the Trash rack instead of destroying it.
-      if current_user.owns?(vial)
-        vial.destroy
-        flash[:notice] = "#{vial.label} has been deleted"
+    if request.post?
+      @vial = Vial.find(params[:vial_id])
+      @rack = Rack.find(params[:rack_id])
+      if current_user.owns?(@vial) and current_user.owns?(@rack)
+        @vial.rack = @rack
+        @vial.save!
       else
-        flash[:notice] = "You do not own that vial."
+        redirect_to :action => "list_vials" and return
       end
+      redirect_to :action => "list_vials"
     end
-    redirect_to :action => :list_vials
   end
   
   def set_vial_label
@@ -204,13 +208,13 @@ class BenchController < ApplicationController
   end
   
   def move_vial_to_another_rack
-    @vial = Vial.find(params[:id])
     @rack_labels_and_ids = []
     current_user.current_racks.each do |rack|
       @rack_labels_and_ids << [rack.label, rack.id]
     end
     if request.post?
-      @rack = Rack.find(params[:rack_id])
+      @vial = Vial.find(params[:id])
+      @rack = Rack.find(params[:vial][:rack_id])
       if current_user.owns?(@vial) and current_user.owns?(@rack)
         @vial.rack = @rack
         @vial.save!

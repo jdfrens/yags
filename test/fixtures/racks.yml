@@ -34,3 +34,8 @@ steve_rack_for_party_day:
   user_id: 1
   scenario_id: 2
   label: "steve rack for party day"
+steve_trash_rack:
+  id: 8
+  user_id: 1
+  scenario_id: 4
+  label: "Trash"

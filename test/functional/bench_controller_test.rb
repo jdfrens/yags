@@ -145,21 +145,22 @@ class BenchControllerTest < Test::Unit::TestCase
     end
   end
   
-  def test_move_vial_to_another_rack_page
-    get :move_vial_to_another_rack, { :id => 5 }, user_session(:steve)
-    assert_response :success
-    assert_standard_layout
-    
-    assert_select "form" do
-      assert_select "select#rack_id" do
-        assert_select "option", 2, "steve should have 2 racks for current scenario"
-      end
-    end
-  end
+  # TODO: Remove this
+#  def test_move_vial_to_another_rack_page
+#    get :move_vial_to_another_rack, { :id => 5 }, user_session(:steve)
+#    assert_response :success
+#    assert_standard_layout
+#    
+#    assert_select "form" do
+#      assert_select "select#rack_id" do
+#        assert_select "option", 3, "steve should have 3 racks for current scenario"
+#      end
+#    end
+#  end
   
   def test_move_vial_to_another_rack
     number_of_old_vials_in_rack = Rack.find(1).vials.size
-    xhr :post, :move_vial_to_another_rack, { :id => 5, :rack_id => 1 }, user_session(:steve)
+    xhr :post, :move_vial_to_another_rack, { :id => 5, :vial => {:rack_id => 1 } }, user_session(:steve)
     assert_equal number_of_old_vials_in_rack + 1, Rack.find(1).vials.size
     assert_equal 1, Vial.find(5).rack_id
     assert_response :success
@@ -171,17 +172,17 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_move_vial_to_another_rack_fails_when_NOT_logged_in
-    post :move_vial_to_another_rack, { :id => 4, :rack_id => 1 }
+    post :move_vial_to_another_rack, { :id => 4, :vial => {:rack_id => 1 } }
     assert_redirected_to_login
   end
   
   def test_move_vial_to_another_rack_fails_when_NOT_owner_of_vial
-    post :move_vial_to_another_rack, { :id => 7, :rack_id => 1 }, user_session(:steve)
+    post :move_vial_to_another_rack, { :id => 7, :vial => {:rack_id => 1 } }, user_session(:steve)
     assert_redirected_to :action => "list_vials"
   end
   
   def test_move_vial_to_another_rack_fails_when_NOT_owner_of_rack
-    post :move_vial_to_another_rack, { :id => 3, :rack_id => 5 }, user_session(:steve)
+    post :move_vial_to_another_rack, { :id => 3, :vial => {:rack_id => 5 } }, user_session(:steve)
     assert_redirected_to :action => "list_vials"
   end
   
@@ -230,10 +231,14 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "input[type=hidden][value=3]"
       end
       assert_select "form" do
-        assert_select "select#rack_id" do
-          assert_select "option", 2, "steve should have 2 racks for current scenario"
+        assert_select "select#vial_rack_id" do
+          assert_select "option", 3, "steve should have 3 racks for current scenario"
         end
       end
+    end
+    assert_select "div#move_to_trash" do
+      assert_select "img[src^=/images/bin_empty.png]"
+      assert_select "a.negative", /Move to Trash/
     end
   end
   
@@ -282,10 +287,14 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "input[type=hidden][value=4]"
       end
       assert_select "form" do
-        assert_select "select#rack_id" do
-          assert_select "option", 2, "steve should have 2 racks for current scenario"
+        assert_select "select#vial_rack_id" do
+          assert_select "option", 3, "steve should have 3 racks for current scenario"
         end
       end
+    end
+    assert_select "div#move_to_trash" do
+      assert_select "img[src^=/images/bin_empty.png]"
+      assert_select "a.negative", /Move to Trash/
     end
   end
   
@@ -334,10 +343,14 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "input[type=hidden][value=1]"
       end
       assert_select "form" do
-        assert_select "select#rack_id" do
-          assert_select "option", 2, "steve should have two racks for current scenario"
+        assert_select "select#vial_rack_id" do
+          assert_select "option", 3, "steve should have three racks for current scenario"
         end
       end
+    end
+    assert_select "div#move_to_trash" do
+      assert_select "img[src^=/images/bin_empty.png]"
+      assert_select "a.negative", /Move to Trash/
     end
   end
   
@@ -503,33 +516,26 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_delete_vial
-    number_of_old_vials =  Vial.count
+    number_of_vials_in_trash = Rack.find(racks(:steve_trash_rack)).vials.size
     
-    post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:steve)
+    post :destroy_vial, { :vial_id => vials(:vial_one).id, :rack_id => racks(:steve_trash_rack).id }, user_session(:steve)
+    assert_redirected_to :action => 'list_vials'
     
-    assert_response :redirect
-    assert_redirected_to :action => "list_vials"
-    assert !flash.empty?
-    assert_equal "First vial has been deleted",  flash[:notice]
-    
-    assert_nil Vial.find_by_id(vials(:vial_one).id)
-    assert_equal number_of_old_vials - 1, Vial.count
+    assert_equal number_of_vials_in_trash + 1, Rack.find(racks(:steve_trash_rack)).vials.size
+    assert_equal racks(:steve_trash_rack).id, Vial.find(vials(:vial_one)).rack_id
   end
   
   def test_delete_vial_fails_when_NOT_logged_in
-    post :destroy_vial, { :id => vials(:vial_one).id }
-    assert_not_nil Vial.find_by_id(vials(:vial_one).id)
-    assert flash.empty?
+    post :destroy_vial, { :vial_id => vials(:vial_one).id, :rack_id => racks(:steve_trash_rack).id }
+
     assert_redirected_to_login
   end
   
   def test_delete_vial_fails_when_deleted_by_non_owner
     assert_equal users(:steve), vials(:vial_one).owner
     
-    post :destroy_vial, { :id => vials(:vial_one).id }, user_session(:jeremy)
-    
-    assert_not_nil Vial.find_by_id(vials(:vial_one).id)
-    assert_equal "You do not own that vial.", flash[:notice]
+    post :destroy_vial, { :vial_id => vials(:vial_one).id, :rack_id => racks(:steve_trash_rack).id }, user_session(:jeremy)
+    assert_redirected_to :action => "list_vials" 
   end
   
   def test_index_page
@@ -581,7 +587,7 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "li#vial_5", "Parents vial"
         assert_select "li#vial_5 img[src^=/images/star.png][title=Solves Problem #1]"
       end
-      assert_select "ul", 2, "steve should have 2 racks for current scenario"
+      assert_select "ul", 3, "steve should have 3 racks for current scenario"
     end
   end
   
@@ -624,9 +630,10 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "input#vial_number_of_requested_flies"
       assert_select "label", /^Store in the rack named:/
       assert_select "select#vial_rack_id" do
-        assert_select "option", 2, "steve should have two racks in current scenario"
+        assert_select "option", 3, "steve should have three racks in current scenario"
         assert_select "option", "steve stock"
         assert_select "option", "steve bench"
+        assert_select "option", "Trash"
       end
       assert_select "input[type=submit][value=Cross]"
     end

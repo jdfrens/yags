@@ -422,6 +422,17 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
+  def test_set_rack_label_to_trash
+    xhr :post, :set_rack_label, { :id => racks(:steve_bench_rack).id, :value => 'Trash'}, user_session(:steve)
+    
+    assert_response :success
+    assert_equal 'steve bench', @response.body
+    
+    rack = racks(:steve_bench_rack)
+    rack.reload
+    assert_equal 'steve bench', rack.label
+  end
+  
   def test_set_as_solution
     vial = vials(:vial_with_many_flies)
     
@@ -505,11 +516,22 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_delete_vial
     number_of_vials_in_trash = Rack.find(racks(:steve_trash_rack)).vials.size
     
-    post :destroy_vial, { :vial_id => vials(:vial_one).id, :rack_id => racks(:steve_trash_rack).id }, user_session(:steve)
+    post :destroy_vial, { :vial_id => vials(:vial_with_a_fly).id, :rack_id => racks(:steve_trash_rack).id }, user_session(:steve)
     assert_redirected_to :action => 'list_vials'
     
     assert_equal number_of_vials_in_trash + 1, Rack.find(racks(:steve_trash_rack)).vials.size
-    assert_equal racks(:steve_trash_rack).id, Vial.find(vials(:vial_one)).rack_id
+    assert_equal racks(:steve_trash_rack).id, Vial.find(vials(:vial_with_a_fly)).rack_id
+  end
+  
+  def test_delete_solution_vial_fails
+    number_of_vials_in_trash = Rack.find(racks(:steve_trash_rack)).vials.size
+    
+    post :destroy_vial, { :vial_id => vials(:vial_one).id, :rack_id => racks(:steve_trash_rack).id }, user_session(:steve)
+    assert_redirected_to :action => 'list_vials'
+    
+    assert_equal "#{vials(:vial_one).label} cannot be moved to the Trash because it is a solution to problem #{vials(:vial_one).solution.number}.", flash[:notice]
+    assert_equal number_of_vials_in_trash, Rack.find(racks(:steve_trash_rack)).vials.size
+    assert_not_equal racks(:steve_trash_rack).id, Vial.find(vials(:vial_one)).rack_id
   end
   
   def test_delete_vial_fails_when_NOT_logged_in

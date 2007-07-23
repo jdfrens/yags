@@ -1,0 +1,8 @@
+<div id="move_to_trash" class="buttons">
+	<%= link_to image_tag('bin_empty.png') + "Move to Trash",
+            { :action => :destroy_vial, :vial_id => @vial.id },
+            {:confirm => "Are you sure you want to move this vial to the trash?", 
+			:class => "negative", 
+			:method => :post }
+		%>
+</div>

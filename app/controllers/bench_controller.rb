@@ -119,9 +119,11 @@ class BenchController < ApplicationController
   def destroy_vial
     if request.post?
       @vial = Vial.find(params[:vial_id])    
-      if current_user.owns?(@vial)
+      if current_user.owns?(@vial) && @vial.solution == nil
         @vial.rack = current_user.trash_rack
         @vial.save!
+      elsif @vial.solution && @vial.solution.number != nil
+        flash[:notice] = "#{@vial.label} cannot be moved to the Trash because it is a solution to problem #{@vial.solution.number}."
       end
       redirect_to :action => "list_vials"
     end
@@ -138,7 +140,8 @@ class BenchController < ApplicationController
   def set_rack_label
     @rack = Rack.find(params[:id])
     previous_label = @rack.label
-    @rack.label = params[:value]
+    # It would seem best to use a regex rather than 'Trash'
+    @rack.label = params[:value] if params[:value] != "Trash"
     @rack.label = previous_label unless @rack.save
     render :text => h(@rack.label)
   end

@@ -55,20 +55,6 @@ class VialTest < Test::Unit::TestCase
     assert  vials(:destroyable_vial).has_parents?
   end
   
-  def test_get_pedigree_number
-    assert_equal 1, vials(:vial_one).get_pedigree_number
-    assert_equal 1, vials(:vial_empty).get_pedigree_number
-    assert_equal 1, vials(:parents_vial).get_pedigree_number
-    assert_equal 2, vials(:destroyable_vial).get_pedigree_number
-  end
-  
-  def test_set_pedigree_number
-    vials(:vial_with_many_flies).set_pedigree_number
-    assert_equal 1, vials(:vial_with_many_flies).pedigree_number
-    vials(:destroyable_vial).set_pedigree_number
-    assert_equal 2, vials(:destroyable_vial).pedigree_number
-  end
-  
   def test_vial_has_many_flies
     assert_equal 0, vials(:vial_empty).flies.size, "should be no flies"
     assert_equal [flies(:fly_01)].to_set, vials(:vial_with_a_fly).flies.to_set

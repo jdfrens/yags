@@ -27,7 +27,6 @@ class Vial < ActiveRecord::Base
     if vial.save
       vial.fill_from_field(bit_generator, allele_frequencies)
     end
-    vial.set_pedigree_number
     vial
   end
   
@@ -39,8 +38,15 @@ class Vial < ActiveRecord::Base
         vial.flies << vial.mom.mate_with(vial.dad, bit_generator)
       end
     end
-    vial.set_pedigree_number
     vial
+  end
+  
+  def before_create
+    if mom.nil? or dad.nil?
+      self.pedigree_number = 1
+    else
+      self.pedigree_number = mom.vial.pedigree_number + dad.vial.pedigree_number
+    end
   end
   
   def offspring_vial=(flag)
@@ -85,19 +91,6 @@ class Vial < ActiveRecord::Base
       @number_of_requested_flies = -1
     else
       @number_of_requested_flies = number.to_i
-    end
-  end
-  
-  def get_pedigree_number
-    self.set_pedigree_number if self.pedigree_number.nil?
-    self.pedigree_number
-  end
-  
-  def set_pedigree_number
-    if mom.nil? or dad.nil?
-      self.pedigree_number = 1
-    else
-      self.pedigree_number = mom.vial.get_pedigree_number + dad.vial.get_pedigree_number
     end
   end
   

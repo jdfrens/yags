@@ -4,7 +4,7 @@ class AddPedigreeNumberToVials < ActiveRecord::Migration
     
     Vial.reset_column_information
     Vial.find(:all).each do |vial|
-      vial.get_pedigree_number
+      vial.pedigree_number = 1
       vial.save!
     end
   end

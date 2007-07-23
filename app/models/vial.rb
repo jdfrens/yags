@@ -94,7 +94,7 @@ class Vial < ActiveRecord::Base
   end
   
   def set_pedigree_number
-    if mom_id.nil? or dad_id.nil?
+    if mom.nil? or dad.nil?
       self.pedigree_number = 1
     else
       self.pedigree_number = mom.vial.get_pedigree_number + dad.vial.get_pedigree_number

@@ -35,7 +35,6 @@ class User < ActiveRecord::Base
   end
   
   def visible?(character)
-    # this seems like not the best way to do
     visible_characters.include? character
   end
   
@@ -70,7 +69,6 @@ class User < ActiveRecord::Base
   def current_racks
     must_have_current_scenario
     self.racks.find_all_by_scenario_id(current_scenario.id)
-    # TODO are we hiding the trash rack at this level or not here?
   end
   
   def current_racks_without_trash
@@ -181,16 +179,16 @@ class User < ActiveRecord::Base
   
   private
   
-  def must_have_current_scenario
-    raise Exception.new("must have a current scenario") unless current_scenario
-  end
-  
-  def add_rack_with_current_scenario(label)
-    if !current_racks.detect{ |r| r.label == label }
-      rack = self.racks.build(:label => label)
-      rack.scenario = current_scenario
-      rack.save!
+    def must_have_current_scenario
+      raise Exception.new("must have a current scenario") unless current_scenario
     end
-  end
+    
+    def add_rack_with_current_scenario(label)
+      if !current_racks.detect{ |r| r.label == label }
+        rack = self.racks.build(:label => label)
+        rack.scenario = current_scenario
+        rack.save!
+      end
+    end
   
 end

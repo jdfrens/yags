@@ -49,11 +49,12 @@ class FullMigrationTest < ActionController::IntegrationTest
       end
       
       s.table :basic_preferences do |t|
-        t.column :id,           :integer
-        t.column :user_id,      :integer
-        t.column :column,       :string
-        t.column :row,          :string
-        t.column :scenario_id,  :integer
+        t.column :id,            :integer
+        t.column :user_id,       :integer
+        t.column :column,        :string
+        t.column :row,           :string
+        t.column :scenario_id,   :integer
+        t.column :flies_number,  :integer
       end
       
       s.table :character_preferences do |t|

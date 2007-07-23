@@ -9,7 +9,7 @@ class Vial < ActiveRecord::Base
   include CartesianProduct
   
   validates_presence_of :label
-  validates_presence_of :rack_id  # TODO: test this
+  validates_presence_of :rack_id
   validates_numericality_of :number_of_requested_flies, :only_integer => true,
       :on => :create
   validates_inclusion_of :number_of_requested_flies, :in => 0..255,

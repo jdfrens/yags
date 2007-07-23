@@ -28,6 +28,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
+    assert_equal 4, users(:steve).basic_preference.flies_number
+    assert_equal 2, new_vial.rack.id
     assert_equal users(:steve), new_vial.owner
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
@@ -49,6 +51,8 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_not_nil new_vial
     assert_equal number_of_old_vials + 1, Vial.count
     assert_equal 9, new_vial.flies.size
+    assert_equal 9, users(:steve).basic_preference.flies_number
+    assert_equal 2, new_vial.rack.id
     assert_equal users(:steve), new_vial.owner
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
@@ -59,7 +63,8 @@ class BenchControllerTest < Test::Unit::TestCase
       post :collect_field_vial, {
           :vial => {
             :label => "anonomous user's vial",
-            :number_of_requested_flies => "8" } }
+            :number_of_requested_flies => "8",
+            :rack_id => "3" } }
       assert_redirected_to_login
     end
   end
@@ -69,12 +74,29 @@ class BenchControllerTest < Test::Unit::TestCase
       post :collect_field_vial, {
         :vial => {
           :label => "some vial",
-          :number_of_requested_flies => "581" }
+          :number_of_requested_flies => "581",
+          :rack_id => "2"}
       },
       user_session(:steve)
       
       vial = assigns(:vial)
       assert vial.errors.invalid?(:number_of_requested_flies)
+      assert_equal 42, users(:steve).basic_preference.flies_number
+    end
+  end
+  
+  def test_collect_field_vial_fails_if_rack_NOT_owned
+    assert_no_added_vials do
+      post :collect_field_vial, {
+        :vial => {
+          :label => "some vial for someone else",
+          :number_of_requested_flies => "81",
+          :rack_id => "4"}
+      },
+      user_session(:steve)
+      
+      assert_nil Vial.find_by_label("some vial for someone else")
+      assert_equal 42, users(:steve).basic_preference.flies_number
     end
   end
   
@@ -88,7 +110,7 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "input#vial_label"
       assert_select "label", "Number of flies:"
       assert_select "select#vial_rack_id"
-      assert_select "input#vial_number_of_requested_flies"
+      assert_select "input#vial_number_of_requested_flies[value=42]"
     end
   end
   
@@ -139,9 +161,7 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_select "form" do
       assert_select "label", "Label:"
-      # TODO: this next assertion is useless because it finds the same label as the previous line
-      assert_select "label"
-      # TODO: assert the input field(s)
+      assert_select "input#rack_label[size=40]"
     end
   end
   
@@ -403,7 +423,19 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_set_vial_label_fails_when_NOT_owned_by_current_user
-    # TODO: test_set_vial_label_fails_when_NOT_owned_by_current_user
+    xhr :post, :set_vial_label, { :id => vials(:random_vial).id, :value => 'Hi Jeremy! from Steve' }, 
+        user_session(:steve)
+        
+    assert_response 401 # permission denied
+    
+    vial = vials(:random_vial)
+    vial.reload
+    assert_equal 'Another vial', vial.label
+  end
+  
+  def test_set_vial_label_restricted_to_xhr_post_only
+    assert_xhr_post_only :set_vial_label,
+        { :id => vials(:vial_one).id, :value => '<Bob>' }, user_session(:steve)
   end
   
   def test_set_rack_label
@@ -420,6 +452,22 @@ class BenchControllerTest < Test::Unit::TestCase
   def test_set_rack_label_fails_when_NOT_logged_in
     get :set_rack_label, { :id => racks(:steve_stock_rack).id, :value => 'I am not logged in!' }
     assert_redirected_to_login
+  end
+  
+  def test_set_rack_label_fails_when_NOT_owned_by_current_user
+    xhr :post, :set_rack_label, { :id => racks(:jeremy_stock_rack).id, :value => 'Jeremys Solutions'}, 
+        user_session(:steve)
+        
+    assert_response 401 # permission denied
+    
+    rack = racks(:jeremy_stock_rack)
+    rack.reload
+    assert_equal 'jeremy stock', rack.label
+  end
+  
+  def test_set_rack_label_restricted_to_xhr_post_only
+    assert_xhr_post_only :set_rack_label,
+        { :id => racks(:steve_bench_rack).id, :value => 'Favorite Rack'}, user_session(:steve)
   end
   
   def test_set_rack_label_to_trash
@@ -510,7 +558,16 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_update_table_fails_when_NOT_owner_of_vial
-    # TODO: test_update_table_fails_when_NOT_owner_of_vial
+    xhr :post, :update_table, { :vial_id => vials(:random_vial).id, :character_col => "eye color", 
+      :character_row => "sex" }, user_session(:steve)
+      
+    assert_response 401 # permission denied
+  end
+  
+  def test_update_table_restricted_to_xhr_post_only
+    assert_xhr_post_only :update_table,
+        { :vial_id => vials(:vial_one).id, :character_col => "eye color", :character_row => "sex" }, 
+        user_session(:steve)
   end
   
   def test_delete_vial
@@ -639,7 +696,7 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_select "label", "Label for vial of offspring:"
       assert_select "input#vial_label"
       assert_select "label", "Number of offspring:"
-      assert_select "input#vial_number_of_requested_flies"
+      assert_select "input#vial_number_of_requested_flies[value=42]"
       assert_select "label", /^Store in the rack named:/
       assert_select "select#vial_rack_id" do
         assert_select "option", 2, "steve should have two visible racks in current scenario"
@@ -857,6 +914,7 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_equal [:white] * 8, phenotypes_of(new_vial, :"eye color")
     assert_equal users(:steve), new_vial.owner
     assert_equal number_of_old_vials + 1, Vial.count
+    assert_equal 8, users(:steve).basic_preference.flies_number
   end
   
   def test_mate_flies_again  
@@ -878,6 +936,7 @@ class BenchControllerTest < Test::Unit::TestCase
     
     assert_equal [:red] * 3, phenotypes_of(new_vial, :"eye color")
     assert_equal users(:steve), new_vial.owner
+    assert_equal 3, users(:steve).basic_preference.flies_number
   end
   
   def test_mate_flies_fails_for_some_protocols
@@ -904,6 +963,7 @@ class BenchControllerTest < Test::Unit::TestCase
       assert_response 401 # access denied!
 
       assert_nil Vial.find_by_label("stolen children")
+      assert_equal 50, users(:jeremy).basic_preference.flies_number
     end
   end
   
@@ -941,6 +1001,7 @@ class BenchControllerTest < Test::Unit::TestCase
       assert !assigns(:vial).valid?
       assert assigns(:vial).errors.invalid?(:mom_id)
       assert assigns(:vial).errors.invalid?(:dad_id)
+      assert_equal 42, users(:steve).basic_preference.flies_number
     end
 
     # missing mom xor missing dad yields same result as tested in unit tests
@@ -968,6 +1029,7 @@ class BenchControllerTest < Test::Unit::TestCase
       
       vial = assigns(:vial)
       assert vial.errors.invalid?(:number_of_requested_flies)
+      assert_equal 42, users(:steve).basic_preference.flies_number
     end
     
     # other types of numeric failures are tested in the unit tests

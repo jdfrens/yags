@@ -35,10 +35,12 @@ class BenchController < ApplicationController
   end
   
   def collect_field_vial
-    if params[:vial]
-      # TODO validate that the rack is owned by current user either here or in the model
+    @flies_number = current_user.basic_preference.flies_number
+    if request.post? && params[:vial] && current_user.owns?(Rack.find_by_id(params[:vial][:rack_id]))
       @vial = Vial.collect_from_field(params[:vial])
       @vial.save!
+      current_user.basic_preference.flies_number = @vial.number_of_requested_flies
+      current_user.basic_preference.save!
       redirect_to :action => "view_vial", :id => @vial.id
     else
       render
@@ -49,11 +51,14 @@ class BenchController < ApplicationController
   
   def mate_flies
     if request.get? && !request.xhr?
+      @flies_number = current_user.basic_preference.flies_number
       render
     else
       must_use_xhr_post
       @vial = Vial.make_babies_and_vial(params[:vial].merge({ :creator => current_user }))
       @vial.save!
+      current_user.basic_preference.flies_number = @vial.number_of_requested_flies
+      current_user.basic_preference.save!
       render :update do |page|
         page.redirect_to :action => "view_vial", :id => @vial.id
       end
@@ -131,20 +136,34 @@ class BenchController < ApplicationController
   end
   
   def set_vial_label
+    must_use_xhr_post
     @vial = Vial.find(params[:id])
-    previous_label = @vial.label
-    @vial.label = params[:value]
-    @vial.label = previous_label unless @vial.save
-    render :text => h(@vial.label)
+    if current_user.owns?(@vial)
+      previous_label = @vial.label
+      @vial.label = params[:value]
+      @vial.label = previous_label unless @vial.save
+      render :text => h(@vial.label)
+    else
+      raise InvalidOwner
+    end
+  rescue InvalidHttpMethod, InvalidOwner
+    render :nothing => true, :status => 401
   end
   
   def set_rack_label
+    must_use_xhr_post
     @rack = Rack.find(params[:id])
-    previous_label = @rack.label
-    # It would seem best to use a regex rather than 'Trash'
-    @rack.label = params[:value] if params[:value] != "Trash"
-    @rack.label = previous_label unless @rack.save
-    render :text => h(@rack.label)
+    if current_user.owns?(@rack)
+      previous_label = @rack.label
+      # Should we use a regex instead of 'Trash'?
+      @rack.label = params[:value] if params[:value] != "Trash"
+      @rack.label = previous_label unless @rack.save
+      render :text => h(@rack.label)  
+    else
+      raise InvalidOwner
+    end
+  rescue InvalidHttpMethod, InvalidOwner
+    render :nothing => true, :status => 401
   end
   
   def set_as_solution
@@ -165,16 +184,21 @@ class BenchController < ApplicationController
   end
   
   def update_table
-    if request.post?
-      @vial = Vial.find(params[:vial_id])
+    must_use_xhr_post
+    @vial = Vial.find(params[:vial_id])
+    if current_user.owns?(@vial)
       @column_character = params[:character_col].intern
       @row_character = params[:character_row].intern
       @column_phenotypes = @vial.phenotypes_for_table(@column_character)
       @row_phenotypes = @vial.phenotypes_for_table(@row_character)
       @counts = @vial.counts_for_table(@row_character, @column_character)
       current_user.set_table_preference @row_character.to_s, @column_character.to_s
+    else
+      raise InvalidOwner
+      # TODO is this what we want here?
     end
-    redirect_to :action => "view_vial", :id => @vial unless request.xhr?
+  rescue InvalidHttpMethod, InvalidOwner
+    render :nothing => true, :status => 401
   end
   
   def add_rack

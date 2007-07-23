@@ -63,9 +63,9 @@ class UsersController < ApplicationController
         if User.hash_password(params[:old_password]) == current_user.password_hash and 
             params[:user][:password] == params[:user][:password_confirmation]
           current_user.update_attributes(params[:user])
-          flash[:notice] = "Password Changed"
+          flash.now[:notice] = "Password Changed"
         else
-          flash[:notice] = "Try Again"
+          flash.now[:error] = "Try Again"
         end
       end
     else

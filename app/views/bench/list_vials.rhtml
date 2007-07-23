@@ -19,3 +19,14 @@
 		</ul>
 	<% end -%>
 </div>
+<br />
+<div id="toggle-trash">
+<p><%= link_to_function('Show/Hide your Trash', "Effect.toggle('trash-list', 'appear')") %></p>
+	<div id="trash-list" style="display: none;">
+		<ul>
+		<% @trash.vials.each do |vial| %>
+			<li id="vial_<%= vial.id %>"><%= link_to vial.label, :action => :view_vial, :id => vial %></li>	
+		<% end %>
+		</ul>
+	</div>
+</div>

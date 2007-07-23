@@ -243,7 +243,8 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     steve.reload
     assert_equal User.hash_password('steve_m'), steve.password_hash
-    assert_equal "Password Changed", flash[:notice]
+    # can't test flash.now[] the same as flash[].
+    assert_tag :tag => "div", :child => /Password Changed/
   end
   
   def test_change_password_fails_with_WRONG_old_password
@@ -254,7 +255,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     steve.reload
     assert_equal User.hash_password("steve_password"), steve.password_hash
-    assert_equal "Try Again", flash[:notice]
+    assert_tag :tag => "div", :child => /Try Again/
   end
   
   def test_change_password_fails_with_MISMATCHED_confirmation
@@ -265,7 +266,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_standard_layout
     calvin.reload
     assert_equal User.hash_password("calvin_password"), calvin.password_hash
-    assert_equal "Try Again", flash[:notice]
+    assert_tag :tag => "div", :child => /Try Again/
   end
   
   def test_change_password_fails_when_NOT_logged_in

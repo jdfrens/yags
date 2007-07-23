@@ -598,6 +598,9 @@ class BenchControllerTest < Test::Unit::TestCase
       end
       assert_select "ul", 2, "steve should have 2 visible racks for current scenario"
     end
+    assert_select "div#toggle-trash" do
+      assert_select "p", "Show/Hide your Trash"
+    end
   end
   
   def test_list_vials_lists_only_current_users_vials

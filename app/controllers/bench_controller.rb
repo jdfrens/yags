@@ -114,6 +114,7 @@ class BenchController < ApplicationController
   
   def list_vials
     @racks = current_user.current_racks_without_trash
+    @trash = current_user.trash_rack
   end
   
   def destroy_vial

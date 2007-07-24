@@ -1,8 +1,10 @@
+require 'fastercsv'
+
 class UsersController < ApplicationController
   acts_as_login_controller
   
   restrict_to :manage_student, :only => [ :list_users, :add_student, :delete_user, 
-      :change_student_password ]
+      :change_student_password, :batch_add_students ]
   restrict_to :manage_instructor, :only => [ :add_instructor, :index ]
   
   redirect_after_login do |controller|
@@ -43,9 +45,39 @@ class UsersController < ApplicationController
     render
   end
   
-  
   def batch_add_students
-    # TODO: build this using Ruby's CSV to parse a field and batch add students
+    if request.post? && params[:student_csv] && params[:user] && params[:password]
+      if current_user.admin? || 
+          current_user.instructs.include?(Course.find_by_id(params[:user][:course_id]))
+        number_added = 0
+        FasterCSV.parse(params[:student_csv]) do |row|
+          student = User.new(params[:user])
+          row.each { |e| e.strip! if e }
+          student.last_name     = row.shift
+          student.first_name    = row.shift
+          student.email_address = row.shift
+          student.username      = student.email_address.split('@').first if student.email_address
+          student.group         = Group.find_by_name "student"
+          student.password_hash = User.hash_password(params[:password])
+          # TODO handle a blank password correctly! (right now it doesn't care if the password is blank!)
+          student.save
+          number_added += 1 if student.save
+        end
+        flash[:notice] = "#{number_added} students added!"
+      else
+        flash[:notice] = "Permission denied!" # TODO should that be a flash[:error] ? (not tested now)
+      end
+      if current_user.admin?
+        redirect_to :action => "list_users"
+      else # if instructor
+        redirect_to :controller => "lab", :action => "view_course", :id => params[:user][:course_id]
+      end
+    else
+      @courses = (current_user.instructor? ? current_user.instructs : Course.find(:all))
+      render
+    end
+  rescue ActiveRecord::RecordInvalid
+    render
   end
   
   def delete_user

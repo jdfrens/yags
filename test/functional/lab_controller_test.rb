@@ -19,7 +19,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "ul.list" do
-      assert_select "li", 9
+      assert_select "li", 10
     end
   end
   

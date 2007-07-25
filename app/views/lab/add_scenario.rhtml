@@ -5,7 +5,7 @@
 <% form_for :scenario do |form| %>
     <p>
         <label for="species"><strong>Species: </strong></label>
-        Drosophila melanogaster
+        YAGS Virtual Fruit Fly
     </p>
     <p>
         <label for="title"><strong>Title: </strong></label>
@@ -13,6 +13,7 @@
 		<%= javascript_tag "$('scenario_title').focus()" %>
     </p>
     
+	<label for="characters"><strong>Characters: </strong></label>
     <!-- could this part become a partial that changes once we have multiple species? -->
 	<table>
     <% @characters.each do |character| -%>
@@ -23,6 +24,14 @@
         	      <%= "use random " + character.to_s %>
 		        <% end -%></td></tr>
     <% end -%>
+	</table>
+	
+	<label for="courses"><strong>Courses: </strong></label>
+	<table>
+		<% @courses.each do |course| -%>
+			<tr><td><%= check_box_tag "courses[]", course.id, false -%>
+	                <%= course.name %></td></tr>
+		<% end -%>
 	</table>
     
     <%= submit_tag "Add Scenario", :class => "submit" %>

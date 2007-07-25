@@ -439,7 +439,7 @@ class UsersControllerTest < Test::Unit::TestCase
   end
   
   def test_index
-    post :index, {}, user_session(:manage_student)
+    post :index, {}, user_session(:calvin)
     assert_response :success
     assert_select "ul.list" do
       assert_select "li", 6

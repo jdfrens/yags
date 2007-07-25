@@ -74,9 +74,10 @@ class LabController < ApplicationController
   end
   
   def add_scenario
-    @species = Species.singleton # the selected species later
+    @species = Species.singleton
     @characters = @species.characters
-    if request.post? and params[:scenario] and params[:characters]
+    @courses = current_user.instructs
+    if request.post? && params[:scenario] && params[:characters] && params[:courses]
       @scenario = Scenario.new params[:scenario]
       @scenario.save!
       @characters.each do |character|
@@ -84,6 +85,11 @@ class LabController < ApplicationController
           ScenarioPreference.create!(:scenario_id => @scenario.id, :hidden_character => character.to_s)
         elsif params[:alternates] and params[:alternates].include?(character.to_s)
           RenamedCharacter.create!(:scenario_id => @scenario.id, :renamed_character => character.to_s)
+        end
+      end
+      @courses.each do |course|
+        if params[:courses].map { |c| c.to_i }.include?(course.id)
+          course.scenarios << @scenario
         end
       end
       redirect_to :action => "list_scenarios"

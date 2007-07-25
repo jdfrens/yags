@@ -36,7 +36,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "ul" do
-      assert_select "li", "Peas pay attention[delete]"
+      assert_select "li", "Peas pay attention"
     end
   end
   
@@ -45,8 +45,8 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     assert_select "ul" do
-      assert_select "li", "Natural selection[delete]"
-      assert_select "li", "Interim to the Galapagos Islands[delete]"
+      assert_select "li", "Natural selection"
+      assert_select "li", "Interim to the Galapagos Islands"
     end
   end
   
@@ -362,7 +362,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_select "form" do
       assert_select "label[for=species]"
       assert_select "label[for=title]"
-    assert_select "script[type=text/javascript]"
+      assert_select "script[type=text/javascript]"
       
       assert_select "input[value=sex][checked=checked]"
       assert_select "input[value=eye color][checked=checked]", 2
@@ -371,26 +371,33 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "input[value=antenna][checked=checked]"
       assert_select "input[value=seizure][checked=checked]"
       assert_select "input[type=checkbox][checked=checked]", 7
+      assert_select "input[value=1]"
+      assert_select "input[type=checkbox]", 8
     end
   end
   
   def test_add_scenario_works
     number_of_old_scenarios = Scenario.find(:all).size
     post :add_scenario, { :scenario => { :title => "Final Exam" }, 
-        :characters => [], :alternates => [] }, user_session(:darwin)
+        :characters => [], :alternates => [], :courses => [] }, user_session(:darwin)
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Final Exam")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
+    users(:darwin).instructs.each do |course|
+      assert !course.scenarios.map { |s| s.title }.include?("Final Exam")
+    end
     assert_equal [:sex, :"eye color", :wings, :legs, :antenna, :seizure], scenario.hidden_characters
   end 
   
   def test_add_scenario_works_again
     number_of_old_scenarios = Scenario.find(:all).size
     post :add_scenario, { :scenario => { :title => "Intro to Dominance" }, 
-        :characters => ["sex", "wings", "eye color"], :alternates => ["eye color"] }, user_session(:mendel)
+        :characters => ["sex", "wings", "eye color"], :alternates => ["eye color"], :courses => ["1"]  }, 
+        user_session(:mendel)
     assert_redirected_to :action => "list_scenarios"
     assert_not_nil scenario = Scenario.find_by_title("Intro to Dominance")
     assert_equal number_of_old_scenarios + 1, Scenario.find(:all).size
+    assert Course.find(1).scenarios.map { |s| s.title }.include?("Intro to Dominance")
     assert_equal [:legs, :antenna, :seizure], scenario.hidden_characters
     assert_equal [:"eye color"], scenario.renamed_characters.map { |rc| rc.renamed_character.intern }
   end 

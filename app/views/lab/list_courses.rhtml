@@ -8,7 +8,7 @@
 	<ul>
 		<% for course in @courses -%>
             <li id=<%= course.id %> >
-              <%= link_to course.name, :action => :view_course, :id => course %>[<%= link_to "delete", { :action => "delete_course", :id => course.id }, :confirm => "Are you sure?", :method => :post -%>]
+              <%= link_to course.name, :action => :view_course, :id => course %> <%= link_to image_tag("cross.png"), { :action => "delete_course", :id => course.id }, :confirm => "Delete the \"#{course.name}\" course?", :method => :post -%>
             </li>
 		<% end -%>
 	</ul>

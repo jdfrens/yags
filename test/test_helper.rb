@@ -160,7 +160,7 @@ class Test::Unit::TestCase
     when :darwin
       { :current_user_id => 6 }
     when :manage_student
-      { :current_user_id => 2 }
+      { :current_user_id => 5 }
     when :calvin
       { :current_user_id => 2 }
     when :keith

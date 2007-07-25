@@ -8,7 +8,7 @@
 	<ul>
 		<% for scenario in @scenarios -%>
             <li id=<%= scenario.id %> >
-              <%= link_to h(scenario.title), :action => :view_scenario, :id => scenario %> <%= link_to image_tag("cross.png"), { :action => "delete_scenario", :id => scenario.id }, :confirm => "Are you sure?", :method => :post -%>
+              <%= link_to h(scenario.title), :action => :view_scenario, :id => scenario %> <%= link_to image_tag("cross.png"), { :action => "delete_scenario", :id => scenario.id }, :confirm => "Delete the \"#{scenario.title}\" scenario?", :method => :post -%>
             </li>
 		<% end -%>
 	</ul>

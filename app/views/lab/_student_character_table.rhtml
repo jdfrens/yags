@@ -1,0 +1,16 @@
+<table>   
+	<tr>
+	    <th></th>
+	    <% @column_phenotypes.each do |phenotype| -%>
+			<th><%= phenotype %></th>
+		<% end -%>
+	</tr>
+	<% @row_phenotypes.each do |row_phenotype| -%>
+	<tr>
+		<th><%= row_phenotype %></th>
+		<% @column_phenotypes.each do |col_phenotype| -%>
+			<td class="count"><%= @counts[row_phenotype.to_s + "$" + col_phenotype.to_s] %></td>
+		<% end -%>
+	</tr>
+	<% end -%>
+</table>

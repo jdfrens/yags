@@ -709,7 +709,7 @@ class BenchControllerTest < Test::Unit::TestCase
   
   def test_show_mateable_flies_for_first_vial
     xhr :post, :show_mateable_flies,
-        { :vial_id => vials(:vial_one).id,
+        { :vial_id => vials(:vial_with_many_flies).id,
           :which_vial => "1"
           },
         user_session(:steve)
@@ -729,12 +729,16 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "th", :text => "hairy", :count => 16
         assert_select "th", :text => "short", :count => 16
         assert_select "th", :text => "long", :count => 16
-        # TODO: need to assert radio buttons for flies
+        assert_select "tr td" do
+          assert_select "input[type=radio]", 4, "should be 4 radio buttons"
+          assert_select "input[type=radio][value=1]"
+          assert_select "input[type=radio][value=3]"
+          assert_select "input[type=radio][value=4]"
+          assert_select "input[type=radio][value=5]"
+        end
       end
     end
   end
-  
-  # TODO: assert radio buttons when showing mateable flies from vials(:vial_with_many_flies)
   
   def test_show_mateable_flies_for_second_vial
     xhr :post, :show_mateable_flies,
@@ -754,7 +758,9 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "th", :text => "no seizure", :count => 4
         assert_select "th", :text => "20% seizure", :count => 4
         assert_select "th", :text => "40% seizure", :count => 4
-        # TODO: need to assert radio buttons for flies
+        assert_select "tr td" do
+          assert_select "input[type=radio]", 0, "should be 0 radio buttons"
+        end
       end
     end
   end

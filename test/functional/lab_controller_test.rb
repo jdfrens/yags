@@ -96,10 +96,6 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_select "h1", "Course: Peas pay attention"
     assert_select "script[type=text/javascript]"
-    assert_select "ul" do
-      assert_select "li", "jeremy"
-      assert_select "li", "randy"
-    end
     assert_select "div#table_of_student_solutions"
     assert_select "table" do
       assert_select "tr th", ""
@@ -127,6 +123,30 @@ class LabControllerTest < Test::Unit::TestCase
     
     get :view_course, {:id => 1000 }, user_session(:darwin)
     assert_redirected_to :action => "list_courses"
+  end
+  
+  def test_update_student_solutions_table
+    xhr :post, :update_student_solutions_table, { :id => courses(:mendels_course).id }, user_session(:mendel)
+    assert_response :success
+    
+    assert_select_rjs :replace_html, "table_of_student_solutions" do
+      assert_select "table" do
+        assert_select "tr th", ""
+        assert_select "tr:nth-child(2) th", "jeremy"
+        assert_select "tr:nth-child(2) td:nth-child(3)", /X/
+        assert_select "tr:nth-child(3) th", "randy"
+      end
+    end
+  end
+  
+  def test_update_student_solutions_table_fails_when_NOT_instructors_course
+    xhr :post, :update_student_solutions_table, { :id => courses(:darwins_first_course).id }, user_session(:mendel)
+    assert_redirected_to :action => 'list_courses'
+  end
+  
+  def test_update_student_solutions_table_fails_when_NOT_logged_in
+    xhr :post, :update_student_solutions_table, { :id => courses(:mendels_course).id }
+    assert_redirected_to_login
   end
   
   def test_choose_course_scenarios_page
@@ -168,15 +188,72 @@ class LabControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_standard_layout
     
-    assert_select "p", "Owner: jeremy"
-    assert_select "p", "Rack: jeremy bench"
-    assert_select "p", "Solution to: 2"
-    
-    assert_select "div#pedigree-info table" do
-      assert_select "p", "This vial is a field vial.  There are no parents."
+    assert_select "div#student-vial-info" do
+      assert_select "p", /Number of offspring: #{vials(:random_vial).flies.size}/
+      assert_select "p", /Pedigree number: #{vials(:random_vial).pedigree_number}/
+      assert_select "p", "Parents are unknown for field vials."
+    end
+    assert_select "div#student-two-way-table" do
+      assert_select "form[action=/lab/update_student_table]" do
+        assert_select "select[name=character_col]" do
+          assert_select "option[value=sex]", "sex"
+          assert_select "option[value=eye color]", "eye color"
+          assert_select "option[value=wings]", "wings"
+          assert_select "option[value=legs]", "legs"
+          assert_select "option[value=antenna]", "antenna"
+        end
+        assert_select "select[name=character_row]" do
+          assert_select "option[value=sex]", "sex"
+          assert_select "option[value=eye color]", "eye color"
+          assert_select "option[value=wings]", "wings"
+          assert_select "option[value=legs]", "legs"
+          assert_select "option[value=antenna]", "antenna"
+        end
+        assert_select "div#student-vial-table" do
+          assert_select "table" do
+            assert_select "tr:nth-child(1) th:nth-child(2)", "beige"
+            assert_select "tr:nth-child(1) th:nth-child(3)", "orange"
+            assert_select "tr:nth-child(2) th:nth-child(1)", "curly"
+            assert_select "tr:nth-child(3) th:nth-child(1)", "straight"
+          end
+        end
+      end      
     end
   end
   
+  def test_view_student_vial_again
+    get :view_student_vial, {:id => vials(:randy_vial).id }, user_session(:mendel)
+    assert_response :success
+    assert_standard_layout
+    
+    assert_select "div#student-vial-info" do
+      assert_select "p", /Number of offspring: #{vials(:randy_vial).flies.size}/
+      assert_select "p", /Pedigree number: #{vials(:randy_vial).pedigree_number}/
+      assert_select "p", "Parents are unknown for field vials."
+    end
+    assert_select "div#student-two-way-table" do
+      assert_select "form[action=/lab/update_student_table]" do
+        assert_select "select[name=character_col]" do
+          assert_select "option[value=sex]", "sex"
+          assert_select "option[value=eye color]", "eye color"
+          assert_select "option[value=wings]", "wings"
+          assert_select "option[value=legs]", "legs"
+          assert_select "option[value=antenna]", "antenna"
+        end
+        assert_select "select[name=character_row]" do
+          assert_select "option[value=sex]", "sex"
+          assert_select "option[value=eye color]", "eye color"
+          assert_select "option[value=wings]", "wings"
+          assert_select "option[value=legs]", "legs"
+          assert_select "option[value=antenna]", "antenna"
+        end
+        assert_select "div#student-vial-table" do
+          assert_select "img[src^=/images/blank_table.png]"
+        end
+      end      
+    end
+  end
+    
   def test_view_student_vial_fails_when_NOT_instructor
     get :view_student_vial, {:id => vials(:random_vial).id}
     assert_redirected_to_login
@@ -191,9 +268,39 @@ class LabControllerTest < Test::Unit::TestCase
   def test_view_student_vial_fails_when_NOT_instructors_students_vial
     get :view_student_vial, {:id => vials(:random_vial).id }, user_session(:darwin)
     assert_redirected_to :action => :list_courses # is that what we want?
+  end
+  
+  def test_update_student_table
+    xhr :post, :update_student_table, { :vial_id => vials(:random_vial).id, :character_col => "eye color", 
+      :character_row => "sex" }, user_session(:mendel)
+    assert_response :success
     
-    # note: an instructor gets an error when trying to view a vial that has not been
-    # submitted as a solution.
+    assert_select "table" do
+      assert_select "tr:nth-child(1) th:nth-child(2)", "beige"
+      assert_select "tr:nth-child(1) th:nth-child(3)", "orange"
+      assert_select "tr:nth-child(2) th:nth-child(1)", "female"
+      assert_select "tr:nth-child(3) th:nth-child(1)", "male"
+    end
+  end
+  
+  def test_update_student_table_fails_when_NOT_logged_in
+    xhr :post, :update_student_table,
+        { :vial_id => vials(:random_vial).id, :character_col => "legs",
+          :character_row => "wings" }
+    assert_redirected_to_login
+  end
+  
+  def test_update_student_table_fails_when_NOT_instructor_of_student
+    xhr :post, :update_student_table, { :vial_id => vials(:random_vial).id, :character_col => "eye color", 
+      :character_row => "sex" }, user_session(:darwin)
+      
+    assert_response 401 # permission denied
+  end
+  
+  def test_update_student_table_restricted_to_xhr_post_only
+    assert_xhr_post_only :update_student_table,
+        { :vial_id => vials(:vial_one).id, :character_col => "eye color", :character_row => "sex" }, 
+        user_session(:mendel)
   end
   
   def test_delete_course

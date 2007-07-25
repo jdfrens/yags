@@ -1,7 +1,7 @@
 class LabController < ApplicationController
   restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course, 
   :delete_course, :list_scenarios, :add_scenario, :delete_scenario, :view_scenario,
-  :view_cheat_sheet, :choose_course_scenarios, :view_student_vial ]
+  :view_cheat_sheet, :choose_course_scenarios, :view_student_vial, :update_student_solutions_table, :update_student_table ]
   
   def index
   end
@@ -30,6 +30,19 @@ class LabController < ApplicationController
       @students = @course.students
     else
       redirect_to :action => "list_courses"
+    end
+  end
+  
+  def update_student_solutions_table
+    if params[:id] && Course.find_by_id(params[:id]) && 
+      Course.find(params[:id]).instructor == current_user
+      course = Course.find(params[:id])
+      @students = course.students
+      render :update do |page|
+        page.replace_html 'table_of_student_solutions', :partial => 'student_solutions_table'
+      end
+    else 
+      redirect_to :action => 'list_courses'
     end
   end
   
@@ -109,19 +122,39 @@ class LabController < ApplicationController
     end
   end
   
+  # TODO: Show genotype information 
   def view_student_vial
     if (params[:id] && @vial = Vial.find_by_id(params[:id])) &&
         (current_user.instructs.include?(@vial.owner.enrolled_in))
-      @rack = Rack.find(@vial.rack_id)
-      if @parents = (@vial.mom_id && @vial.dad_id)
-        @mom, @dad = Fly.find(@vial.mom_id), Fly.find(@vial.dad_id)
-        @mom_vial = Vial.find @mom.vial_id
-        @dad_vial = Vial.find @dad.vial_id
-      end
       @visible_characters = current_user.visible_characters
+      @table = @vial.owner.row && @vial.owner.column
+      if @table
+        @row_character = @vial.owner.row.intern
+        @column_character = @vial.owner.column.intern
+        @row_phenotypes = @vial.phenotypes_for_table(@row_character)
+        @column_phenotypes = @vial.phenotypes_for_table(@column_character)
+        @counts = @vial.counts_for_table(@row_character, @column_character)
+      end
     else
       redirect_to :action => 'list_courses'
     end
+  end
+  
+  def update_student_table
+    must_use_xhr_post
+    @vial = Vial.find(params[:vial_id])
+    if @vial.owner.owns?(@vial) && (current_user.instructs.include?(@vial.owner.enrolled_in))
+      @column_character = params[:character_col].intern
+      @row_character = params[:character_row].intern
+      @column_phenotypes = @vial.phenotypes_for_table(@column_character)
+      @row_phenotypes = @vial.phenotypes_for_table(@row_character)
+      @counts = @vial.counts_for_table(@row_character, @column_character)
+    else
+      raise InvalidOwner
+      # TODO is this what we want here?
+    end
+  rescue InvalidHttpMethod, InvalidOwner
+    render :nothing => true, :status => 401
   end
   
 end

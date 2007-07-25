@@ -3,16 +3,7 @@
 <% end -%>
 
 <h1>Course: <%= h(@course.name) -%></h1>
-<%= periodically_call_remote :url => { :action => 'view_course', :id => @course.id }, :frequency => 60 %>
-
-<div id="list-students">
-	<h3>Students</h3>
-	<ul>
-		<% for student in @students -%>
-          <li id=<%= student.id %>> <%= h(student.username) -%></li>
-		<% end -%>
-	</ul>
-</div>
+<%= periodically_call_remote :url => { :action => 'update_student_solutions_table', :id => @course.id }, :frequency => 60 %>
 
 <div id="table_of_student_solutions">
 	<%= render :partial => "student_solutions_table" %>

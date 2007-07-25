@@ -1,66 +1,23 @@
 <div id="student-vial-info">
-	<h3>Vial Information</h3>
-	<p><strong>Owner: </strong><%= @vial.owner.username %>	</p>
-	<p><strong>Rack: </strong><%= @rack.label %></p>
-	<p><strong>Solution to: </strong><%= @vial.solution.number %></p>
-	<p>
-	<strong>Genotypes: </strong>For the time being, these graphs are generated with JavaScript and are showing the total number of flies in the vial.  
-	<br />They might be replaced or scrapped altogether.
-	<br /></p>
-	<script type="text/javascript">
-var options = {
-   "colorScheme": PlotKit.Base.palette(PlotKit.Base.baseColors()[4]),
-   "xTicks": [{v:0, label:"AA"}, 
-          {v:1, label:"Aa"}, 
-          {v:2, label:"aa"}]
-};
-
-function drawGraph() {
-    var layout = new PlotKit.Layout("bar", options);
-	var AA = <%= @vial.flies.size %>
-	var Aa = <%= @vial.flies.size %>
-	var aa = <%= @vial.flies.size %>
-    layout.addDataset("genotypes", [[0, AA], [1, Aa], [2, aa]]);
-    layout.evaluate();
-    var canvas = MochiKit.DOM.getElement("graph");
-    var plotter = new PlotKit.SweetCanvasRenderer(canvas, layout, options);
-    plotter.render();
-}
-
-MochiKit.DOM.addLoadEvent(drawGraph);
-</script>
-<div><canvas id="graph" height="300" width="350"></canvas></div>
-</div>
-<div id="pedigree-info">
-	<h3>Pedigree Information</h3>
-        <table>
-        	<% if @parents %>
-            <tr>
-                <% @visible_characters.each do |ch| -%>
-                    <th><%= ch %></th>
-                <% end -%>
-                <th>source vial</th>
-            </tr>
-            <tr>
-                <% @visible_characters.each do |ch| -%>
-                    <td><%= @mom.vial.renamed_phenotype(ch, @mom.phenotype(ch)) %></td>
-                <% end -%>
-                <td><%= link_to @mom_vial.label, :action => :view_student_vial, :id => @mom_vial %></td>
-            </tr>
-            <tr>
-                    <% @visible_characters.each do |ch| -%>
-                        <td><%= @dad.vial.renamed_phenotype(ch, @dad.phenotype(ch)) %></td>
-                    <% end -%>
-                <td><%= link_to @dad_vial.label, :action => :view_student_vial, :id => @dad_vial %></td>
-            </tr>
-			<% else %>
-                <p>This vial is a field vial.  There are no parents.</p>
-            <% end %>
-	    </table>
-</div>
-<div id="summary-stats">
-	<h3>Summary statistics</h3>
-	<strong>Sample size: </strong><%= @vial.flies.size %>
+	<h1>Vial <em><%= @vial.label %></em> for <%= @vial.owner.username %></h1>
+	<h2>General Information</h2>
+	<p><strong>Genotypes of parents:</strong> Genotype information of the parents?
 	<br />
-	<strong>Distance from field vial: </strong>
+	<strong>Number of offspring:</strong> <%= @vial.flies.size %>
+	<br />
+	<strong>Pedigree number:</strong> <%= @vial.pedigree_number %>
+	<br /></p>
+	<h2>View Parent Vials</h2>
+	<% if @vial.dad && @vial.mom %>
+		<p><%= link_to @vial.dad.vial.label, :action => :view_student_vial, :id => @vial.dad.vial %>
+		<br />
+		<%= link_to @vial.mom.vial.label, :action => :view_student_vial, :id => @vial.mom.vial %></p>
+	<% else %>
+		<p>Parents are unknown for field vials.</p>
+	<% end %>
 </div>
+<div id="student-two-way-table">
+	<h2>Two-Way Table</h2>
+    <%= render :partial => "student_two_way_table" %>
+</div>
+

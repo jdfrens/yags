@@ -1,0 +1,29 @@
+<% form_remote_tag :url => {:action => :update_student_table},
+               :before => visual_effect(:appear, 'spinner'),
+               :complete => visual_effect(:fade, 'spinner')  do -%>
+      <table>
+        <tr>
+            <td>
+              <div style="display: inline;"><%= image_tag '/images/green-load.gif', :id => 'spinner', :style => 'display: none;' %></div>
+            </td>
+            <td style="text-align: right;">
+                <%= select_tag(:character_col, options_for_select(@visible_characters, @column_character), :onchange => "onsubmit()") %>
+			</td>
+        </tr>
+        <tr>
+            <td>
+                <%= select_tag(:character_row, options_for_select(@visible_characters , @row_character), :onchange => "onsubmit()") %>
+            </td>
+            <td>
+              <div id="student-vial-table">
+		  	    <% if @table %>
+			      <%= render :partial => 'student_character_table' %>
+		        <% else %>
+			      <%= image_tag 'blank_table.png' %>
+		        <% end %>
+              </div>
+			</td>
+        </tr>
+      </table>
+      <%= hidden_field_tag(:vial_id, @vial.id) %>
+<% end -%>

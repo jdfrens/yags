@@ -1,13 +1,17 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first_scenario:
   id: 1
+  owner_id: 5
   title: forgetful instructor
 another_scenario:
   id: 2
+  owner_id: 6
   title: party day
 only_sex_and_legs:
   id: 3
-  title: only sex & legs
+  owner_id: 6
+  title: only sex and legs
 everything_included:
   id: 4
+  owner_id: 5
   title: everything included

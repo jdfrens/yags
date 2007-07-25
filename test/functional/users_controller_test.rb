@@ -50,13 +50,13 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_select "div#list-users"
     assert_select "ul.list" do
       assert_select "li", 7
-      assert_select "li#1", "steve (student) [delete]"
-      assert_select "li#2", "calvin (admin) [delete]"
-      assert_select "li#3", "jeremy (student) [delete]"
-      assert_select "li#4", "randy (student) [delete]"
-      assert_select "li#5", "mendel (instructor) [delete]"
-      assert_select "li#6", "darwin (instructor) [delete]"
-      assert_select "li#7", "keith (student) [delete]"
+      assert_select "li#1", "steve (student)"
+      assert_select "li#2", "calvin (admin)"
+      assert_select "li#3", "jeremy (student)"
+      assert_select "li#4", "randy (student)"
+      assert_select "li#5", "mendel (instructor)"
+      assert_select "li#6", "darwin (instructor)"
+      assert_select "li#7", "keith (student)"
     end
   end
   

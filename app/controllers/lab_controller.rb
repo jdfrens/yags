@@ -1,7 +1,8 @@
 class LabController < ApplicationController
   restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course, 
-  :delete_course, :list_scenarios, :add_scenario, :delete_scenario, :view_scenario,
-  :view_cheat_sheet, :choose_course_scenarios, :view_student_vial, :update_student_solutions_table, :update_student_table ]
+  :delete_course, :list_scenarios, :list_owned_scenarios, :add_scenario, :delete_scenario, 
+  :view_scenario, :view_cheat_sheet, :choose_course_scenarios, :view_student_vial, 
+  :update_student_solutions_table, :update_student_table ]
   
   def index
   end
@@ -73,12 +74,18 @@ class LabController < ApplicationController
     @scenarios = Scenario.find(:all)
   end
   
+  def list_owned_scenarios
+    @scenarios = Scenario.find_all_by_owner_id(current_user.id)
+    render :action => "list_scenarios"
+  end
+  
   def add_scenario
     @species = Species.singleton
     @characters = @species.characters
     @courses = current_user.instructs
     if request.post? && params[:scenario] && params[:characters] && params[:courses]
       @scenario = Scenario.new params[:scenario]
+      @scenario.owner = current_user
       @scenario.save!
       @characters.each do |character|
         if !params[:characters].include?(character.to_s)

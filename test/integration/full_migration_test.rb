@@ -79,6 +79,7 @@ class FullMigrationTest < ActionController::IntegrationTest
       s.table :scenarios do |t|
         t.column :id,         :integer
         t.column :title,      :string
+        t.column :owner_id,   :integer
       end
       
       s.table :scenario_preferences do |t|

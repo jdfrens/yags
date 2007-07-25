@@ -19,7 +19,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "ul.list" do
-      assert_select "li", 10
+      assert_select "li", 11
     end
   end
   
@@ -338,9 +338,15 @@ class LabControllerTest < Test::Unit::TestCase
     get :list_scenarios, {}, user_session(:mendel)
     assert_response :success
     assert_standard_layout
-    assert_select "ul" do
-      assert_select "li", "forgetful instructor"
-      assert_select "li img[src^=/images/cross.png]"
+    assert_select "div#list-scenarios" do
+      assert_select "ul" do
+        assert_select "li", "forgetful instructor"
+        assert_select "li", "party day"
+        assert_select "li", "only sex and legs"
+        assert_select "li", "everything included"
+        assert_select "li img[src^=/images/cross.png]"
+        assert_select "li", 4
+      end
     end
   end
   
@@ -354,6 +360,32 @@ class LabControllerTest < Test::Unit::TestCase
     get :list_scenarios, {}, user_session(:steve)
     assert_response 401 # access denied
   end
+  
+  def test_list_owned_scenarios
+    get :list_owned_scenarios, {}, user_session(:mendel)
+    assert_response :success
+    assert_standard_layout
+    assert_select "div#list-scenarios" do
+      assert_select "ul" do
+        assert_select "li", "forgetful instructor"
+        assert_select "li", "everything included"
+        assert_select "li img[src^=/images/cross.png]"
+        assert_select "li", 2
+      end
+    end
+  end
+  
+  def test_list_owned_scenarios_fails_when_NOT_logged_in_as_instructor
+    get :list_owned_scenarios
+    assert_redirected_to_login
+    
+    get :list_owned_scenarios, {}, user_session(:calvin)
+    assert_response 401 # access denied
+    
+    get :list_owned_scenarios, {}, user_session(:steve)
+    assert_response 401 # access denied
+  end
+  
   
   def test_add_scenario_page
     get :add_scenario, {}, user_session(:mendel)
@@ -387,6 +419,7 @@ class LabControllerTest < Test::Unit::TestCase
       assert !course.scenarios.map { |s| s.title }.include?("Final Exam")
     end
     assert_equal [:sex, :"eye color", :wings, :legs, :antenna, :seizure], scenario.hidden_characters
+    assert_equal users(:darwin).id, Scenario.find_by_title("Final Exam").owner.id
   end 
   
   def test_add_scenario_works_again
@@ -400,6 +433,7 @@ class LabControllerTest < Test::Unit::TestCase
     assert Course.find(1).scenarios.map { |s| s.title }.include?("Intro to Dominance")
     assert_equal [:legs, :antenna, :seizure], scenario.hidden_characters
     assert_equal [:"eye color"], scenario.renamed_characters.map { |rc| rc.renamed_character.intern }
+    assert_equal users(:mendel).id, Scenario.find_by_title("Intro to Dominance").owner.id
   end 
   
   def test_add_scenario_fails_when_NOT_logged_in_as_instructor

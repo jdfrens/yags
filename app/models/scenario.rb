@@ -2,6 +2,7 @@ class Scenario < ActiveRecord::Base
   has_many :scenario_preferences, :dependent => :destroy
   has_many :renamed_characters, :dependent => :destroy
   has_many :racks, :dependent => :destroy
+  belongs_to :owner, :class_name => 'User', :foreign_key => :owner_id
   
   def hidden_characters
     scenario_preferences.map { |p| p.hidden_character.intern }

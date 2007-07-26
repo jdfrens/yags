@@ -1,6 +1,6 @@
 class LabController < ApplicationController
   restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course, 
-  :delete_course, :list_scenarios, :list_owned_scenarios, :add_scenario, :delete_scenario, 
+  :delete_course, :list_scenarios, :add_scenario, :delete_scenario, 
   :view_scenario, :view_cheat_sheet, :choose_course_scenarios, :view_student_vial, 
   :update_student_solutions_table, :update_student_table ]
   
@@ -63,20 +63,24 @@ class LabController < ApplicationController
   end
   
   def delete_course
-    if params[:id] and Course.find_by_id(params[:id]) and 
-      Course.find(params[:id]).instructor == current_user
+    if params[:id] && Course.find_by_id(params[:id]) &&
+        Course.find(params[:id]).instructor == current_user
       Course.find(params[:id]).destroy
     end
     redirect_to :action => "list_courses"
   end
   
   def list_scenarios
-    @scenarios = Scenario.find(:all)
-  end
-  
-  def list_owned_scenarios
-    @scenarios = Scenario.find_all_by_owner_id(current_user.id)
-    render :action => "list_scenarios"
+    case params[:id]
+    when "your"
+      @scenarios = current_user.owned_scenarios
+      @howmany = "your"
+    when "all"
+      @scenarios = Scenario.find(:all)
+      @howmany = "all"
+    else
+      redirect_to :action => "list_scenarios", :id => "all"
+    end
   end
   
   def add_scenario
@@ -116,7 +120,8 @@ class LabController < ApplicationController
   end
   
   def delete_scenario
-    if params[:id] and Scenario.find_by_id(params[:id])
+    if params[:id] && Scenario.find_by_id(params[:id]) &&
+        Scenario.find(params[:id]).owner == current_user
       Scenario.find(params[:id]).destroy
     end
     redirect_to :action => "list_scenarios"
@@ -124,14 +129,17 @@ class LabController < ApplicationController
   
   def view_cheat_sheet
     @species = Species.singleton
-    @species_name = "Virtual Fruit Fly"
-    # later that should be chosen in a drop down list or something
+    @species_name = "YAGS Fruit Fly"
     @characters = [] 
     @species.characters.each do |character|
-      @characters << {:name => character.to_s, :hom_dom => @species.phenotype_from(character, 1,1).to_s, 
-        :het => @species.phenotype_from(character, 1,0).to_s, :rec => @species.phenotype_from(character, 0,0).to_s,
-        :location => @species.position_of(@species.gene_number_of(character)) }
-      # use .map instead?
+      @characters << {
+        :name => character.to_s, 
+        :hom_dom => @species.phenotype_from(character, 1,1).to_s, 
+        :het => @species.phenotype_from(character, 1,0).to_s, 
+        :rec => @species.phenotype_from(character, 0,0).to_s,
+        :location => @species.position_of(@species.gene_number_of(character)), 
+        :sex_linked => @species.is_sex_linked?(character) ? "yes" : "no",
+        :randomizable => @species.alternate_phenotypes(character) != [] ? "yes" : "no" }
     end
   end
   
@@ -164,7 +172,6 @@ class LabController < ApplicationController
       @counts = @vial.counts_for_table(@row_character, @column_character)
     else
       raise InvalidOwner
-      # TODO is this what we want here?
     end
   rescue InvalidHttpMethod, InvalidOwner
     render :nothing => true, :status => 401

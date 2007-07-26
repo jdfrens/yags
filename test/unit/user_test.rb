@@ -303,4 +303,15 @@ class UserTest < Test::Unit::TestCase
         :fixture_id => 3, :number_of_dependents => 2)
   end
   
+  def test_scenarios_are_destroyed_along_with_instructor
+    number_of_old_scenarios = Scenario.find(:all).size
+    assert_equal 1, User.find(:all, :conditions => "id = 5").size
+    assert_equal 2, Scenario.find(:all, :conditions => "owner_id = 5").size
+    
+    users(:mendel).destroy
+    assert_equal 0, User.find(:all, :conditions => "id = 5").size
+    assert_equal 0, Scenario.find(:all, :conditions => "owner_id = 5").size
+    assert_equal number_of_old_scenarios - 2, Scenario.find(:all).size
+  end
+
 end

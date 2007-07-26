@@ -9,6 +9,8 @@
 			<th style="width:50px">Heterozygous</th>
 			<th style="width:50px">Homozygous Dominant</th>
 			<th style="width:50px">Alelle Location</th>
+			<th style="width:50px">Sex Linked</th>
+			<th style="width:50px">Randomizable</th>
 		</tr>
 		<% for character in @characters -%>
 		<tr>
@@ -17,10 +19,12 @@
 			<td><%= h(character[:het]) %></td>
 			<td><%= h(character[:hom_dom]) %></td>
 			<td><%= h(character[:location]) %></td>
+			<td><%= h(character[:sex_linked]) %></td>
+			<td><%= h(character[:randomizable]) %></td>
 		</tr>
 		<% end -%>
 	</table>
-	<p> <!-- maybe this should be id="note" later... or maybe it won't be around anyway -->
+	<p>
 		<em id="instruction">Note: characters with locations closer than 0.5 from each other are linked.</em>
 	</p>
 </div>

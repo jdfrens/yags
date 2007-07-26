@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   has_one  :basic_preference, :dependent => :destroy
   has_many :phenotype_alternates, :dependent => :destroy
   has_many :instructs, :class_name => "Course", :foreign_key => "instructor_id", :dependent => :destroy
+  has_many :owned_scenarios, :class_name => 'Scenario', :foreign_key => :owner_id, :dependent => :destroy
   belongs_to :enrolled_in, :class_name => "Course", :foreign_key => "course_id"
   
   def solutions
@@ -164,16 +165,16 @@ class User < ActiveRecord::Base
   # helper
   
   def make_phenotype_alternates(scenario_id, renamed_character, number_generator)
-    used_up_alternates = []
+    used_alternates = []
     current_scenario.species.phenotypes(renamed_character.intern).each do |phenotype|
       alternate_phenotypes = current_scenario.species.alternate_phenotypes(renamed_character.intern) - 
-          used_up_alternates
+          used_alternates
       alternate_name = alternate_phenotypes[number_generator.random_number(alternate_phenotypes.size - 
-          used_up_alternates.size)]
+          used_alternates.size)]
       phenotype_alternates.create!( :user_id => self.id,
           :scenario_id => scenario_id, :affected_character => renamed_character,
           :original_phenotype => phenotype.to_s, :renamed_phenotype => alternate_name.to_s )
-      used_up_alternates << alternate_name
+      used_alternates << alternate_name
     end
   end
   

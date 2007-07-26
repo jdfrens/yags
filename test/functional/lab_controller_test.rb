@@ -340,8 +340,13 @@ class LabControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "list_courses"
   end
   
-  def test_list_scenarios
+  def test_list_scenarios_redirects_to_list_all
     get :list_scenarios, {}, user_session(:mendel)
+    assert_redirected_to :action => "list_scenarios", :id => "all"
+  end
+  
+  def test_list_all_scenarios
+    get :list_scenarios, {:id => "all"}, user_session(:mendel)
     assert_response :success
     assert_standard_layout
     assert_select "div#list-scenarios" do
@@ -350,48 +355,47 @@ class LabControllerTest < Test::Unit::TestCase
         assert_select "li", "party day"
         assert_select "li", "only sex and legs"
         assert_select "li", "everything included"
-        assert_select "li img[src^=/images/cross.png]"
+        assert_select "li img[src^=/images/cross.png]", 2
         assert_select "li", 4
       end
     end
   end
   
-  def test_list_scenarios_fails_when_NOT_logged_in_as_instructor
-    get :list_scenarios
+  def test_list_all_scenarios_fails_when_NOT_logged_in_as_instructor
+    get :list_scenarios, :id => "all"
     assert_redirected_to_login
     
-    get :list_scenarios, {}, user_session(:calvin)
+    get :list_scenarios, {:id => "all"}, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :list_scenarios, {}, user_session(:steve)
+    get :list_scenarios, {:id => "all"}, user_session(:steve)
     assert_response 401 # access denied
   end
   
-  def test_list_owned_scenarios
-    get :list_owned_scenarios, {}, user_session(:mendel)
+  def test_list_your_scenarios
+    get :list_scenarios, {:id => "your"}, user_session(:mendel)
     assert_response :success
     assert_standard_layout
     assert_select "div#list-scenarios" do
       assert_select "ul" do
         assert_select "li", "forgetful instructor"
         assert_select "li", "everything included"
-        assert_select "li img[src^=/images/cross.png]"
+        assert_select "li img[src^=/images/cross.png]", 2
         assert_select "li", 2
       end
     end
   end
   
-  def test_list_owned_scenarios_fails_when_NOT_logged_in_as_instructor
-    get :list_owned_scenarios
+  def test_list_your_scenarios_fails_when_NOT_logged_in_as_instructor
+    get :list_scenarios, :id => "your"
     assert_redirected_to_login
     
-    get :list_owned_scenarios, {}, user_session(:calvin)
+    get :list_scenarios, {:id => "your"}, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :list_owned_scenarios, {}, user_session(:steve)
+    get :list_scenarios, {:id => "your"}, user_session(:steve)
     assert_response 401 # access denied
   end
-  
   
   def test_add_scenario_page
     get :add_scenario, {}, user_session(:mendel)
@@ -481,22 +485,28 @@ class LabControllerTest < Test::Unit::TestCase
   end
   
   def test_delete_scenario
-    assert_not_nil Scenario.find_by_id(1) # "Forgetful Instructor"
-    post :delete_scenario, { :id => 1 }, user_session(:darwin)
+    assert_not_nil Scenario.find_by_id(2) # "Party Day"
+    post :delete_scenario, { :id => 2 }, user_session(:darwin)
     assert_redirected_to :action => :list_scenarios
-    assert_nil Scenario.find_by_id(1)
+    assert_nil Scenario.find_by_id(2)
   end
   
   def test_delete_scenario_fails_when_NOT_logged_in_as_instructor
-    get :delete_scenario, { :id => 1 }
+    post :delete_scenario, { :id => 1 }
     assert_redirected_to_login
     
-    get :delete_scenario, { :id => 1 }, user_session(:calvin)
+    post :delete_scenario, { :id => 1 }, user_session(:calvin)
     assert_response 401 # access denied
     
-    get :delete_scenario, { :id => 1 }, user_session(:steve)
+    post :delete_scenario, { :id => 1 }, user_session(:steve)
     assert_response 401 # access denied
     
+    assert_not_nil Scenario.find_by_id(1)
+  end
+  
+  def test_delete_scenario_fails_when_NOT_instructors_scenario
+    post :delete_scenario, { :id => 1 }, user_session(:darwin)
+    assert_redirected_to :action => :list_scenarios
     assert_not_nil Scenario.find_by_id(1)
   end
   
@@ -506,8 +516,8 @@ class LabControllerTest < Test::Unit::TestCase
     assert_standard_layout
     assert_select "table" do
       assert_select "tr", 7
-      assert_select "th", 11
-      assert_select "td", 24
+      assert_select "th", 13
+      assert_select "td", 36
     end
   end
   

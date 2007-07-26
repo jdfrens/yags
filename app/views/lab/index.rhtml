@@ -1,10 +1,10 @@
 <p>Welcome <%= h(current_user.username) -%></p>
-<h2>Current Lab Functionality</h2>
+<h2>Lab Functionality</h2>
 <ul class="list">
   <li><%= link_to "List Courses", :action => :list_courses %></li>
   <li><%= link_to "Add Course", :action => :add_course %></li>
-  <li><%= link_to "List All Scenarios", :action => :list_scenarios %></li>
-  <li><%= link_to "List Owned Scenarios", :action => :list_owned_scenarios %></li>
+  <li><%= link_to "List All Scenarios", :action => :list_scenarios, :id => "all" %></li>
+  <li><%= link_to "List Your Scenarios", :action => :list_scenarios, :id => "your" %></li>
   <li><%= link_to "Add Scenario", :action => :add_scenario %></li>
   <li><%= link_to "View Cheat Sheet", :action => :view_cheat_sheet %></li>
   <li><%= link_to "List All Users", :controller => :users, :action => :list_users %></li>

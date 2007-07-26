@@ -2,13 +2,16 @@
 	<div class="notice"><%= flash[:notice] %></div>
 <% end -%>
 
-<h1>Listing All Scenarios</h1>
+<h1><%= @howmany.capitalize %> Scenarios</h1>
 
 <div id="list-scenarios">
 	<ul>
 		<% for scenario in @scenarios -%>
             <li id=<%= scenario.id %> >
-              <%= link_to h(scenario.title), :action => :view_scenario, :id => scenario %> <%= link_to image_tag("cross.png"), { :action => "delete_scenario", :id => scenario.id }, :confirm => "Delete the \"#{scenario.title}\" scenario?", :method => :post -%>
+              <%= link_to h(scenario.title), :action => :view_scenario, :id => scenario %> 
+			  <% if current_user.owns? scenario -%>
+			  	<%= link_to image_tag("cross.png"), { :action => "delete_scenario", :id => scenario.id }, :confirm => "Delete the \"#{scenario.title}\" scenario?", :method => :post -%>
+			  <% end -%>
             </li>
 		<% end -%>
 	</ul>

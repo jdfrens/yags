@@ -12,14 +12,12 @@
         <tr>
             <% @visible_characters.each do |ch| -%>
                 <td><%= @vial.mom.vial.renamed_phenotype(ch, @vial.mom.phenotype(ch)) %></td>
-				        <!-- yucky code here... -->
             <% end -%>
             <td><%= link_to @vial.mom.vial.label, :action => :view_vial, :id => @vial.mom.vial %></td>
         </tr>
         <tr>
             <% @visible_characters.each do |ch| -%>
                 <td><%= @vial.dad.vial.renamed_phenotype(ch, @vial.dad.phenotype(ch)) %></td>
-				        <!-- yucky here too... -->
             <% end -%>
             <td><%= link_to @vial.dad.vial.label, :action => :view_vial, :id => @vial.dad.vial %></td>
         </tr>

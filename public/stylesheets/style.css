@@ -29,6 +29,14 @@ span.highlight {
 	background-color: #B5F9B3;
 }
 
+span.indented {
+	margin-left: 1.2em;
+}
+
+#student-vial-info {
+	width: 550px;
+}
+
 #toggle-trash a {
 	color: #878787;
 }

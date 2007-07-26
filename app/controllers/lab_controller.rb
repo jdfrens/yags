@@ -135,11 +135,11 @@ class LabController < ApplicationController
     end
   end
   
-  # TODO: Show genotype information 
   def view_student_vial
     if (params[:id] && @vial = Vial.find_by_id(params[:id])) &&
         (current_user.instructs.include?(@vial.owner.enrolled_in))
-      @visible_characters = current_user.visible_characters
+      @visible_characters = @vial.owner.current_scenario.visible_characters
+      @parents = [@vial.mom, @vial.dad]
       @table = @vial.owner.row && @vial.owner.column
       if @table
         @row_character = @vial.owner.row.intern

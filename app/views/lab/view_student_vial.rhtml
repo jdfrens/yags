@@ -1,14 +1,33 @@
 <div id="student-vial-info">
 	<h1>Vial <em><%= @vial.label %></em> for <%= @vial.owner.username %></h1>
+	
 	<h2>General Information</h2>
-	<p><strong>Genotypes of parents:</strong> Genotype information of the parents?
-	<br />
-	<strong>Number of offspring:</strong> <%= @vial.flies.size %>
-	<br />
-	<strong>Pedigree number:</strong> <%= @vial.pedigree_number %>
-	<br /></p>
+	<p><strong>Scenario:</strong><span class="indented"><%= @vial.owner.current_scenario.title %></span></p>
+	<p><strong>Number of offspring:</strong><span class="indented"><%= @vial.flies.size %></span></p>
+	<p><strong>Pedigree number:</strong><span class="indented"><%= @vial.pedigree_number %></span></p>
+	
+	<h3>Genotypes of parents</h3>
+	<% if @vial.has_parents? %>
+	<table>
+		<tr>
+			<% @visible_characters.each do |character| %>
+			<th><%= character %></th>
+			<% end %>
+		</tr>
+		<% for parent in @parents %>
+		<tr>
+			<% @visible_characters.each_with_index do |character, i| %>
+			<td><%= parent.letter_representation(character, [*'A'..'Z'][i]) %></td>
+			<% end %>
+		</tr>
+		<% end %>
+	</table>
+	<% else %>
+		<p>Parents are unknown for field vials.</p>
+	<% end %>	
+
 	<h2>View Parent Vials</h2>
-	<% if @vial.dad && @vial.mom %>
+	<% if @vial.has_parents? %>
 		<p><%= link_to @vial.dad.vial.label, :action => :view_student_vial, :id => @vial.dad.vial %>
 		<br />
 		<%= link_to @vial.mom.vial.label, :action => :view_student_vial, :id => @vial.mom.vial %></p>
@@ -20,4 +39,3 @@
 	<h2>Two-Way Table</h2>
     <%= render :partial => "student_two_way_table" %>
 </div>
-

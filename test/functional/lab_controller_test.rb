@@ -189,25 +189,25 @@ class LabControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "div#student-vial-info" do
-      assert_select "p", /Number of offspring: #{vials(:random_vial).flies.size}/
-      assert_select "p", /Pedigree number: #{vials(:random_vial).pedigree_number}/
-      assert_select "p", "Parents are unknown for field vials."
+      assert_select "p", "Scenario:#{vials(:random_vial).owner.current_scenario.title}"
+      assert_select "p", "Number of offspring:#{vials(:random_vial).flies.size}"
+      assert_select "p", "Pedigree number:#{vials(:random_vial).pedigree_number}"
+      
+      assert_select "h3", "Genotypes of parents"
+      assert_select "p:nth-of-type(4)", "Parents are unknown for field vials."
+      
+      assert_select "h2", "View Parent Vials"
+      assert_select "p:nth-of-type(5)", "Parents are unknown for field vials."
     end
     assert_select "div#student-two-way-table" do
       assert_select "form[action=/lab/update_student_table]" do
         assert_select "select[name=character_col]" do
-          assert_select "option[value=sex]", "sex"
           assert_select "option[value=eye color]", "eye color"
           assert_select "option[value=wings]", "wings"
-          assert_select "option[value=legs]", "legs"
-          assert_select "option[value=antenna]", "antenna"
         end
         assert_select "select[name=character_row]" do
-          assert_select "option[value=sex]", "sex"
           assert_select "option[value=eye color]", "eye color"
           assert_select "option[value=wings]", "wings"
-          assert_select "option[value=legs]", "legs"
-          assert_select "option[value=antenna]", "antenna"
         end
         assert_select "div#student-vial-table" do
           assert_select "table" do
@@ -227,9 +227,15 @@ class LabControllerTest < Test::Unit::TestCase
     assert_standard_layout
     
     assert_select "div#student-vial-info" do
-      assert_select "p", /Number of offspring: #{vials(:randy_vial).flies.size}/
-      assert_select "p", /Pedigree number: #{vials(:randy_vial).pedigree_number}/
-      assert_select "p", "Parents are unknown for field vials."
+      assert_select "p", "Scenario:#{vials(:randy_vial).owner.current_scenario.title}"
+      assert_select "p", "Number of offspring:#{vials(:randy_vial).flies.size}"
+      assert_select "p", "Pedigree number:#{vials(:randy_vial).pedigree_number}"
+      
+      assert_select "h3", "Genotypes of parents"
+      assert_select "p:nth-of-type(4)", "Parents are unknown for field vials."
+      
+      assert_select "h2", "View Parent Vials"
+      assert_select "p:nth-of-type(5)", "Parents are unknown for field vials."
     end
     assert_select "div#student-two-way-table" do
       assert_select "form[action=/lab/update_student_table]" do

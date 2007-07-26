@@ -3,6 +3,14 @@ body {
 	font-family: Tahoma;
 }
 
+h2 {
+	
+}
+
+h3{	
+	
+}
+
 img {
 	border: 0px;
 }
@@ -31,10 +39,6 @@ span.highlight {
 
 span.indented {
 	margin-left: 1.2em;
-}
-
-#student-vial-info {
-	width: 550px;
 }
 
 #toggle-trash a {
@@ -148,15 +152,13 @@ table {
 /* BUTTONS */
 /* code from ParticleTree.com */
 .buttons a, .buttons button{
-    display:block;
-    float:left;
     margin:0 7px 0 0;
     background-color:#f5f5f5;
     border:1px solid #dedede;
     border-top:1px solid #eee;
     border-left:1px solid #eee;
 
-    font-family: Tahoma;
+    font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
     font-size:100%;
     line-height:130%;
     text-decoration:none;
@@ -246,7 +248,7 @@ button.positive, .buttons a.positive{
 	font: bold smaller sans-serif;
 }
 
-.bar {
+.header {
 	background-color: #CDFBCB;
 	color: #222;
 	padding: 1em;  
@@ -256,32 +258,41 @@ button.positive, .buttons a.positive{
 	float: right;
 }
 
-.bar a:link {
+.header a:link {
 	color: #04f;
 }
 
-.bar a:visited {
+.header a:visited {
 	color: #b40;
 }
 
-.bar a:hover {
+.header a:hover {
 	color: #0b6304;
 	text-decoration: none;
 }
 
-.bar h1 {
+.header h1 {
 	display: inline;
 	font-size: 80px;
 }
 
-.bar img {
+.header img {
 	height: 80px;
 }
 
 .main {
 	background-color: #fff;
+	height: 100%;
 }
 
+.footer {
+	margin-top: 10px;
+	background-color: #CDFBCB;
+	height: 3em;
+	font-size: .5em;
+	line-height: 3em; 
+	text-align: center;
+}
 
 .fieldWithErrors {
   padding: 2px;

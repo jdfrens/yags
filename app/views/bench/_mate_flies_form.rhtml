@@ -36,8 +36,13 @@
   </table>
 	<div id="dad"></div>
 	<div id="mom"></div>
-  <%= submit_tag "Cross", :class => "submit", :id => "cross_button" %>
-  <div style="display: inline;">
-    <%= image_tag '/images/green-load.gif', :id => "spinner_cross", :style => 'display: none;' %>
-  </div>
+<div class="buttons">	
+	<button type="submit" class="positive" id="cross_button" value="Cross">Cross</button>
+	<div style="display: inline;">
+	<%= image_tag '/images/green-load.gif', :id => "spinner_cross", :style => 'display: none;' %>
+	</div>
+</div>
+    
+ 
+  
 <% end -%>

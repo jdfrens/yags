@@ -1,6 +1,6 @@
 <%= error_messages_for 'rack' %>
 
-<h1>Add Rack</h1>
+<h1>Create New Rack</h1>
 
 <% form_for :rack do |form| %>
     <p>
@@ -9,5 +9,8 @@
 		<%= javascript_tag "$('rack_label').focus()" %>
     </p>
     
-    <%= submit_tag "Add Rack", :class => "submit" %>
+    <div class="buttons">	
+	<button type="submit" class="positive">
+        <%= image_tag 'add.png' %>Create Rack</button>
+	</div>
 <% end %>

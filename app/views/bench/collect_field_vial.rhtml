@@ -20,5 +20,8 @@
 		<%= collection_select(:vial, :rack_id, current_user.current_racks_without_trash, :id, :label) %>
 	</p>
     
-    <%= submit_tag "Collect field vial", :class => "submit" %>
+    <div class="buttons">	
+	<button type="submit" class="positive">
+        <%= image_tag 'pill_add.png' %>Collect Field Vial</button>
+	</div>
 <% end %>

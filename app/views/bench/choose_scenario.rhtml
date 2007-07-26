@@ -12,5 +12,8 @@
 		<label for="scenario_id"><strong>Scenario:</strong> </label>
 		<%= collection_select(:basic_preference, :scenario_id, current_user.enrolled_in.scenarios, :id, :title) %>
 	</p>
-  <%= submit_tag "Update", :class => "submit" -%>
+   <div class="buttons">	
+	<button type="submit" class="positive">
+        <%= image_tag 'tick.png' %>Save</button>
+</div>
 <% end -%>

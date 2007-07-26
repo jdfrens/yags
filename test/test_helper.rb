@@ -38,7 +38,7 @@ class Test::Unit::TestCase
   end
   
   def assert_standard_layout
-    assert_select "div.bar" do
+    assert_select "div.header" do
       assert_select "h1", "YAGS"
       assert_select "div#session-info" do
         if logged_in?

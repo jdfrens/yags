@@ -8,5 +8,9 @@
     <%= check_box_tag "characters[]", character.to_s, @user.visible?(character) -%>
     <%= character.to_s %> <br />
   <% end -%>
-  <%= submit_tag "Update", :class => "submit" -%>
+  <br />
+  <div class="buttons">	
+	<button type="submit" class="positive">
+        <%= image_tag 'tick.png' %>Save</button>
+</div>
 <% end -%>

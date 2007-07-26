@@ -33,5 +33,8 @@
         <%= collection_select :user, :course_id, @courses, :id, :name %>
 	</p>
     
-    <%= submit_tag "Add Student", :class => "submit" %>
+    <div class="buttons">	
+	<button type="submit" class="positive">
+        <%= image_tag 'user_add.png' %>Add Student</button>
+</div>
 <% end %>

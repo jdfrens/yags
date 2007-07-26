@@ -22,7 +22,7 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_select "input#user_username[type=text]"
     assert_select "script[type=text/javascript]"
     assert_select "input#user_password[type=password]"
-    assert_select "input[type=submit]"
+    assert_select "button[type=submit]", /Login/
   end
   
   def test_login_for_real

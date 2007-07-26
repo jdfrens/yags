@@ -703,7 +703,7 @@ class BenchControllerTest < Test::Unit::TestCase
         assert_select "option", "steve stock"
         assert_select "option", "steve bench"
       end
-      assert_select "input[type=submit][value=Cross]"
+      assert_select "button[type=submit][value=Cross]", "Cross"
     end
   end
   

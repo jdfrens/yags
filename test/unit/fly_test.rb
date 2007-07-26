@@ -103,4 +103,17 @@ class FlyTest < Test::Unit::TestCase
     assert users(:jeremy), flies(:gamete_maker).owner
   end
   
+  def test_letter_representation
+    assert_equal "Aa", flies(:fly_00).letter_representation(:sex,'A')
+    assert_equal "Aa", flies(:fly_00).letter_representation(:sex,'a')
+    assert_equal "bB", flies(:fly_00).letter_representation(:legs,'B')
+    assert_equal "ee", flies(:fly_00).letter_representation(:"eye color",'E')
+    assert_equal "WW", flies(:fly_00).letter_representation(:wings,'w')
+    
+    assert_equal "SS", flies(:bob).letter_representation(:sex,'S')
+    assert_equal "aa", flies(:fly_dad).letter_representation(:antenna,'A')
+    assert_equal "Cc", flies(:fly_10).letter_representation(:antenna,'C')
+    assert_equal "dD", flies(:fly_01).letter_representation(:seizure,'D')
+  end
+  
 end

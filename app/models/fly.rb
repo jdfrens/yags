@@ -30,6 +30,12 @@ class Fly < ActiveRecord::Base
     vial.owner
   end
   
+  def letter_representation(character, letter)
+    genotype = genotypes.select { |g| g.gene_number == species.gene_number_of(character) }.first
+    (genotype.mom_allele == 1 ? letter.upcase : letter.downcase) + 
+        (genotype.dad_allele == 1 ? letter.upcase : letter.downcase)
+  end
+  
   def mate_with(partner, bit_gen = RandomBitGenerator.new)
     if self.male? 
       raise ArgumentError, "mating two males" if partner.male?

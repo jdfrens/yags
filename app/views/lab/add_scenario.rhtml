@@ -4,29 +4,28 @@
 
 <% form_for :scenario do |form| %>
     <p>
-        <label for="species"><strong>Species: </strong></label>
-        YAGS Virtual Fruit Fly
-    </p>
-    <p>
         <label for="title"><strong>Title: </strong></label>
         <%= form.text_field :title, :size => 40 %>
 		<%= javascript_tag "$('scenario_title').focus()" %>
     </p>
+    <p>
+        <label for="species"><strong>Species: </strong></label>
+        YAGS Virtual Fruit Fly
+    </p>
     
-	<label for="characters"><strong>Characters: </strong></label>
-    <!-- could this part become a partial that changes once we have multiple species? -->
+	<label for="characters"><strong>Visible Characters: </strong></label>
 	<table>
     <% @characters.each do |character| -%>
-		<tr><td><%= check_box_tag "characters[]", character.to_s, true -%>
+		<tr><td><%= check_box_tag "characters[]", character.to_s, false -%>
                 <%= character.to_s %></td>
 			<td><% if @species.alternate_phenotypes(character) != [] -%>
-			      <%= check_box_tag "alternates[]", character.to_s, true -%>
+			      <%= check_box_tag "alternates[]", character.to_s, false -%>
         	      <%= "use random " + character.to_s %>
 		        <% end -%></td></tr>
     <% end -%>
 	</table>
 	
-	<label for="courses"><strong>Courses: </strong></label>
+	<label for="courses"><strong>Add Scenario to: </strong></label>
 	<table>
 		<% @courses.each do |course| -%>
 			<tr><td><%= check_box_tag "courses[]", course.id, false -%>
@@ -34,5 +33,5 @@
 		<% end -%>
 	</table>
     
-    <%= submit_tag "Add Scenario", :class => "submit" %>
+    <%= submit_tag "Create This Scenario", :class => "submit" %>
 <% end %>

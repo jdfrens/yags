@@ -396,13 +396,12 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "label[for=title]"
       assert_select "script[type=text/javascript]"
       
-      assert_select "input[value=sex][checked=checked]"
-      assert_select "input[value=eye color][checked=checked]", 2
-      assert_select "input[value=legs][checked=checked]"
-      assert_select "input[value=wings][checked=checked]"
-      assert_select "input[value=antenna][checked=checked]"
-      assert_select "input[value=seizure][checked=checked]"
-      assert_select "input[type=checkbox][checked=checked]", 7
+      assert_select "input[value=sex]"
+      assert_select "input[value=eye color]", 2
+      assert_select "input[value=legs]"
+      assert_select "input[value=wings]"
+      assert_select "input[value=antenna]"
+      assert_select "input[value=seizure]"
       assert_select "input[value=1]"
       assert_select "input[type=checkbox]", 8
     end

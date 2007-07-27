@@ -144,7 +144,6 @@ class Vial < ActiveRecord::Base
     counts
   end
   
-  # i don't know that this is the right location for this method...
   def renamed_phenotype(character, phenotype)
     phenotype_alternate = owner.phenotype_alternates.select do |pa|
       pa.scenario_id == owner.current_scenario.id and 

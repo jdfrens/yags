@@ -3,6 +3,8 @@
 <% end -%>
 
 <h1><%= @howmany.capitalize %> Scenarios</h1>
+<%= link_to "all scenarios", :action => :list_scenarios, :id => "all" %> |
+<%= link_to "your scenarios", :action => :list_scenarios, :id => "your" %>
 
 <div id="list-scenarios">
 	<ul>

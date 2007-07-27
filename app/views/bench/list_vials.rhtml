@@ -7,16 +7,21 @@
 <div id="list-vials">
 	<% for @rack in @racks -%>
 		<h2>Vials on the <em><%= in_place_editor_field :rack, 'label', {} %></em> rack:</h2>
-		<ul id="rack_<%= @rack.id %>">
-    		<% @rack.vials.each do |vial| -%>
-                <li id="vial_<%= vial.id %>">
-                  <%= link_to vial.label, :action => :view_vial, :id => vial %>
-				  <% if vial.solution && vial.solution.number != nil -%>
-				    <%= image_tag '/images/star.png', :title => "Solves Problem ##{vial.solution.number}" %>
-                  <% end -%>
-				</li>
+		<!-- move some of this stuff into the stylesheet? -->
+		<table id="rack_<%= @rack.id %>" width="100%">
+    		<% @rack.vials.in_groups_of(3, false).each do |group| -%>
+			<tr>
+				<%  group.each do |vial| -%>
+	                <td id="vial_<%= vial.id %>" width="33%">
+	                  <img src="/images/arrow.gif"> <%= link_to vial.label, :action => :view_vial, :id => vial %>
+					  <% if vial.solution && vial.solution.number != nil -%>
+					    <%= image_tag '/images/star.png', :title => "Solves Problem ##{vial.solution.number}" %>
+	                  <% end -%>
+					</td>
+				<% end -%>
+			</tr>
 			<% end -%>
-		</ul>
+		</table>
 	<% end -%>
 </div>
 <br />

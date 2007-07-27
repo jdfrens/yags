@@ -134,6 +134,10 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_redirected_to_login
   end
   
+  def test_add_rack_fails_when_named_trash
+    # TODO test_add_rack_fails_when_named_trash
+  end
+  
   def test_add_rack_protects_vials
     post :add_rack, {
       :rack => {
@@ -640,20 +644,21 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#list-vials" do
       assert_select "h2", /Vials on the/
       assert_select "span#rack_label_2_in_place_editor", "steve bench"
-      assert_select "ul#rack_2" do
-        assert_select "li", 5
-        assert_select "li#vial_1", "First vial"
-        assert_select "li#vial_1 img[src^=/images/star.png][title=Solves Problem #8]"
-        assert_select "li#vial_2", "Empty vial"
-        assert_select "li#vial_2 img", false
-        assert_select "li#vial_3", "Single fly vial"
-        assert_select "li#vial_3 img", false
-        assert_select "li#vial_4", "Multiple fly vial"
-        assert_select "li#vial_4 img", false
-        assert_select "li#vial_5", "Parents vial"
-        assert_select "li#vial_5 img[src^=/images/star.png][title=Solves Problem #1]"
+      assert_select "table#rack_2" do
+        assert_select "td", 5
+        assert_select "td#vial_1", "First vial"
+        assert_select "td#vial_1 img[src^=/images/star.png][title=Solves Problem #8]"
+        assert_select "td#vial_1 img", 2
+        assert_select "td#vial_2", "Empty vial"
+        assert_select "td#vial_2 img", 1
+        assert_select "td#vial_3", "Single fly vial"
+        assert_select "td#vial_3 img", 1
+        assert_select "td#vial_4", "Multiple fly vial"
+        assert_select "td#vial_4 img", 1
+        assert_select "td#vial_5", "Parents vial"
+        assert_select "td#vial_5 img[src^=/images/star.png][title=Solves Problem #1]"
       end
-      assert_select "ul", 2, "steve should have 2 visible racks for current scenario"
+      assert_select "table", 2, "steve should have 2 visible racks for current scenario"
     end
     assert_select "div#toggle-trash" do
       assert_select "p", "Show/Hide your Trash"
@@ -669,12 +674,13 @@ class BenchControllerTest < Test::Unit::TestCase
     assert_select "div#list-vials" do
       assert_select "h2", /Vials on the/
       assert_select "span#rack_label_4_in_place_editor", "jeremy bench"
-      assert_select "ul#rack_4" do
-        assert_select "li", 2
-        assert_select "li#vial_6", "Destroyable vial"
-        assert_select "li#vial_6 img", false
-        assert_select "li#vial_7", "Another vial"
-        assert_select "li#vial_7 img[src^=/images/star.png]"
+      assert_select "table#rack_4" do
+        assert_select "td", 2
+        assert_select "td#vial_6", "Destroyable vial"
+        assert_select "td#vial_6 img", 1
+        assert_select "td#vial_7", "Another vial"
+        assert_select "td#vial_7 img[src^=/images/star.png]"
+        assert_select "td#vial_7 img", 2
       end
     end
   end

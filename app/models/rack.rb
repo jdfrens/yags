@@ -11,7 +11,7 @@ class Rack < ActiveRecord::Base
   attr_accessible :label
   
   def trash?
-    self.label == "Trash"
+    label.match(/trash/i)
   end
   
 end

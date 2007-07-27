@@ -135,7 +135,12 @@ class BenchControllerTest < Test::Unit::TestCase
   end
   
   def test_add_rack_fails_when_named_trash
-    # TODO test_add_rack_fails_when_named_trash
+    number_of_old_racks =  Rack.find(:all).size
+    post :add_rack, {
+        :rack => { :label => "trash"} },
+        user_session(:steve)
+    assert_equal number_of_old_racks, Rack.find(:all).size
+    assert_redirected_to :action => "list_vials"
   end
   
   def test_add_rack_protects_vials

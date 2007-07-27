@@ -1,30 +1,35 @@
 <h1>Batch Add Student</h1>
 
 <p>
-	Add multiple students with this form by entering their information as Comma Separated Values.  
-	Include each students last name, first name, and email address on a separate line.  The part
-	of the email address before the '@' will be used as the students' username.  Don't forget to 
+	Add multiple students with this form by entering their information as comma separated values (.csv).  
+	On each line, include the last name, first name, and email address for a single student.  The part
+	of the email address before the '@' will be used as the student's username.  Don't forget to 
 	include a password and select which course to add these students to.
 </p>
-<em id="instruction">
-	Example:<br />
-	Calvin, John, jc2@calvin.foo<br />
-	Luther, Martin, ml1@calvin.foo
-</em>
 
 <% form_for :user do |form| %>
-    <p>
-        <label for="student_csv"><strong>Student Information: </strong></label><br />
-        <%= text_area_tag :student_csv, nil, :size => "80x15" %>
-    </p>
-	<p>
-        <label for="password"><strong>Password: </strong></label>
-        <%= text_field_tag :password %>
-	</p>
     <p>
         <label for="course_id"><strong>Course: </strong></label>
         <%= collection_select :user, :course_id, @courses, :id, :name %>
 	</p>
+	<em id="instruction">
+		This password will be used for all students created with this form.
+	</em>
+	<p>
+        <label for="password"><strong>Password: </strong></label>
+        <%= text_field_tag :password %>
+	</p>
+    <em id="instruction">
+		Example:<br />
+		Calvin, John, jc2@calvin.foo<br />
+		Luther, Martin, ml1@calvin.foo
+    </em>
+    <p>
+        <label for="student_csv"><strong>Student Information: </strong></label><br />
+        <%= text_area_tag :student_csv, nil, :size => "80x15" %>
+    </p>
+
+
     
     <div class="buttons">	
 	<button type="submit" class="positive">

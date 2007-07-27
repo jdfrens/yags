@@ -195,7 +195,6 @@ class BenchController < ApplicationController
       current_user.set_table_preference @row_character.to_s, @column_character.to_s
     else
       raise InvalidOwner
-      # TODO is this what we want here?
     end
   rescue InvalidHttpMethod, InvalidOwner
     render :nothing => true, :status => 401
@@ -206,7 +205,7 @@ class BenchController < ApplicationController
       @rack = Rack.new params[:rack]
       @rack.owner = current_user
       @rack.scenario = current_user.current_scenario
-      @rack.save!
+      @rack.save! unless @rack.trash?
       redirect_to :action => "list_vials"
     else
       render

@@ -3,12 +3,19 @@ body {
 	font-family: Tahoma;
 }
 
+h1 {
+	font-size: 150%;
+}
+
 h2 {
-	
+	color: #084803;
+	font-size: 125%;
+	letter-spacing: 1px
 }
 
 h3{	
-	
+	color: #940B5e;
+	font-size: 100%;
 }
 
 img {
@@ -52,6 +59,10 @@ span.indented {
 .vial-title h1 {
     margin: 0;
     padding: 0;
+}
+
+ul li {
+	list-style-image: url(/images/bullet_green.png)
 }
 
 #vial-info {
@@ -249,9 +260,9 @@ button.positive, .buttons a.positive{
 }
 
 .header {
-	background-color: #CDFBCB;
+	background: #97E292;
 	color: #222;
-	padding: 1em;  
+	padding: 1em;
 }
 
 #session-info {
@@ -276,12 +287,9 @@ button.positive, .buttons a.positive{
 	font-size: 80px;
 }
 
-.header img {
-	height: 80px;
-}
-
 .main {
 	background-color: #fff;
+	padding: 0 0 0 10px;
 	height: 100%;
 }
 

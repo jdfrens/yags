@@ -26,11 +26,13 @@
 		<p>Parents are unknown for field vials.</p>
 	<% end %>	
 
-	<h2>View Parent Vials</h2>
+	<h2>Parent Vials</h2>
 	<% if @vial.has_parents? %>
-		<p><%= link_to @vial.dad.vial.label, :action => :view_student_vial, :id => @vial.dad.vial %>
-		<br />
-		<%= link_to @vial.mom.vial.label, :action => :view_student_vial, :id => @vial.mom.vial %></p>
+		<div>
+			<%= image_tag('male.png') %> <%= link_to @vial.dad.vial.label, :action => :view_student_vial, :id => @vial.dad.vial %>
+			<br />
+			<%= image_tag('female.png') %> <%= link_to @vial.mom.vial.label, :action => :view_student_vial, :id => @vial.mom.vial %>
+		</div>
 	<% else %>
 		<p>Parents are unknown for field vials.</p>
 	<% end %>

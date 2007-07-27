@@ -196,7 +196,7 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "h3", "Genotypes of parents"
       assert_select "p:nth-of-type(4)", "Parents are unknown for field vials."
       
-      assert_select "h2", "View Parent Vials"
+      assert_select "h2", "Parent Vials"
       assert_select "p:nth-of-type(5)", "Parents are unknown for field vials."
     end
     assert_select "div#student-two-way-table" do
@@ -234,7 +234,7 @@ class LabControllerTest < Test::Unit::TestCase
       assert_select "h3", "Genotypes of parents"
       assert_select "p:nth-of-type(4)", "Parents are unknown for field vials."
       
-      assert_select "h2", "View Parent Vials"
+      assert_select "h2", "Parent Vials"
       assert_select "p:nth-of-type(5)", "Parents are unknown for field vials."
     end
     assert_select "div#student-two-way-table" do

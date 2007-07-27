@@ -4,9 +4,6 @@
          :complete => visual_effect(:fade, "spinner_#{number}") do -%>
     <h2>
       <%= "#{cardinal(number).capitalize} Vial" %>
-      <div style="display: inline;">
-        <%= image_tag '/images/green-load.gif', :id => "spinner_#{number}", :style => 'display: none;' %>
-      </div>
     </h2>
         
     <p>
@@ -20,6 +17,7 @@
         <% end -%>
       </select>
       <%= hidden_field_tag 'which_vial', number %>
+	  <%= image_tag '/images/green-load.gif', :id => "spinner_#{number}", :style => 'display: none;' %>
     </p>
   <% end -%>  
 </div>

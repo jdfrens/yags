@@ -10,7 +10,10 @@ h1 {
 h2 {
 	color: #084803;
 	font-size: 125%;
-	letter-spacing: 1px
+	letter-spacing: 1px;
+	border-bottom: #084803 dashed 1px;
+	width: 30%;
+	text-align: justify;
 }
 
 h3{	
@@ -70,7 +73,6 @@ ul li {
 }
 
 #two-way-table-section {
-	width: 360px;
 	text-align: justify;
 	padding-left: 5px;
 }
@@ -117,15 +119,16 @@ ul li {
 }
 
 #parent-info {
-	 width: 700px;
 }
 
 #parent-table td {
-	text-align: right;
+	padding: 2px;
+	text-align: justify;
 }
 
 #parent-table th {
 	text-align: justify;
+	border-bottom: 1px dotted #aaa;
 }
 
 table {

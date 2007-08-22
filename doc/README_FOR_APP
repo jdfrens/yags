@@ -1,2 +1,11 @@
-Use this README file to introduce your application and point to useful places in the API for learning more.
-Run "rake appdoc" to generate API documentation for your models and controllers.
+To get YAGS running as a developer:
+
+1. Install rcov
+     sudo gem install rcov
+2. Set up your databases, and create an appropriate config/database.yml.
+   --> NEVER commit config/database.yml to svn!
+3. Create a log folder in the main project.
+   --> NEVER commit this folder to svn!
+4. Run the db:migrate rake task.
+5. Run all of the tests.
+6. Enjoy!

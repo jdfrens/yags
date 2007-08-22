@@ -1,9 +1,0 @@
-To get this Rails thing up and running, there are a few things you need to do.
-
-1. Set up your databases, and create an appropriate config/database.yml.
-   --> NEVER commit config/database.yml to svn!
-2. Create a log folder in the main project.
-   --> NEVER commit this folder to svn!
-3. Run the db:migrate rake task.
-4. Run all of the tests.
-5. Enjoy!

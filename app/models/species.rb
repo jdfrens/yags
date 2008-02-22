@@ -38,8 +38,12 @@ class Species
     @gene_numbers[character]
   end
   
-  def is_sex_linked?(character)
-    character != :sex and position_of(gene_number_of(character)) == 0.0
+  def sex_linked?(character)
+    character != :sex and position_of(gene_number_of(character)) == position_of(gene_number_of(:sex))
+  end
+  
+  def sex_linked_characters
+    @sex_linked_character ||= @characters.select { |c| sex_linked?(c) }
   end
   
   def position_of(gene_number)

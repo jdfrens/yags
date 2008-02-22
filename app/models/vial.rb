@@ -11,10 +11,10 @@ class Vial < ActiveRecord::Base
   validates_presence_of :label
   validates_presence_of :rack_id
   validates_numericality_of :number_of_requested_flies, :only_integer => true,
-      :on => :create
+    :on => :create
   validates_inclusion_of :number_of_requested_flies, :in => 0..255,
-      :message => "should be between 0 and 255",
-      :on => :create
+    :message => "should be between 0 and 255",
+    :on => :create
   validates_presence_of :mom_id, :if => Proc.new { |vial| vial.offspring_vial? }
   validates_presence_of :dad_id, :if => Proc.new { |vial| vial.offspring_vial? }
 
@@ -22,7 +22,7 @@ class Vial < ActiveRecord::Base
     vial = Vial.new(vial_params)
     allele_frequencies[:sex] = 0.5 unless allele_frequencies[:sex]
     vial.species.characters.each do |character|
-      allele_frequencies[character] = 0.13 + (rand 37) / 100.0 unless allele_frequencies[character]
+      allele_frequencies[character] = 0.13 + (rand * (0.50 - 0.13)) unless allele_frequencies[character]
     end
     if vial.save
       vial.fill_from_field(bit_generator, allele_frequencies)
@@ -96,8 +96,8 @@ class Vial < ActiveRecord::Base
   
   def combinations_of_phenotypes(characters = species.characters)
     cartesian_product( characters.collect do |character| 
-      phenotypes = phenotypes_for_table(character)
-    end )
+        phenotypes_for_table(character)
+      end )
   end
   
   def number_of_flies (characters, phenotypes)
@@ -136,9 +136,9 @@ class Vial < ActiveRecord::Base
     species.phenotypes(row_character).each do |row_phenotype|
       species.phenotypes(column_character).each do |column_phenotype|
         key = renamed_phenotype(row_character, row_phenotype).to_s + "$" + 
-            renamed_phenotype(column_character, column_phenotype).to_s
+          renamed_phenotype(column_character, column_phenotype).to_s
         counts[key] = number_of_flies([row_character, column_character], 
-            [row_phenotype, column_phenotype])
+          [row_phenotype, column_phenotype])
       end
     end
     counts
@@ -147,7 +147,7 @@ class Vial < ActiveRecord::Base
   def renamed_phenotype(character, phenotype)
     phenotype_alternate = owner.phenotype_alternates.select do |pa|
       pa.scenario_id == owner.current_scenario.id and 
-          pa.affected_character.intern == character and pa.original_phenotype.intern == phenotype
+        pa.affected_character.intern == character and pa.original_phenotype.intern == phenotype
     end.first
     if phenotype_alternate
       phenotype_alternate.renamed_phenotype.intern
@@ -158,23 +158,28 @@ class Vial < ActiveRecord::Base
 
   def fill_from_field(bit_generator, allele_frequencies)
     number_of_requested_flies.times do |i|
-       new_fly = Fly.create!
-       species.characters.each do |character|
-         if character == :sex # could this be handled better?
-           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(:sex), 
-               :mom_allele => 1, :dad_allele => bit_generator.random_bit(allele_frequencies[:sex]))
-         else
-           new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id, :gene_number => species.gene_number_of(character), 
-               :mom_allele => bit_generator.random_bit(allele_frequencies[character]), 
-               :dad_allele => bit_generator.random_bit(allele_frequencies[character]))
-         end
-       end
-       species.characters.each do |character|
-         if species.is_sex_linked?(character) and new_fly.male?
-           new_fly.genotypes.select { |g| g.gene_number == species.gene_number_of(character) }.first.dad_allele = 0
-         end                          # this assumes that 0 represents recessiveness... and some other things
-       end
-       flies << new_fly
+      new_fly = Fly.create!
+      species.characters.each do |character|
+        if character == :sex
+          new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id,
+            :gene_number => species.gene_number_of(:sex), 
+            :mom_allele => 1,
+            :dad_allele => bit_generator.random_bit(allele_frequencies[:sex]))
+        else
+          new_fly.genotypes << Genotype.create!(:fly_id => new_fly.id,
+            :gene_number => species.gene_number_of(character), 
+            :mom_allele => bit_generator.random_bit(allele_frequencies[character]), 
+            :dad_allele => bit_generator.random_bit(allele_frequencies[character]))
+        end
+      end
+      if new_fly.male?
+        species.sex_linked_characters.each do |character|
+          genotype = new_fly.genotypes.detect { |g| g.genotype_for?(character) }
+          genotype.dad_allele = 0
+          genotype.save!
+        end
+      end
+      flies << new_fly
     end
     self
   end

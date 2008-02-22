@@ -138,7 +138,7 @@ class LabController < ApplicationController
         :het => @species.phenotype_from(character, 1,0).to_s, 
         :rec => @species.phenotype_from(character, 0,0).to_s,
         :location => @species.position_of(@species.gene_number_of(character)), 
-        :sex_linked => @species.is_sex_linked?(character) ? "yes" : "no",
+        :sex_linked => @species.sex_linked?(character) ? "yes" : "no",
         :randomizable => @species.alternate_phenotypes(character) != [] ? "yes" : "no" }
     end
   end

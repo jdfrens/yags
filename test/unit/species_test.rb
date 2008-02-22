@@ -62,14 +62,19 @@ class SpeciesTest < Test::Unit::TestCase
     # is it ok to get negatives when the gene_numbers are backwards?
   end
   
-  def test_is_sex_linked?
-    assert !Species.singleton.is_sex_linked?(:"eye color")
-    assert !Species.singleton.is_sex_linked?(:wings)
-    assert !Species.singleton.is_sex_linked?(:legs)
-    assert !Species.singleton.is_sex_linked?(:sex)
-    assert !Species.singleton.is_sex_linked?(:seizure)
+  def test_sex_linked?
+    assert !Species.singleton.sex_linked?(:"eye color")
+    assert !Species.singleton.sex_linked?(:wings)
+    assert !Species.singleton.sex_linked?(:legs)
+    assert !Species.singleton.sex_linked?(:sex)
+    assert !Species.singleton.sex_linked?(:seizure)
     
-    assert Species.singleton.is_sex_linked?(:antenna)
+    assert Species.singleton.sex_linked?(:antenna)
+  end
+  
+  def test_sex_linked
+    assert_equal [:antenna], Species.singleton.sex_linked_characters
+    assert_equal [:antenna], Species.singleton.sex_linked_characters, "shouldn't break with caching"
   end
   
 end

@@ -1,8 +1,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PhenotypeAlternateTest < Test::Unit::TestCase
+class PhenotypeAlternateTest < ActiveSupport::TestCase
   fixtures :phenotype_alternates
 
+  # TODO: really? nothing to test?
   # Replace this with your real tests.
   def test_truth
     assert true

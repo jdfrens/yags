@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class RandomBitGeneratorTest < Test::Unit::TestCase
+class RandomBitGeneratorTest < ActiveSupport::TestCase
   
   def test_random_bit
     counts = generate_random_bits(5000)

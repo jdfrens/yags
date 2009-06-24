@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class RackTest < Test::Unit::TestCase
+class RackTest < ActiveSupport::TestCase
   
   all_fixtures
 

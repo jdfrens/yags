@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class UserTest < Test::Unit::TestCase
+class UserTest < ActiveSupport::TestCase
   all_fixtures
   
   def test_has_many_vials

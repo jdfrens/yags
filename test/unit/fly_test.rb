@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FlyTest < Test::Unit::TestCase
+class FlyTest < ActiveSupport::TestCase
   
   all_fixtures
 

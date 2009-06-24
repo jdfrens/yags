@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CartesianProductTest < Test::Unit::TestCase
+class CartesianProductTest < ActiveSupport::TestCase
 
   include CartesianProduct
   

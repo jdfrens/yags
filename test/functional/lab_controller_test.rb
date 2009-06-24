@@ -4,7 +4,7 @@ require 'lab_controller'
 # Re-raise errors caught by the controller.
 class LabController; def rescue_action(e) raise e end; end
 
-class LabControllerTest < Test::Unit::TestCase
+class LabControllerTest < ActionController::TestCase
   all_fixtures
 
   def setup

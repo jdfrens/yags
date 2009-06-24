@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require File.dirname(__FILE__) + '/../../app/models/array_extensions'
 
-class ArrayExtensionsTest < Test::Unit::TestCase
+class ArrayExtensionsTest < ActiveSupport::TestCase
 
   def test_zup
     [].zup([]) do |x, y|

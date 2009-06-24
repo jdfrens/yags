@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class BasicPreferenceTest < Test::Unit::TestCase
+class BasicPreferenceTest < ActiveSupport::TestCase
   fixtures :basic_preferences
 
   # Replace this with your real tests.

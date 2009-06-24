@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CourseTest < Test::Unit::TestCase
+class CourseTest < ActiveSupport::TestCase
   all_fixtures
   
   def test_has_and_belongs_to_many_scenarios

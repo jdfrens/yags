@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SpeciesTest < Test::Unit::TestCase
+class SpeciesTest < ActiveSupport::TestCase
   all_fixtures
   
   def test_singleton_is_not_nil

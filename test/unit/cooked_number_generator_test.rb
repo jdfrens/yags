@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CookedNumberGeneratorTest < Test::Unit::TestCase
+class CookedNumberGeneratorTest < ActiveSupport::TestCase
   
   def test_random_number
     # the UK emergency phone number:

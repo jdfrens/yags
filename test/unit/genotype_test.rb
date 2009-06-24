@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class GenotypeTest < Test::Unit::TestCase
+class GenotypeTest < ActiveSupport::TestCase
   fixtures :genotypes, :flies, :vials
 
   def test_belongs_to_fly

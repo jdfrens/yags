@@ -4,7 +4,7 @@ require 'bench_controller'
 # Re-raise errors caught by the controller.
 class BenchController; def rescue_action(e) raise e end; end
 
-class BenchControllerTest < Test::Unit::TestCase
+class BenchControllerTest < ActionController::TestCase
   all_fixtures
   
   def setup

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ScenarioTest < Test::Unit::TestCase
+class ScenarioTest < ActiveSupport::TestCase
   all_fixtures
   
   def test_hidden_characters

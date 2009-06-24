@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CookedBitGeneratorTest < Test::Unit::TestCase
+class CookedBitGeneratorTest < ActiveSupport::TestCase
   
   def test_random_bit
     bits = [0, 1, 0, 1, 0, 0, 0, 1]

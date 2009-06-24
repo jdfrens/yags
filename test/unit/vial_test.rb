@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class VialTest < Test::Unit::TestCase
+class VialTest < ActiveSupport::TestCase
 
   fixtures :vials, :flies, :genotypes, :users, :racks
   

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class RandomNumberGeneratorTest < Test::Unit::TestCase
+class RandomNumberGeneratorTest < ActiveSupport::TestCase
   
   def test_random_number
     generator = RandomNumberGenerator.new

@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   belongs_to :enrolled_in, :class_name => "Course", :foreign_key => "course_id"
   
   def solutions
-    Solution.find_all_by_vial_id(vials.map { |v| v.id }, :order => "number")
+    vials.map { |vial| vial.solution }.compact.sort_by { |solution| solution.number }
   end
   
   def solutions_as_hash
@@ -69,7 +69,7 @@ class User < ActiveRecord::Base
   
   def current_racks
     must_have_current_scenario
-    self.racks.find_all_by_scenario_id(current_scenario.id)
+    self.racks.find(:all, :conditions => ["scenario_id = ?", current_scenario.id])
   end
   
   def current_racks_without_trash
@@ -87,7 +87,7 @@ class User < ActiveRecord::Base
   
   def current_vials
     must_have_current_scenario
-    self.racks.find_all_by_scenario_id(current_scenario.id).map(&:vials).flatten
+    self.racks.find(:all, :conditions => ["scenario_id = ?", current_scenario.id]).map(&:vials).flatten
   end
   
   def add_default_racks_for_current_scenario

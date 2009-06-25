@@ -136,7 +136,7 @@ class ActiveSupport::TestCase
   end
 
   def assert_equal_set(expected, actual, message=nil)
-    assert_equal expected.sort_by { |p| p.to_s }, actual.sort_by { |p| p.to_s }, message
+    assert_equal(expected.sort_by { |p| p.to_s }, actual.sort_by { |p| p.to_s }, message)
   end
     
   def logged_in?

@@ -5,8 +5,8 @@ class UserTest < ActiveSupport::TestCase
   
   def test_has_many_vials
     assert_equal_set [], users(:calvin).vials
-    assert_equal_set [vials(:destroyable_vial), vials(:random_vial)], users(:jeremy).vials
-    assert_equal_set [:vial_one, :vial_empty, :vial_with_a_fly, :vial_with_many_flies, :parents_vial].map { |s| vials(s) },
+    assert_equal_set vials(:destroyable_vial, :random_vial), users(:jeremy).vials
+    assert_equal_set vials(:vial_one, :vial_empty, :vial_with_a_fly, :vial_with_many_flies, :parents_vial),
         users(:steve).vials  
   end
   
@@ -28,7 +28,7 @@ class UserTest < ActiveSupport::TestCase
   def test_solutions
     assert_equal_set [], users(:randy).solutions
     assert_equal_set [solutions(:jeremy_solves_2)], users(:jeremy).solutions
-    assert_equal_set [solutions(:steve_solves_1), solutions(:steve_solves_8)], users(:steve).solutions
+    assert_equal solutions(:steve_solves_1, :steve_solves_8), users(:steve).solutions
   end
   
   def test_solutions_as_hash
@@ -122,7 +122,7 @@ class UserTest < ActiveSupport::TestCase
   def test_current_racks
     assert_raise Exception do users(:keith).current_racks end
     assert_equal ["jeremy bench","jeremy stock"], users(:jeremy).current_racks.map { |r| r.label }.sort
-    assert_equal [ "Trash", "steve bench","steve stock"], users(:steve).current_racks.map { |r| r.label }.sort
+    assert_equal [ "Trash", "steve bench", "steve stock"], users(:steve).current_racks.map { |r| r.label }.sort
     assert_raise Exception do users(:mendel).current_racks end
     assert_raise Exception do users(:calvin).current_racks end
   end
@@ -130,7 +130,7 @@ class UserTest < ActiveSupport::TestCase
   def test_current_racks_without_trash
     assert_raise Exception do users(:keith).current_racks_without_trash end
     assert_equal ["jeremy bench", "jeremy stock"], users(:jeremy).current_racks_without_trash.map{ |r| r.label }.sort
-    assert_equal ["steve bench","steve stock"], users(:steve).current_racks_without_trash.map { |r| r.label }.sort
+    assert_equal ["steve bench", "steve stock"], users(:steve).current_racks_without_trash.map { |r| r.label }.sort
     assert_raise Exception do users(:mendel).current_racks_without_trash end
     assert_raise Exception do users(:calvin).current_racks_without_trash end
   end

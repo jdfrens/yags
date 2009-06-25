@@ -17,7 +17,6 @@ class UsersControllerTest < ActionController::TestCase
   def test_login
     get :login
     assert_response :success
-    assert flash.empty?
     assert_select "h1", "Log In"
     assert_select "input#user_username[type=text]"
     assert_select "script[type=text/javascript]"
@@ -39,7 +38,7 @@ class UsersControllerTest < ActionController::TestCase
   
   def test_wrong_password
     post :login, :user => { :username => 'steve', :password => 'not_steve_password' }
-    assert flash.empty?
+    assert_equal "Invalid login credentials", flash[:error]
     assert !logged_in?
   end
   
@@ -205,7 +204,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_batch_add_students
     number_of_old_users = User.find(:all).size
     post :batch_add_students, { :student_csv => "Billy, Z., wyz1@calvin.foo", :password => "biolab",
-        :user => { :course_id => 1 } }, user_session(:mendel)
+        :course_id => 1 }, user_session(:mendel)
     assert_redirected_to :controller => "lab", :action => "view_course", :id => 1
     assert User.find_by_username("wyz1")
     assert User.find_by_username("wyz1").password_hash == User.hash_password("biolab")
@@ -224,7 +223,7 @@ class UsersControllerTest < ActionController::TestCase
     }
     number_of_old_users = User.find(:all).size
     post :batch_add_students, { :student_csv => student_csv, :password => "biolab2",
-        :user => { :course_id => 1} }, user_session(:mendel)
+        :course_id => 1 }, user_session(:mendel)
     assert_redirected_to :controller => "lab", :action => "view_course", :id => 1
     
     assert User.find_by_username("email")
@@ -242,7 +241,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_batch_add_students_can_be_used_by_admin
     number_of_old_users = User.find(:all).size
     post :batch_add_students, { :student_csv => "L, F, fml1@c.f\n C, A, abc3@c.f", :password => "themtoo",
-        :user => { :course_id => 1 } }, user_session(:calvin)
+        :course_id => 1 }, user_session(:calvin)
     assert_redirected_to :action => "list_users"
     assert User.find_by_username("fml1")
     assert User.find_by_username("abc3")
@@ -253,11 +252,11 @@ class UsersControllerTest < ActionController::TestCase
   def test_batch_add_students_fails_when_NOT_logged_in_with_manage_student
     number_of_old_users = User.find(:all).size
     post :batch_add_students, { :student_csv => "A., Newt, student@calvin.foo",  :password => "whoami?",
-        :user => { :course_id => 1 } }
+        :course_id => 1 }
     assert_redirected_to_login
     
     post :batch_add_students, { :student_csv => "A., Newt, student@calvin.foo", :password => "hackzor",
-        :user => { :course_id => 1 } }, user_session(:steve)
+        :course_id => 1 }, user_session(:steve)
     assert_nil User.find_by_username("student")
     assert_response 401 # access denied
     assert number_of_old_users == User.find(:all).size
@@ -266,7 +265,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_batch_add_students_fails_when_NOT_instructors_course
     number_of_old_users = User.find(:all).size
     post :batch_add_students, { :student_csv => "A., switcher, sea4@calvin.foo", :password => "sandwich",
-        :user => { :course_id => 1 } }, user_session(:darwin)
+        :course_id => 1 }, user_session(:darwin)
     assert_nil User.find_by_username("sea4")
     assert_redirected_to :controller => "lab", :action => "view_course", :id => 1
     assert number_of_old_users == User.find(:all).size

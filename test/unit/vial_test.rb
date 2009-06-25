@@ -11,9 +11,9 @@ class VialTest < ActiveSupport::TestCase
   should_belong_to :mom
   should_belong_to :dad
   
-  should_require_attributes :label
-  should_require_attributes :number_of_requested_flies, :message => /is not a number/
-  should_require_attributes :rack_id
+  should_validate_presence_of :label
+  should_validate_presence_of :number_of_requested_flies, :message => /should be between 0 and 255/
+  should_validate_presence_of :rack_id
   
   def test_belongs_to_owner
     assert_equal users(:steve), vials(:parents_vial).owner

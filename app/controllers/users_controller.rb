@@ -46,12 +46,12 @@ class UsersController < ApplicationController
   end
   
   def batch_add_students
-    if request.post? && params[:student_csv] && params[:user] && params[:password]
+    if request.post? && params[:student_csv] && params[:course_id] && params[:password]
       if current_user.admin? || 
-          current_user.instructs.include?(Course.find_by_id(params[:user][:course_id]))
+          current_user.instructs.include?(Course.find_by_id(params[:course_id]))
         number_added = 0
         FasterCSV.parse(params[:student_csv]) do |row|
-          student = User.new(params[:user])
+          student = User.new(:course_id => params[:course_id])
           row.each { |e| e.strip! if e }
           student.last_name     = row.shift
           student.first_name    = row.shift
@@ -70,7 +70,7 @@ class UsersController < ApplicationController
       if current_user.admin?
         redirect_to :action => "list_users"
       else # if instructor
-        redirect_to :controller => "lab", :action => "view_course", :id => params[:user][:course_id]
+        redirect_to :controller => "lab", :action => "view_course", :id => params[:course_id]
       end
     else
       @courses = (current_user.instructor? ? current_user.instructs : Course.find(:all))

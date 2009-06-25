@@ -1,4 +1,3 @@
 class Solution < ActiveRecord::Base
-  belongs_to :vial
-  
+  belongs_to :vial  
 end

@@ -1,7 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ScenarioTest < ActiveSupport::TestCase
-  all_fixtures
+
+  fixtures :all
   
   def test_hidden_characters
     assert_equal [:"eye color", :antenna], scenarios(:first_scenario).hidden_characters
@@ -25,8 +26,8 @@ class ScenarioTest < ActiveSupport::TestCase
         :fixture_id => 2, :number_of_dependents => 1)
   end
   
-  def test_racks_are_dependently_destroyed
-    assert_dependents_destroyed(Scenario, Rack, :foreign_key => "scenario_id", 
+  def test_shelves_are_dependently_destroyed
+    assert_dependents_destroyed(Scenario, Shelf, :foreign_key => "scenario_id",
         :fixture_id => 4, :number_of_dependents => 5)
   end
   

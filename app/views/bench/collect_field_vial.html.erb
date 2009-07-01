@@ -16,8 +16,8 @@
         <%= form.text_field :number_of_requested_flies, :size => 5, :value => @flies_number %>
     </p>
 	<p>
-		<label for="rack_id"><strong>Rack:</strong> </label>
-		<%= collection_select(:vial, :rack_id, current_user.current_racks_without_trash, :id, :label) %>
+		<label for="shelf_id"><strong>Rack:</strong> </label>
+		<%= collection_select(:vial, :shelf_id, current_user.current_shelves_without_trash, :id, :label) %>
 	</p>
     
     <div class="buttons">	

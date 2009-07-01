@@ -27,10 +27,10 @@
     </tr>        
     <tr>
       <td>
-        <label for="rack_id"><strong>Store in the rack named: </strong></label>                
+        <label for="shelf_id"><strong>Store in the rack named: </strong></label>                
       </td>
       <td>
-        <%= form.collection_select(:rack_id, current_user.current_racks_without_trash, :id, :label) %>
+        <%= form.collection_select(:shelf_id, current_user.current_shelves_without_trash, :id, :label) %>
       </td>
     </tr>        
   </table>

@@ -30,13 +30,6 @@ class ActiveSupport::TestCase
     fixtures :users, :groups, :privileges, :groups_privileges
   end
   
-  def self.all_fixtures
-    fixtures :users, :groups, :privileges, :groups_privileges, 
-        :flies, :vials, :genotypes, :basic_preferences, :character_preferences, 
-        :racks, :courses, :solutions, :scenarios, :scenario_preferences,
-        :courses_scenarios, :phenotype_alternates, :renamed_characters
-  end
-  
   def assert_standard_layout
     assert_select "div.header" do
       assert_select "h1", "YAGS"
@@ -63,7 +56,7 @@ class ActiveSupport::TestCase
         assert_select "a[href=/bench]", /bench/i
         assert_select "a[href=/bench/list_vials]", /list\svials/i
         assert_select "a[href=/bench/mate_flies]", /mate\sflies/i
-        assert_select "a[href=/bench/add_rack]", /.*rack/i
+        assert_select "a[href=/bench/add_shelf]", /.*rack/i
       end
     end
   end

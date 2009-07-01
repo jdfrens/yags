@@ -5,7 +5,8 @@ require 'lab_controller'
 class LabController; def rescue_action(e) raise e end; end
 
 class LabControllerTest < ActionController::TestCase
-  all_fixtures
+
+  fixtures :all
 
   def setup
     @controller = LabController.new

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 37) do
+ActiveRecord::Schema.define(:version => 20090701004901) do
 
   create_table "basic_preferences", :force => true do |t|
     t.integer "user_id"
@@ -66,12 +66,6 @@ ActiveRecord::Schema.define(:version => 37) do
     t.string "name"
   end
 
-  create_table "racks", :force => true do |t|
-    t.integer "user_id"
-    t.string  "label"
-    t.integer "scenario_id"
-  end
-
   create_table "renamed_characters", :force => true do |t|
     t.integer "scenario_id"
     t.string  "renamed_character"
@@ -85,6 +79,12 @@ ActiveRecord::Schema.define(:version => 37) do
   create_table "scenarios", :force => true do |t|
     t.string  "title"
     t.integer "owner_id"
+  end
+
+  create_table "shelves", :force => true do |t|
+    t.integer "user_id"
+    t.string  "label"
+    t.integer "scenario_id"
   end
 
   create_table "solutions", :force => true do |t|
@@ -106,7 +106,7 @@ ActiveRecord::Schema.define(:version => 37) do
     t.string  "label"
     t.integer "mom_id"
     t.integer "dad_id"
-    t.integer "rack_id"
+    t.integer "shelf_id"
     t.integer "pedigree_number"
   end
 

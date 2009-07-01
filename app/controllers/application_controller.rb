@@ -4,8 +4,6 @@
 require File.dirname(__FILE__) + '/../models/array_extensions'
 
 class ApplicationController < ActionController::Base
-  # Pick a unique cookie name to distinguish our session data from others'
-  session :session_key => '_YAGS_session_id'
   
   filter_parameter_logging "password"
   

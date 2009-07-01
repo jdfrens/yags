@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class FlyTest < ActiveSupport::TestCase
   
-  all_fixtures
+  fixtures :all
 
   def test_phenotype_eye_color
     assert_equal :white, flies(:fly_00).phenotype(:"eye color")

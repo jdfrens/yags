@@ -1,12 +1,12 @@
-<%= error_messages_for 'rack' %>
+<%= error_messages_for 'shelf' %>
 
 <h1>Create New Rack</h1>
 
-<% form_for :rack do |form| %>
+<% form_for :shelf do |form| %>
     <p>
         <label for="label"><strong>Label: </strong></label>
         <%= form.text_field :label, :size => 40 %>
-		<%= javascript_tag "$('rack_label').focus()" %>
+		<%= javascript_tag "$('shelf_label').focus()" %>
     </p>
     
     <div class="buttons">	

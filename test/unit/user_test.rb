@@ -1,7 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  all_fixtures
+
+  fixtures :all
   
   def test_has_many_vials
     assert_equal_set [], users(:calvin).vials
@@ -43,8 +44,8 @@ class UserTest < ActiveSupport::TestCase
   def test_owns?
     assert  users(:jeremy).owns?(vials(:destroyable_vial))
     assert !users(:steve).owns?(vials(:destroyable_vial))
-    assert !users(:jeremy).owns?(racks(:steve_bench_rack))
-    assert  users(:steve).owns?(racks(:steve_bench_rack))
+    assert !users(:jeremy).owns?(shelves(:steve_bench_shelf))
+    assert  users(:steve).owns?(shelves(:steve_bench_shelf))
   end
   
   def test_hidden_characters
@@ -119,27 +120,27 @@ class UserTest < ActiveSupport::TestCase
     assert !users(:mendel).has_authority_over(users(:calvin))
   end
   
-  def test_current_racks
-    assert_raise Exception do users(:keith).current_racks end
-    assert_equal ["jeremy bench","jeremy stock"], users(:jeremy).current_racks.map { |r| r.label }.sort
-    assert_equal [ "Trash", "steve bench", "steve stock"], users(:steve).current_racks.map { |r| r.label }.sort
-    assert_raise Exception do users(:mendel).current_racks end
-    assert_raise Exception do users(:calvin).current_racks end
+  def test_current_shelves
+    assert_raise Exception do users(:keith).current_shelves end
+    assert_equal ["jeremy bench","jeremy stock"], users(:jeremy).current_shelves.map { |r| r.label }.sort
+    assert_equal [ "Trash", "steve bench", "steve stock"], users(:steve).current_shelves.map { |r| r.label }.sort
+    assert_raise Exception do users(:mendel).current_shelves end
+    assert_raise Exception do users(:calvin).current_shelves end
   end
   
-  def test_current_racks_without_trash
-    assert_raise Exception do users(:keith).current_racks_without_trash end
-    assert_equal ["jeremy bench", "jeremy stock"], users(:jeremy).current_racks_without_trash.map{ |r| r.label }.sort
-    assert_equal ["steve bench", "steve stock"], users(:steve).current_racks_without_trash.map { |r| r.label }.sort
-    assert_raise Exception do users(:mendel).current_racks_without_trash end
-    assert_raise Exception do users(:calvin).current_racks_without_trash end
+  def test_current_shelves_without_trash
+    assert_raise Exception do users(:keith).current_shelves_without_trash end
+    assert_equal ["jeremy bench", "jeremy stock"], users(:jeremy).current_shelves_without_trash.map{ |r| r.label }.sort
+    assert_equal ["steve bench", "steve stock"], users(:steve).current_shelves_without_trash.map { |r| r.label }.sort
+    assert_raise Exception do users(:mendel).current_shelves_without_trash end
+    assert_raise Exception do users(:calvin).current_shelves_without_trash end
   end
   
-  def trash_rack
-    assert_raise Exception do users(:keith).trash_rack end
-    assert_equal racks(:steve_trash_rack), users(:steve).trash_rack
-    assert_raise Exception do users(:mendel).trash_rack end
-    assert_raise Exception do users(:calvin).trash_rack end
+  def test_trash_shelf
+    assert_raise Exception do users(:keith).trash_shelf end
+    assert_equal shelves(:steve_trash_shelf), users(:steve).trash_shelf
+    assert_raise Exception do users(:mendel).trash_shelf end
+    assert_raise Exception do users(:calvin).trash_shelf end
   end
   
   def test_current_vials
@@ -151,19 +152,19 @@ class UserTest < ActiveSupport::TestCase
     assert_raise Exception do users(:calvin).current_vials end
   end
   
-  def test_add_default_racks_for_current_scenario
-    assert users(:randy).current_racks.select{ |r| r.label == "Trash" }.empty?
-    assert users(:randy).current_racks.select{ |r| r.label == "Default" }.empty?
-    users(:randy).add_default_racks_for_current_scenario
-    assert_equal 1, users(:randy).current_racks.select{ |r| r.label == "Trash" }.size
-    assert users(:randy).current_racks.select{ |r| r.label == "Default" }.empty?
+  def test_add_default_shelves_for_current_scenario
+    assert users(:randy).current_shelves.select{ |r| r.label == "Trash" }.empty?
+    assert users(:randy).current_shelves.select{ |r| r.label == "Default" }.empty?
+    users(:randy).add_default_shelves_for_current_scenario
+    assert_equal 1, users(:randy).current_shelves.select{ |r| r.label == "Trash" }.size
+    assert users(:randy).current_shelves.select{ |r| r.label == "Default" }.empty?
     
-    assert users(:keith).racks.select{ |r| r.label == "Trash" }.empty?
-    assert users(:keith).racks.select{ |r| r.label == "Default" }.empty?
+    assert users(:keith).shelves.select{ |r| r.label == "Trash" }.empty?
+    assert users(:keith).shelves.select{ |r| r.label == "Default" }.empty?
     users(:keith).current_scenario_id = 4
-    users(:keith).add_default_racks_for_current_scenario
-    assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Trash" }.size
-    assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Default" }.size
+    users(:keith).add_default_shelves_for_current_scenario
+    assert_equal 1, users(:keith).current_shelves.select{ |r| r.label == "Trash" }.size
+    assert_equal 1, users(:keith).current_shelves.select{ |r| r.label == "Default" }.size
   end
   
   def test_row
@@ -230,12 +231,12 @@ class UserTest < ActiveSupport::TestCase
     assert_equal Scenario.find(4), users(:steve).current_scenario
   end
   
-  def test_set_scenario_to_adds_default_racks
-    assert users(:keith).racks.select{ |r| r.label == "Trash" }.empty?
-    assert users(:keith).racks.select{ |r| r.label == "Default" }.empty?
+  def test_set_scenario_to_adds_default_shelves
+    assert users(:keith).shelves.select{ |r| r.label == "Trash" }.empty?
+    assert users(:keith).shelves.select{ |r| r.label == "Default" }.empty?
     users(:keith).set_scenario_to(4)
-    assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Trash" }.size
-    assert_equal 1, users(:keith).current_racks.select{ |r| r.label == "Default" }.size
+    assert_equal 1, users(:keith).current_shelves.select{ |r| r.label == "Trash" }.size
+    assert_equal 1, users(:keith).current_shelves.select{ |r| r.label == "Default" }.size
   end
   
   def test_set_table_preference
@@ -283,8 +284,8 @@ class UserTest < ActiveSupport::TestCase
     assert_equal number_of_old_courses - 2, Course.find(:all).size
   end
   
-  def test_racks_are_destroyed_along_with_student
-    assert_dependents_destroyed(User, Rack, :foreign_key => "user_id", 
+  def test_shelves_are_destroyed_along_with_student
+    assert_dependents_destroyed(User, Shelf, :foreign_key => "user_id",
         :fixture_id => 3, :number_of_dependents => 2)
   end
   

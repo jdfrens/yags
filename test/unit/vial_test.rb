@@ -2,18 +2,18 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class VialTest < ActiveSupport::TestCase
 
-  fixtures :vials, :flies, :genotypes, :users, :racks
+  fixtures :all
   
   include CartesianProduct
   
   should_have_many :flies
-  should_belong_to :rack
+  should_belong_to :shelf
   should_belong_to :mom
   should_belong_to :dad
   
   should_validate_presence_of :label
   should_validate_presence_of :number_of_requested_flies, :message => /should be between 0 and 255/
-  should_validate_presence_of :rack_id
+  should_validate_presence_of :shelf_id
   
   def test_belongs_to_owner
     assert_equal users(:steve), vials(:parents_vial).owner
@@ -24,7 +24,7 @@ class VialTest < ActiveSupport::TestCase
   context "number of requested flies" do
     should "allow numbers between 0 and 256" do
       ["4", "0", "255"].each do |number|
-        vial = Vial.new(:label => 'foo', :rack_id => 1,
+        vial = Vial.new(:label => 'foo', :shelf_id => 1,
           :number_of_requested_flies => number
         )
         assert  vial.valid?, "should be valid"
@@ -34,7 +34,7 @@ class VialTest < ActiveSupport::TestCase
     
     should "reject bad and out of range numbers" do
       ['xxx', '-4', '-1', '256', '888'].each do |number|
-        vial = Vial.new(:label => 'foo', :rack_id => 1,
+        vial = Vial.new(:label => 'foo', :shelf_id => 1,
           :number_of_requested_flies => number
         )
         assert !vial.valid?
@@ -147,7 +147,7 @@ class VialTest < ActiveSupport::TestCase
   context "collecting field vials" do
     should "be able to collect 4 with cooked complete dominance" do
       new_vial = Vial.collect_from_field({
-          :label => "four fly vial", :rack_id => 1,
+          :label => "four fly vial", :shelf_id => 1,
           :number_of_requested_flies => "4" 
         },
         CookedBitGenerator.new([1]))
@@ -160,7 +160,7 @@ class VialTest < ActiveSupport::TestCase
   
     should "be able to collect 9 flies with cooked genes" do
       new_vial = Vial.collect_from_field({
-          :label => "nine fly vial", :rack_id => 1,
+          :label => "nine fly vial", :shelf_id => 1,
           :number_of_requested_flies => "9" },
         CookedBitGenerator.new([0, 1, 0, 0]))
       assert_equal_set(([:male] * 7 + [:female] * 2), 
@@ -180,7 +180,7 @@ class VialTest < ActiveSupport::TestCase
     should "react to allele frequencies" do
       recessive_vial = Vial.collect_from_field({
           :label => "white-eyed curly and shaven flies",
-          :rack_id => 1,
+          :shelf_id => 1,
           :number_of_requested_flies => "14" },
         RandomBitGenerator.new,
         { :"eye color" => 0.0, :wings => 0.0, :legs => 0.0} )
@@ -189,7 +189,7 @@ class VialTest < ActiveSupport::TestCase
       assert_equal 14, recessive_vial.number_of_flies([:legs],[:smooth])
     
       dominant_vial = Vial.collect_from_field({
-          :label => "red-eyed gruff flies", :rack_id => 1,
+          :label => "red-eyed gruff flies", :shelf_id => 1,
           :number_of_requested_flies => '15' },
         RandomBitGenerator.new,
         { :"eye color" => 1.0, :wings => 1.0, :legs => 1.0} )
@@ -198,7 +198,7 @@ class VialTest < ActiveSupport::TestCase
       assert_equal 15, dominant_vial.number_of_flies([:legs],[:hairy])
     
       strange_male_vial = Vial.collect_from_field({
-          :label => "wasp flies", :rack_id => 1,
+          :label => "wasp flies", :shelf_id => 1,
           :number_of_requested_flies => 16 },
         RandomBitGenerator.new,
         { :"eye color" => 0.0, :sex => 0.0} )
@@ -208,7 +208,7 @@ class VialTest < ActiveSupport::TestCase
   
     should "see recessive gene for sexed linked gene in males" do
       antenna_flies_vial = Vial.collect_from_field({
-          :label => "flies with antenna", :rack_id => 1,
+          :label => "flies with antenna", :shelf_id => 1,
           :number_of_requested_flies => "11" },
         RandomBitGenerator.new,
         { :sex => 0.0, :antenna => 1.0 } )
@@ -223,7 +223,7 @@ class VialTest < ActiveSupport::TestCase
   
     should "let females have whatever for sex linked gene" do
       antenna_flies_vial = Vial.collect_from_field({
-          :label => "flies with antenna", :rack_id => 1,
+          :label => "flies with antenna", :shelf_id => 1,
           :number_of_requested_flies => "11" },
         RandomBitGenerator.new,
         { :sex => 1.0, :antenna => 1.0 } )
@@ -240,7 +240,7 @@ class VialTest < ActiveSupport::TestCase
   context "making babies and a vial" do  
     should "be able to make three recessive babies" do
       new_vial = Vial.make_babies_and_vial({
-          :label => "three fly syblings", :rack_id => 1, 
+          :label => "three fly syblings", :shelf_id => 1,
           :mom_id => "6", :dad_id => "1",
           :number_of_requested_flies => "3",
           :creator => users(:steve) }, 
@@ -256,7 +256,7 @@ class VialTest < ActiveSupport::TestCase
   
     should "be able to make 7 interesting babies" do
       new_vial = Vial.make_babies_and_vial({
-          :label => "seven fly syblings", :rack_id => 1,
+          :label => "seven fly syblings", :shelf_id => 1,
           :mom_id => "4", :dad_id => "3",
           :number_of_requested_flies => "7",
           :creator => users(:steve) },
@@ -282,7 +282,7 @@ class VialTest < ActiveSupport::TestCase
   
   def test_offspring_vial?
     new_vial = Vial.make_babies_and_vial({
-        :label => "three fly syblings", :rack_id => 1, 
+        :label => "three fly syblings", :shelf_id => 1,
         :mom_id => "6", :dad_id => "1",
         :number_of_requested_flies => "3" }, 
       CookedBitGenerator.new([0]) )
@@ -290,7 +290,7 @@ class VialTest < ActiveSupport::TestCase
       "should be an offspring vial because of the method called to create it"
 
     new_vial = Vial.make_babies_and_vial({
-        :label => "seven fly syblings", :rack_id => 1,
+        :label => "seven fly syblings", :shelf_id => 1,
         :mom_id => "4", :dad_id => "3",
         :number_of_requested_flies => "7" },
       CookedBitGenerator.new([0,1,1,0,0,0,1]) )
@@ -307,7 +307,7 @@ class VialTest < ActiveSupport::TestCase
     mom_ids = [4, 6, 8]; dad_ids = [3, 7, 10]
     mom_ids.zup(dad_ids) do |mom_id, dad_id|
       children_vial = Vial.make_babies_and_vial({
-          :label => "sex linkage test vial", :rack_id => 1, 
+          :label => "sex linkage test vial", :shelf_id => 1,
           :mom_id => mom_id, :dad_id => dad_id,
           :number_of_requested_flies => 12 })
       
@@ -324,7 +324,7 @@ class VialTest < ActiveSupport::TestCase
   context "failures making babies" do
     should "complain about missing data" do
       vial = Vial.make_babies_and_vial({
-          :label => "failure", :rack_id => 1, 
+          :label => "failure", :shelf_id => 1,
           :mom_id => nil, :dad_id => nil,
           :number_of_requested_flies => -12,
           :creator => users(:steve) })
@@ -336,17 +336,17 @@ class VialTest < ActiveSupport::TestCase
     
     should "have a creator" do
       vial = Vial.make_babies_and_vial({
-          :label => "failure", :rack_id => 1, 
+          :label => "failure", :shelf_id => 1,
           :mom_id => 6, :dad_id => 1,
           :number_of_requested_flies => 12 })
       assert !vial.valid?
       assert  vial.errors.invalid?(:creator)
     end
     
-    should "have a creator who owns the rack" do
+    should "have a creator who owns the shelf" do
       assert_raise ApplicationController::InvalidOwner do
         Vial.make_babies_and_vial({
-            :label => "failure", :rack_id => 1, 
+            :label => "failure", :shelf_id => 1,
             :mom_id => 8, :dad_id => 9,
             :number_of_requested_flies => 12,
             :creator => users(:jeremy) })
@@ -356,7 +356,7 @@ class VialTest < ActiveSupport::TestCase
     should "have a creator who owns the mom" do
       assert_raise ApplicationController::InvalidOwner do
         Vial.make_babies_and_vial({
-            :label => "failure", :rack_id => 4, 
+            :label => "failure", :shelf_id => 4,
             :mom_id => 4, :dad_id => 9,
             :number_of_requested_flies => 12,
             :creator => users(:jeremy) })
@@ -366,7 +366,7 @@ class VialTest < ActiveSupport::TestCase
     should "have a creator who owns the dad" do
       assert_raise ApplicationController::InvalidOwner do
         Vial.make_babies_and_vial({
-            :label => "failure", :rack_id => 4, 
+            :label => "failure", :shelf_id => 4, 
             :mom_id => 8, :dad_id => 1,
             :number_of_requested_flies => 12,
             :creator => users(:jeremy) })

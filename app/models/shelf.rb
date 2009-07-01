@@ -1,4 +1,4 @@
-class Rack < ActiveRecord::Base
+class Shelf < ActiveRecord::Base
 
   has_many :vials
   belongs_to :owner, :class_name => "User", :foreign_key => "user_id"

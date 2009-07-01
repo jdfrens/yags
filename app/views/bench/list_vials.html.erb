@@ -5,11 +5,11 @@
 <h1>Your Vials</h1>
 
 <div id="list-vials">
-	<% for @rack in @racks -%>
-		<h2>Vials on the <em><%= in_place_editor_field :rack, 'label', {} %></em> rack:</h2>
+	<% for @shelf in @shelves -%>
+		<h2>Vials on the <em><%= in_place_editor_field :shelf, 'label', {} %></em> rack:</h2>
 		<!-- move some of this stuff into the stylesheet? -->
-		<table id="rack_<%= @rack.id %>" width="100%">
-    		<% @rack.vials.in_groups_of(3, false).each do |group| -%>
+		<table id="shelf_<%= @shelf.id %>" width="100%">
+    		<% @shelf.vials.in_groups_of(3, false).each do |group| -%>
 			<tr>
 				<%  group.each do |vial| -%>
 	                <td id="vial_<%= vial.id %>" width="33%">

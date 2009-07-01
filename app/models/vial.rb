@@ -4,12 +4,12 @@ class Vial < ActiveRecord::Base
   belongs_to :mom, :class_name => 'Fly', :foreign_key => 'mom_id'
   belongs_to :dad, :class_name => 'Fly', :foreign_key => 'dad_id'
   has_one :solution
-  belongs_to :rack
+  belongs_to :shelf
   
   include CartesianProduct
   
   validates_presence_of :label
-  validates_presence_of :rack_id
+  validates_presence_of :shelf_id
   validates_numericality_of :number_of_requested_flies, :only_integer => true,
     :on => :create
   validates_inclusion_of :number_of_requested_flies, :in => 0..255,
@@ -74,7 +74,7 @@ class Vial < ActiveRecord::Base
   end
   
   def owner
-    rack.owner
+    shelf.owner
   end
   
   def number_of_requested_flies_before_type_cast
@@ -199,8 +199,8 @@ class Vial < ActiveRecord::Base
     if creator.nil?
       errors.add(:creator, "must specify a user to create the vial")
     else
-      if !creator.owns?(rack)
-        raise ApplicationController::InvalidOwner.new("rack not owned by the creator")
+      if !creator.owns?(shelf)
+        raise ApplicationController::InvalidOwner.new("shelf not owned by the creator")
       end
       if mom && !creator.owns?(mom)
         raise ApplicationController::InvalidOwner.new("mom not owned by the creator")

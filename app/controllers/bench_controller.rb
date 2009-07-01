@@ -3,7 +3,7 @@ include ERB::Util
 
 class BenchController < ApplicationController
   in_place_edit_for :vial, :label
-  in_place_edit_for :rack, :label
+  in_place_edit_for :shelf, :label
   restrict_to :manage_bench
   before_filter :redirect_students_without_scenarios, :except => "choose_scenario"
   
@@ -36,7 +36,7 @@ class BenchController < ApplicationController
   
   def collect_field_vial
     @flies_number = current_user.basic_preference.flies_number
-    if request.post? && params[:vial] && current_user.owns?(Rack.find_by_id(params[:vial][:rack_id]))
+    if request.post? && params[:vial] && current_user.owns?(Shelf.find_by_id(params[:vial][:shelf_id]))
       @vial = Vial.collect_from_field(params[:vial])
       @vial.save!
       current_user.basic_preference.flies_number = @vial.number_of_requested_flies
@@ -79,7 +79,7 @@ class BenchController < ApplicationController
     if params[:vial_id].to_i.zero?
       render :partial => 'redisplay_vial_selector_instructions'
     else
-      @vial = Vial.find(params[:vial_id].to_i, :include => [ { :rack => :owner }, { :flies => :genotypes } ])
+      @vial = Vial.find(params[:vial_id].to_i, :include => [ { :shelf => :owner }, { :flies => :genotypes } ])
       current_user_must_own @vial
       @phenotypes_to_flies = phenotypes_to_flies(@vial, current_user.visible_characters)
       render
@@ -118,15 +118,15 @@ class BenchController < ApplicationController
   end
   
   def list_vials
-    @racks = current_user.current_racks_without_trash
-    @trash = current_user.trash_rack
+    @shelves = current_user.current_shelves_without_trash
+    @trash = current_user.trash_shelf
   end
   
   def destroy_vial
     if request.post?
       @vial = Vial.find(params[:vial_id])    
       if current_user.owns?(@vial) && @vial.solution == nil
-        @vial.rack = current_user.trash_rack
+        @vial.shelf = current_user.trash_shelf
         @vial.save!
       elsif @vial.solution && @vial.solution.number != nil
         flash[:notice] = "#{@vial.label} cannot be moved to the Trash because it is a solution to problem #{@vial.solution.number}."
@@ -150,15 +150,15 @@ class BenchController < ApplicationController
     render :nothing => true, :status => 401
   end
   
-  def set_rack_label
+  def set_shelf_label
     must_use_xhr_post
-    @rack = Rack.find(params[:id])
-    if current_user.owns?(@rack)
-      previous_label = @rack.label
+    @shelf = Shelf.find(params[:id])
+    if current_user.owns?(@shelf)
+      previous_label = @shelf.label
       # Should we use a regex instead of 'Trash'?
-      @rack.label = params[:value] if params[:value] != "Trash"
-      @rack.label = previous_label unless @rack.save
-      render :text => h(@rack.label)  
+      @shelf.label = params[:value] if params[:value] != "Trash"
+      @shelf.label = previous_label unless @shelf.save
+      render :text => h(@shelf.label)
     else
       raise InvalidOwner
     end
@@ -200,12 +200,12 @@ class BenchController < ApplicationController
     render :nothing => true, :status => 401
   end
   
-  def add_rack
-    if params[:rack]
-      @rack = Rack.new params[:rack]
-      @rack.owner = current_user
-      @rack.scenario = current_user.current_scenario
-      @rack.save! unless @rack.trash?
+  def add_shelf
+    if params[:shelf]
+      @shelf = Shelf.new params[:shelf]
+      @shelf.owner = current_user
+      @shelf.scenario = current_user.current_scenario
+      @shelf.save! unless @shelf.trash?
       redirect_to :action => "list_vials"
     else
       render
@@ -214,12 +214,12 @@ class BenchController < ApplicationController
     render
   end
   
-  def move_vial_to_another_rack
+  def move_vial_to_another_shelf
     if request.post?
       @vial = Vial.find(params[:id])
-      @rack = Rack.find(params[:vial][:rack_id])
-      if current_user.owns?(@vial) and current_user.owns?(@rack)
-        @vial.rack = @rack
+      @shelf = Shelf.find(params[:vial][:shelf_id])
+      if current_user.owns?(@vial) and current_user.owns?(@shelf)
+        @vial.shelf = @shelf
         @vial.save!
         render :update do |page|
           page.replace_html 'move_notice', :partial => 'move_vial_notice'

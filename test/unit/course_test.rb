@@ -1,7 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CourseTest < ActiveSupport::TestCase
-  all_fixtures
+
+  fixtures :all
   
   def test_has_and_belongs_to_many_scenarios
     assert_equal title_sort(scenarios(:first_scenario, :another_scenario, :everything_included)),

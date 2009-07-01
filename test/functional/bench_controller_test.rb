@@ -5,7 +5,8 @@ require 'bench_controller'
 class BenchController; def rescue_action(e) raise e end; end
 
 class BenchControllerTest < ActionController::TestCase
-  all_fixtures
+
+  fixtures :all
   
   def setup
     @controller = BenchController.new
@@ -20,7 +21,7 @@ class BenchControllerTest < ActionController::TestCase
       :vial => {
         :label => "four fly vial",
         :number_of_requested_flies => "4",
-        :rack_id => "2"
+        :shelf_id => "2"
       } },
     user_session(:steve)
     
@@ -29,7 +30,7 @@ class BenchControllerTest < ActionController::TestCase
     assert_equal number_of_old_vials + 1, Vial.find(:all).size
     assert_equal 4, new_vial.flies.size
     assert_equal 4, users(:steve).basic_preference.flies_number
-    assert_equal 2, new_vial.rack.id
+    assert_equal 2, new_vial.shelf.id
     assert_equal users(:steve), new_vial.owner
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
@@ -42,7 +43,7 @@ class BenchControllerTest < ActionController::TestCase
       :vial => {
         :label => "nine fly vial",
         :number_of_requested_flies => "9",
-        :rack_id => "2"
+        :shelf_id => "2"
       } },
     user_session(:steve)
     
@@ -52,7 +53,7 @@ class BenchControllerTest < ActionController::TestCase
     assert_equal number_of_old_vials + 1, Vial.count
     assert_equal 9, new_vial.flies.size
     assert_equal 9, users(:steve).basic_preference.flies_number
-    assert_equal 2, new_vial.rack.id
+    assert_equal 2, new_vial.shelf.id
     assert_equal users(:steve), new_vial.owner
     assert_response :redirect
     assert_redirected_to :action => "view_vial", :id => new_vial.id
@@ -64,7 +65,7 @@ class BenchControllerTest < ActionController::TestCase
           :vial => {
             :label => "anonomous user's vial",
             :number_of_requested_flies => "8",
-            :rack_id => "3" } }
+            :shelf_id => "3" } }
       assert_redirected_to_login
     end
   end
@@ -75,7 +76,7 @@ class BenchControllerTest < ActionController::TestCase
         :vial => {
           :label => "some vial",
           :number_of_requested_flies => "581",
-          :rack_id => "2"}
+          :shelf_id => "2"}
       },
       user_session(:steve)
       
@@ -85,13 +86,13 @@ class BenchControllerTest < ActionController::TestCase
     end
   end
   
-  def test_collect_field_vial_fails_if_rack_NOT_owned
+  def test_collect_field_vial_fails_if_shelf_NOT_owned
     assert_no_added_vials do
       post :collect_field_vial, {
         :vial => {
           :label => "some vial for someone else",
           :number_of_requested_flies => "81",
-          :rack_id => "4"}
+          :shelf_id => "4"}
       },
       user_session(:steve)
       
@@ -109,43 +110,43 @@ class BenchControllerTest < ActionController::TestCase
       assert_select "label", "Label:"
       assert_select "input#vial_label"
       assert_select "label", "Number of flies:"
-      assert_select "select#vial_rack_id"
+      assert_select "select#vial_shelf_id"
       assert_select "input#vial_number_of_requested_flies[value=42]"
     end
   end
   
-  def test_add_rack
-    number_of_old_racks =  Rack.find(:all).size
-    post :add_rack, {
-        :rack => { :label => "super storage unit"} },
+  def test_add_shelf
+    number_of_old_shelves =  Shelf.find(:all).size
+    post :add_shelf, {
+        :shelf => { :label => "super storage unit"} },
         user_session(:steve)
         
-    new_rack = Rack.find_by_label("super storage unit")
-    assert_not_nil new_rack
-    assert_equal users(:steve).current_scenario, new_rack.scenario
-    assert_equal number_of_old_racks + 1, Rack.find(:all).size
-    assert_equal users(:steve), new_rack.owner
+    new_shelf = Shelf.find_by_label("super storage unit")
+    assert_not_nil new_shelf
+    assert_equal users(:steve).current_scenario, new_shelf.scenario
+    assert_equal number_of_old_shelves + 1, Shelf.find(:all).size
+    assert_equal users(:steve), new_shelf.owner
     assert_response :redirect
     assert_redirected_to :action => "list_vials"
   end
   
-  def test_add_rack_fails_when_NOT_logged_in
-    post :add_rack, { :rack => { :label => "super duper unit"} }
+  def test_add_shelf_fails_when_NOT_logged_in
+    post :add_shelf, { :shelf => { :label => "super duper unit"} }
     assert_redirected_to_login
   end
   
-  def test_add_rack_fails_when_named_trash
-    number_of_old_racks =  Rack.find(:all).size
-    post :add_rack, {
-        :rack => { :label => "trash"} },
+  def test_add_shelf_fails_when_named_trash
+    number_of_old_shelves =  Shelf.find(:all).size
+    post :add_shelf, {
+        :shelf => { :label => "trash"} },
         user_session(:steve)
-    assert_equal number_of_old_racks, Rack.find(:all).size
+    assert_equal number_of_old_shelves, Shelf.find(:all).size
     assert_redirected_to :action => "list_vials"
   end
   
-  def test_add_rack_protects_vials
-    post :add_rack, {
-      :rack => {
+  def test_add_shelf_protects_vials
+    post :add_shelf, {
+      :shelf => {
         :label => "Been caught stealing!",
         :vial_ids => [1, 2, 3, 4, 5, 6, 7]
       }
@@ -154,51 +155,51 @@ class BenchControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_redirected_to :action => "list_vials"
 
-    new_rack = Rack.find_by_label("Been caught stealing!")
-    assert_not_nil new_rack
-    assert_equal users(:randy), new_rack.owner
+    new_shelf = Shelf.find_by_label("Been caught stealing!")
+    assert_not_nil new_shelf
+    assert_equal users(:randy), new_shelf.owner
     Vial.find([1, 2, 3, 4, 5, 6, 7]).each do |vial|      
       assert_not_equal users(:randy), vial.owner, "should not own vial #{vial.id}"
     end
   end
   
-  def test_add_rack_page
-    get :add_rack, {}, user_session(:steve)
+  def test_add_shelf_page
+    get :add_shelf, {}, user_session(:steve)
     
     assert_response :success
     assert_standard_layout
     
     assert_select "form" do
       assert_select "label", "Label:"
-      assert_select "input#rack_label[size=40]"
+      assert_select "input#shelf_label[size=40]"
     end
   end
   
-  def test_move_vial_to_another_rack
-    number_of_old_vials_in_rack = Rack.find(1).vials.size
-    xhr :post, :move_vial_to_another_rack, { :id => 5, :vial => {:rack_id => 1 } }, user_session(:steve)
-    assert_equal number_of_old_vials_in_rack + 1, Rack.find(1).vials.size
-    assert_equal 1, Vial.find(5).rack_id
+  def test_move_vial_to_another_shelf
+    number_of_old_vials_in_shelf = Shelf.find(1).vials.size
+    xhr :post, :move_vial_to_another_shelf, { :id => 5, :vial => {:shelf_id => 1 } }, user_session(:steve)
+    assert_equal number_of_old_vials_in_shelf + 1, Shelf.find(1).vials.size
+    assert_equal 1, Vial.find(5).shelf_id
     assert_response :success
     assert_select_rjs :replace_html, "move_notice"
     assert_select_rjs "move_notice" do
       assert_select "img[src^=/images/pill_go.png]"
-      assert_select "p", "#{Vial.find(5).label} was moved to #{Rack.find(1).label}."
+      assert_select "p", "#{Vial.find(5).label} was moved to #{Shelf.find(1).label}."
     end
   end
   
-  def test_move_vial_to_another_rack_fails_when_NOT_logged_in
-    post :move_vial_to_another_rack, { :id => 4, :vial => {:rack_id => 1 } }
+  def test_move_vial_to_another_shelf_fails_when_NOT_logged_in
+    post :move_vial_to_another_shelf, { :id => 4, :vial => {:shelf_id => 1 } }
     assert_redirected_to_login
   end
   
-  def test_move_vial_to_another_rack_fails_when_NOT_owner_of_vial
-    post :move_vial_to_another_rack, { :id => 7, :vial => {:rack_id => 1 } }, user_session(:steve)
+  def test_move_vial_to_another_shelf_fails_when_NOT_owner_of_vial
+    post :move_vial_to_another_shelf, { :id => 7, :vial => {:shelf_id => 1 } }, user_session(:steve)
     assert_redirected_to :action => "list_vials"
   end
   
-  def test_move_vial_to_another_rack_fails_when_NOT_owner_of_rack
-    post :move_vial_to_another_rack, { :id => 3, :vial => {:rack_id => 5 } }, user_session(:steve)
+  def test_move_vial_to_another_shelf_fails_when_NOT_owner_of_shelf
+    post :move_vial_to_another_shelf, { :id => 3, :vial => {:shelf_id => 5 } }, user_session(:steve)
     assert_redirected_to :action => "list_vials"
   end
   
@@ -247,8 +248,8 @@ class BenchControllerTest < ActionController::TestCase
         assert_select "input[type=hidden][value=3]"
       end
       assert_select "form" do
-        assert_select "select#vial_rack_id" do
-          assert_select "option", 2, "steve should have 2 visible racks for current scenario"
+        assert_select "select#vial_shelf_id" do
+          assert_select "option", 2, "steve should have 2 visible shelves for current scenario"
         end
       end
     end
@@ -303,8 +304,8 @@ class BenchControllerTest < ActionController::TestCase
         assert_select "input[type=hidden][value=4]"
       end
       assert_select "form" do
-        assert_select "select#vial_rack_id" do
-          assert_select "option", 2, "steve should have 2 visible racks for current scenario"
+        assert_select "select#vial_shelf_id" do
+          assert_select "option", 2, "steve should have 2 visible shelves for current scenario"
         end
       end
     end
@@ -359,8 +360,8 @@ class BenchControllerTest < ActionController::TestCase
         assert_select "input[type=hidden][value=1]"
       end
       assert_select "form" do
-        assert_select "select#vial_rack_id" do
-          assert_select "option", 2, "steve should have two visible racks for current scenario"
+        assert_select "select#vial_shelf_id" do
+          assert_select "option", 2, "steve should have two visible shelfs for current scenario"
         end
       end
     end
@@ -447,47 +448,47 @@ class BenchControllerTest < ActionController::TestCase
         { :id => vials(:vial_one).id, :value => '<Bob>' }, user_session(:steve)
   end
   
-  def test_set_rack_label
-    xhr :post, :set_rack_label, { :id => racks(:steve_bench_rack).id, :value => 'Stock > Bench'}, user_session(:steve)
+  def test_set_shelf_label
+    xhr :post, :set_shelf_label, { :id => shelves(:steve_bench_shelf).id, :value => 'Stock > Bench'}, user_session(:steve)
     
     assert_response :success
     assert_equal 'Stock &gt; Bench', @response.body
     
-    rack = racks(:steve_bench_rack)
-    rack.reload
-    assert_equal 'Stock > Bench', rack.label
+    shelf = shelves(:steve_bench_shelf)
+    shelf.reload
+    assert_equal 'Stock > Bench', shelf.label
   end
   
-  def test_set_rack_label_fails_when_NOT_logged_in
-    get :set_rack_label, { :id => racks(:steve_stock_rack).id, :value => 'I am not logged in!' }
+  def test_set_shelf_label_fails_when_NOT_logged_in
+    get :set_shelf_label, { :id => shelves(:steve_stock_shelf).id, :value => 'I am not logged in!' }
     assert_redirected_to_login
   end
   
-  def test_set_rack_label_fails_when_NOT_owned_by_current_user
-    xhr :post, :set_rack_label, { :id => racks(:jeremy_stock_rack).id, :value => 'Jeremys Solutions'}, 
+  def test_set_shelf_label_fails_when_NOT_owned_by_current_user
+    xhr :post, :set_shelf_label, { :id => shelves(:jeremy_stock_shelf).id, :value => 'Jeremys Solutions'},
         user_session(:steve)
         
     assert_response 401 # permission denied
     
-    rack = racks(:jeremy_stock_rack)
-    rack.reload
-    assert_equal 'jeremy stock', rack.label
+    shelf = shelves(:jeremy_stock_shelf)
+    shelf.reload
+    assert_equal 'jeremy stock', shelf.label
   end
   
-  def test_set_rack_label_restricted_to_xhr_post_only
-    assert_xhr_post_only :set_rack_label,
-        { :id => racks(:steve_bench_rack).id, :value => 'Favorite Rack'}, user_session(:steve)
+  def test_set_shelf_label_restricted_to_xhr_post_only
+    assert_xhr_post_only :set_shelf_label,
+        { :id => shelves(:steve_bench_shelf).id, :value => 'Favorite shelf'}, user_session(:steve)
   end
   
-  def test_set_rack_label_to_trash
-    xhr :post, :set_rack_label, { :id => racks(:steve_bench_rack).id, :value => 'Trash'}, user_session(:steve)
+  def test_set_shelf_label_to_trash
+    xhr :post, :set_shelf_label, { :id => shelves(:steve_bench_shelf).id, :value => 'Trash'}, user_session(:steve)
     
     assert_response :success
     assert_equal 'steve bench', @response.body
     
-    rack = racks(:steve_bench_rack)
-    rack.reload
-    assert_equal 'steve bench', rack.label
+    shelf = shelves(:steve_bench_shelf)
+    shelf.reload
+    assert_equal 'steve bench', shelf.label
   end
   
   def test_set_as_solution
@@ -580,28 +581,28 @@ class BenchControllerTest < ActionController::TestCase
   end
   
   def test_delete_vial
-    number_of_vials_in_trash = Rack.find(racks(:steve_trash_rack)).vials.size
+    number_of_vials_in_trash = Shelf.find(shelves(:steve_trash_shelf)).vials.size
     
-    post :destroy_vial, { :vial_id => vials(:vial_with_a_fly).id, :rack_id => racks(:steve_trash_rack).id }, user_session(:steve)
+    post :destroy_vial, { :vial_id => vials(:vial_with_a_fly).id, :shelf_id => shelves(:steve_trash_shelf).id }, user_session(:steve)
     assert_redirected_to :action => 'list_vials'
     
-    assert_equal number_of_vials_in_trash + 1, Rack.find(racks(:steve_trash_rack)).vials.size
-    assert_equal racks(:steve_trash_rack).id, Vial.find(vials(:vial_with_a_fly)).rack_id
+    assert_equal number_of_vials_in_trash + 1, Shelf.find(shelves(:steve_trash_shelf)).vials.size
+    assert_equal shelves(:steve_trash_shelf).id, Vial.find(vials(:vial_with_a_fly)).shelf_id
   end
   
   def test_delete_solution_vial_fails
-    number_of_vials_in_trash = Rack.find(racks(:steve_trash_rack)).vials.size
+    number_of_vials_in_trash = Shelf.find(shelves(:steve_trash_shelf)).vials.size
     
-    post :destroy_vial, { :vial_id => vials(:vial_one).id, :rack_id => racks(:steve_trash_rack).id }, user_session(:steve)
+    post :destroy_vial, { :vial_id => vials(:vial_one).id, :shelf_id => shelves(:steve_trash_shelf).id }, user_session(:steve)
     assert_redirected_to :action => 'list_vials'
     
     assert_equal "#{vials(:vial_one).label} cannot be moved to the Trash because it is a solution to problem #{vials(:vial_one).solution.number}.", flash[:notice]
-    assert_equal number_of_vials_in_trash, Rack.find(racks(:steve_trash_rack)).vials.size
-    assert_not_equal racks(:steve_trash_rack).id, Vial.find(vials(:vial_one)).rack_id
+    assert_equal number_of_vials_in_trash, Shelf.find(shelves(:steve_trash_shelf)).vials.size
+    assert_not_equal shelves(:steve_trash_shelf).id, Vial.find(vials(:vial_one)).shelf_id
   end
   
   def test_delete_vial_fails_when_NOT_logged_in
-    post :destroy_vial, { :vial_id => vials(:vial_one).id, :rack_id => racks(:steve_trash_rack).id }
+    post :destroy_vial, { :vial_id => vials(:vial_one).id, :shelf_id => shelves(:steve_trash_shelf).id }
 
     assert_redirected_to_login
   end
@@ -609,7 +610,7 @@ class BenchControllerTest < ActionController::TestCase
   def test_delete_vial_fails_when_deleted_by_non_owner
     assert_equal users(:steve), vials(:vial_one).owner
     
-    post :destroy_vial, { :vial_id => vials(:vial_one).id, :rack_id => racks(:steve_trash_rack).id }, user_session(:jeremy)
+    post :destroy_vial, { :vial_id => vials(:vial_one).id, :shelf_id => shelves(:steve_trash_shelf).id }, user_session(:jeremy)
     assert_redirected_to :action => "list_vials" 
   end
   
@@ -627,9 +628,9 @@ class BenchControllerTest < ActionController::TestCase
       assert_select "li a[href=/bench/collect_field_vial]", "Collect a field vial"
     end
     assert_select "h2", "Rack Operations"
-    assert_select "ul#rack_operations" do
+    assert_select "ul#shelf_operations" do
       assert_select "li", 1
-      assert_select "li a[href=/bench/add_rack]", "Create a new rack"
+      assert_select "li a[href=/bench/add_shelf]", "Create a new rack"
     end
     assert_select "h2", "System Operations"
     assert_select "ul#system_operations" do
@@ -648,8 +649,8 @@ class BenchControllerTest < ActionController::TestCase
     assert_select "h1", "Your Vials"
     assert_select "div#list-vials" do
       assert_select "h2", /Vials on the/
-      assert_select "span#rack_label_2_in_place_editor", "steve bench"
-      assert_select "table#rack_2" do
+      assert_select "span#shelf_label_2_in_place_editor", "steve bench"
+      assert_select "table#shelf_2" do
         assert_select "td", 5
         assert_select "td#vial_1", "First vial"
         assert_select "td#vial_1 img[src^=/images/star.png][title=Solves Problem #8]"
@@ -663,7 +664,7 @@ class BenchControllerTest < ActionController::TestCase
         assert_select "td#vial_5", "Parents vial"
         assert_select "td#vial_5 img[src^=/images/star.png][title=Solves Problem #1]"
       end
-      assert_select "table", 2, "steve should have 2 visible racks for current scenario"
+      assert_select "table", 2, "steve should have 2 visible shelves for current scenario"
     end
     assert_select "div#toggle-trash" do
       assert_select "p", "Show/Hide your Trash"
@@ -678,8 +679,8 @@ class BenchControllerTest < ActionController::TestCase
     assert_select "h1", "Your Vials"
     assert_select "div#list-vials" do
       assert_select "h2", /Vials on the/
-      assert_select "span#rack_label_4_in_place_editor", "jeremy bench"
-      assert_select "table#rack_4" do
+      assert_select "span#shelf_label_4_in_place_editor", "jeremy bench"
+      assert_select "table#shelf_4" do
         assert_select "td", 2
         assert_select "td#vial_6", "Destroyable vial"
         assert_select "td#vial_6 img", 1
@@ -709,8 +710,8 @@ class BenchControllerTest < ActionController::TestCase
       assert_select "label", "Number of offspring:"
       assert_select "input#vial_number_of_requested_flies[value=42]"
       assert_select "label", /^Store in the rack named:/
-      assert_select "select#vial_rack_id" do
-        assert_select "option", 2, "steve should have two visible racks in current scenario"
+      assert_select "select#vial_shelf_id" do
+        assert_select "option", 2, "steve should have two visible shelves in current scenario"
         assert_select "option", "steve stock"
         assert_select "option", "steve bench"
       end
@@ -916,7 +917,7 @@ class BenchControllerTest < ActionController::TestCase
         { :vial => {
             :label => "children vial",
             :mom_id => "6", :dad_id => "1",
-            :rack_id => "2",
+            :shelf_id => "2",
             :number_of_requested_flies => "8"
           } },
         user_session(:steve)
@@ -939,7 +940,7 @@ class BenchControllerTest < ActionController::TestCase
         { :vial => {
             :label => "children 2",
             :mom_id => "4", :dad_id => "3",
-            :rack_id => "1", 
+            :shelf_id => "1",
             :number_of_requested_flies => "3"
           } },
         user_session(:steve)
@@ -961,7 +962,7 @@ class BenchControllerTest < ActionController::TestCase
         { :vial => {
             :label => "children 2",
             :mom_id => "4", :dad_id => "3",
-            :rack_id => "1", 
+            :shelf_id => "1",
             :number_of_requested_flies => "3"
         } },
         user_session(:steve)
@@ -974,7 +975,7 @@ class BenchControllerTest < ActionController::TestCase
             :label => "stolen children",
             :mom_id => "4", :dad_id => "3", 
             :number_of_requested_flies => "2",
-            :rack_id => "2"
+            :shelf_id => "2"
             } }, user_session(:jeremy)
             
       assert_response 401 # access denied!
@@ -990,7 +991,7 @@ class BenchControllerTest < ActionController::TestCase
           :vial => {
             :label => "children vial",
             :mom_id => "6", :dad_id => "1",
-            :number_of_requested_flies => "8", :rack_id => "3" } }
+            :number_of_requested_flies => "8", :shelf_id => "3" } }
             
       assert_redirected_to_login
     end
@@ -1002,7 +1003,7 @@ class BenchControllerTest < ActionController::TestCase
           :vial => {
             :label => "children vial",
             :number_of_requested_flies => "8",
-            :rack_id => "2" }
+            :shelf_id => "2" }
           }, user_session(:steve)
       
       assert_response :success
@@ -1030,7 +1031,7 @@ class BenchControllerTest < ActionController::TestCase
           { :vial => {
               :label => "children vial",
               :dad_id => "1", :mom_id => 6, 
-              :rack_id => "2",
+              :shelf_id => "2",
               :number_of_requested_flies => "256" } },
           user_session(:steve)
           
@@ -1143,8 +1144,8 @@ class BenchControllerTest < ActionController::TestCase
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:steve).reload
     assert_equal scenarios(:another_scenario), users(:steve).current_scenario
-    assert_equal ["Trash", "steve rack for party day"], 
-        users(:steve).current_racks.map { |r| r.label }.sort
+    assert_equal ["Trash", "steve shelf for party day"],
+        users(:steve).current_shelves.map { |r| r.label }.sort
     assert_equal [:"eye color", :"eye color"], 
         users(:steve).phenotype_alternates.map { |pa| pa.affected_character.intern }
     assert_equal [:red, :white].to_set, 
@@ -1159,7 +1160,7 @@ class BenchControllerTest < ActionController::TestCase
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:keith).reload
     assert_equal scenarios(:first_scenario), users(:keith).current_scenario
-    assert_equal ["Default", "Trash"], users(:keith).current_racks.map { |r| r.label }.sort
+    assert_equal ["Default", "Trash"], users(:keith).current_shelves.map { |r| r.label }.sort
   end
   
   def test_choose_scenario_fails_when_NOT_scenario_for_course
@@ -1169,7 +1170,7 @@ class BenchControllerTest < ActionController::TestCase
     assert_redirected_to :controller => 'bench', :action => 'index'
     users(:keith).reload
     assert_nil users(:keith).current_scenario
-    assert users(:keith).racks.empty?
+    assert users(:keith).shelves.empty?
   end
   
   def test_choose_scenario_fails_when_NOT_logged_in_as_student
@@ -1195,7 +1196,7 @@ class BenchControllerTest < ActionController::TestCase
     get :index, {}, user_session(:keith)
     assert_redirected_to :action => "choose_scenario"
     
-    get :add_rack, {}, user_session(:keith)
+    get :add_shelf, {}, user_session(:keith)
     assert_redirected_to :action => "choose_scenario"
     
     post :collect_field_vial, {:vial => {:label => "a-vial-of-thunderous-birds",

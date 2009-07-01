@@ -3,13 +3,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 class UserTest < ActiveSupport::TestCase
 
   fixtures :all
-  
-  def test_has_many_vials
-    assert_equal_set [], users(:calvin).vials
-    assert_equal_set vials(:destroyable_vial, :random_vial), users(:jeremy).vials
-    assert_equal_set vials(:vial_one, :vial_empty, :vial_with_a_fly, :vial_with_many_flies, :parents_vial),
-        users(:steve).vials  
-  end
+
+  should_have_many :vials
   
   def test_has_basic_preference
     assert_equal "eye color", users(:jeremy).basic_preference.column

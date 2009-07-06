@@ -1,0 +1,31 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+fly_00:
+  id: 1
+  vial_id: 4
+fly_01:
+  id: 2
+  vial_id: 3
+fly_10:
+  id: 3
+  vial_id: 4
+fly_11:
+  id: 4
+  vial_id: 4
+bob:
+  id: 5
+  vial_id: 4
+fly_mom:
+  id: 6
+  vial_id: 5
+fly_dad:
+  id: 7
+  vial_id: 5
+child_one:
+  id: 8
+  vial_id: 6
+child_two:
+  id: 9
+  vial_id: 6
+gamete_maker:
+  id: 10
+  vial_id: 7

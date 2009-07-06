@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+steve_solves_1:
+  id: 1
+  vial_id: 5
+  number: 1
+jeremy_solves_2:
+  id: 2
+  vial_id: 7
+  number: 2
+steve_solves_8:
+  id: 3
+  vial_id: 1
+  number: 8

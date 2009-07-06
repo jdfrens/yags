@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+student_bench_mapping:
+  id: 1
+  group_id: 1
+  privilege_id: 1
+admin_student_mapping:
+  id: 2
+  group_id: 2
+  privilege_id: 2
+admin_instructor_mapping:
+  id: 3
+  group_id: 2
+  privilege_id: 4
+instructor_student_mapping:
+  id: 4
+  group_id: 3
+  privilege_id: 2
+instructor_lab_mapping:
+  id: 5
+  group_id: 3
+  privilege_id: 3

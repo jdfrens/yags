@@ -1,0 +1,10 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+student:
+  id: 1
+  name: student
+admin:
+  id: 2
+  name: admin
+instructor:
+  id: 3
+  name: instructor

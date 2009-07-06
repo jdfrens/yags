@@ -1,0 +1,16 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+orange_instead_of_red:
+  id: 1
+  scenario_id: 2
+  user_id: 3
+  affected_character: eye color
+  original_phenotype: red
+  renamed_phenotype: orange
+beige_instead_of_white:
+  id: 2
+  scenario_id: 2
+  user_id: 3
+  affected_character: eye color
+  original_phenotype: white
+  renamed_phenotype: beige
+  

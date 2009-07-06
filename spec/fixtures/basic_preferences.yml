@@ -1,0 +1,22 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+jeremys_basic_preference:
+  id: 1
+  user_id: 3
+  column: eye color
+  row: wings
+  scenario_id: 2
+  flies_number: 50
+just_scenario_for_steve:
+  id: 2
+  user_id: 1
+  column: 
+  row: 
+  scenario_id: 4
+  flies_number: 42
+just_scenario_for_randy:
+  id: 3
+  user_id: 4
+  column: 
+  row: 
+  scenario_id: 4
+  flies_number: 

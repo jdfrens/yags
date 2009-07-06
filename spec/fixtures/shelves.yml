@@ -1,0 +1,41 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+steve_stock_shelf:
+  id: 1
+  user_id: 1
+  scenario_id: 4
+  label: "steve stock"
+steve_bench_shelf:
+  id: 2
+  user_id: 1
+  scenario_id: 4
+  label: "steve bench"
+jeremy_stock_shelf:
+  id: 3
+  user_id: 3
+  scenario_id: 2
+  label: "jeremy stock"
+jeremy_bench_shelf:
+  id: 4
+  user_id: 3
+  scenario_id: 2
+  label: "jeremy bench"
+randy_stock_shelf:
+  id: 5
+  user_id: 4
+  scenario_id: 4
+  label: "randy stock"
+randy_bench_shelf:
+  id: 6
+  user_id: 4
+  scenario_id: 4
+  label: "randy bench"
+steve_shelf_for_party_day:
+  id: 7
+  user_id: 1
+  scenario_id: 2
+  label: "steve shelf for party day"
+steve_trash_shelf:
+  id: 8
+  user_id: 1
+  scenario_id: 4
+  label: "Trash"

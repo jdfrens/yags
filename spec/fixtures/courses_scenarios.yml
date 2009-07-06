@@ -1,0 +1,22 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+Peas_pay_attention_to_the_forgetful_instructor:
+  scenario_id: 1
+  course_id: 1
+Peas_pay_attention_to_the_party:
+  scenario_id: 2
+  course_id: 1
+Natural_selection_only_sex_and_legs:
+  scenario_id: 3
+  course_id: 2
+A_field_trip_and_a_party_day:
+  scenario_id: 2
+  course_id: 3
+Peas_pay_attention_to_everything_included:
+  scenario_id: 4
+  course_id: 1
+Natural_selection_of_everything_included:
+  scenario_id: 4
+  course_id: 2
+A_field_trip_with_everything_included:
+  scenario_id: 4
+  course_id: 3

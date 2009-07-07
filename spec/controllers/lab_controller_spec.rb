@@ -17,8 +17,7 @@ class LabControllerTest < ActionController::TestCase
   def test_index
     get :index, {}, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
-    
+  
     assert_select "ul.list" do
       assert_select "li", 11
     end
@@ -35,7 +34,7 @@ class LabControllerTest < ActionController::TestCase
   def test_list_courses
     get :list_courses, {}, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
+
     assert_select "ul" do
       assert_select "li", "Peas pay attention"
     end
@@ -44,7 +43,7 @@ class LabControllerTest < ActionController::TestCase
   def test_list_courses_as_darwin
     get :list_courses, {}, user_session(:darwin)
     assert_response :success
-    assert_standard_layout
+
     assert_select "ul" do
       assert_select "li", "Natural selection"
       assert_select "li", "Interim to the Galapagos Islands"
@@ -65,7 +64,7 @@ class LabControllerTest < ActionController::TestCase
   def test_add_course
     get :add_course, {}, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "label", "Course Name:"
     assert_select "script[type=text/javascript]"
@@ -153,7 +152,7 @@ class LabControllerTest < ActionController::TestCase
   def test_choose_course_scenarios_page
     get :choose_course_scenarios, { :id => 3 }, user_session(:darwin)
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "input[type=checkbox]", 4
       assert_select "input[type=checkbox][checked=checked]", 2
@@ -187,7 +186,6 @@ class LabControllerTest < ActionController::TestCase
   def test_view_student_vial
     get :view_student_vial, {:id => vials(:random_vial).id }, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
     
     assert_select "div#student-vial-info" do
       assert_select "p", "Scenario:#{vials(:random_vial).owner.current_scenario.title}"
@@ -225,7 +223,6 @@ class LabControllerTest < ActionController::TestCase
   def test_view_student_vial_again
     get :view_student_vial, {:id => vials(:randy_vial).id }, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
     
     assert_select "div#student-vial-info" do
       assert_select "p", "Scenario:#{vials(:randy_vial).owner.current_scenario.title}"
@@ -349,7 +346,7 @@ class LabControllerTest < ActionController::TestCase
   def test_list_all_scenarios
     get :list_scenarios, {:id => "all"}, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
+
     assert_select "div#list-scenarios" do
       assert_select "ul" do
         assert_select "li", "forgetful instructor"
@@ -376,7 +373,7 @@ class LabControllerTest < ActionController::TestCase
   def test_list_your_scenarios
     get :list_scenarios, {:id => "your"}, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
+
     assert_select "div#list-scenarios" do
       assert_select "ul" do
         assert_select "li", "forgetful instructor"
@@ -401,7 +398,7 @@ class LabControllerTest < ActionController::TestCase
   def test_add_scenario_page
     get :add_scenario, {}, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "label[for=species]"
       assert_select "label[for=title]"
@@ -514,7 +511,7 @@ class LabControllerTest < ActionController::TestCase
   def test_view_cheat_sheet
     get :view_cheat_sheet, {}, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
+    
     assert_select "table" do
       assert_select "tr", 7
       assert_select "th", 13

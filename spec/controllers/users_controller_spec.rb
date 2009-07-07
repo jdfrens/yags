@@ -45,7 +45,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_list_users
     get :list_users, {}, user_session(:manage_student)
     assert_response :success
-    assert_standard_layout
+    
     assert_select "div#list-users"
     assert_select "ul.list" do
       assert_select "li", 7
@@ -72,7 +72,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_add_student_form
     get :add_student, {}, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "label[for=username]"
     assert_select "script[type=text/javascript]"
@@ -134,7 +134,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_add_instructor_form
     get :add_instructor, {}, user_session(:calvin)
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "label", "Username:"
       assert_select "script[type=text/javascript]"
@@ -187,7 +187,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_batch_add_students_view
     get :batch_add_students, {}, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "label[for=student_csv]"
       assert_select "textarea#student_csv"
@@ -306,7 +306,6 @@ class UsersControllerTest < ActionController::TestCase
   def test_change_password_form
     get :change_password, { }, user_session(:steve)
     assert_response :success
-    assert_standard_layout
     
     assert_select "form" do
       assert_select "label", "Old Password:"
@@ -322,7 +321,7 @@ class UsersControllerTest < ActionController::TestCase
     post :change_password, { :user => { :password => 'steve_m', :password_confirmation => 'steve_m' },
         :old_password => "steve_password" }, user_session(:steve)
     assert_response :success
-    assert_standard_layout
+
     steve.reload
     assert_equal User.hash_password('steve_m'), steve.password_hash
     # can't test flash.now[] the same as flash[].
@@ -334,7 +333,7 @@ class UsersControllerTest < ActionController::TestCase
     post :change_password, { :user => { :password => 'rails', :password_confirmation => 'rails' }, 
         :old_password => "not_steve_password" }, user_session(:steve)
     assert_response :success
-    assert_standard_layout
+
     steve.reload
     assert_equal User.hash_password("steve_password"), steve.password_hash
     assert_tag :tag => "div", :child => /Try Again/
@@ -345,7 +344,7 @@ class UsersControllerTest < ActionController::TestCase
     post :change_password, { :user => { :password => 'rails', :password_confirmation => 'trains' }, 
         :old_password => "calvin_password" }, user_session(:manage_student)
     assert_response :success
-    assert_standard_layout
+
     calvin.reload
     assert_equal User.hash_password("calvin_password"), calvin.password_hash
     assert_tag :tag => "div", :child => /Try Again/
@@ -360,7 +359,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_change_student_password_form
     get :change_student_password, { }, user_session(:calvin)
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "div#students_select", "Student: steve\njeremy\nrandy\nkeith"
       assert_select "label", "Password:"
@@ -371,7 +370,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_change_student_password_form_as_instructor
     get :change_student_password, { }, user_session(:mendel)
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "div#students_select", "Student: jeremy\nrandy\nkeith", "shouldn't have steve"
       assert_select "label", "Password:"
@@ -385,7 +384,7 @@ class UsersControllerTest < ActionController::TestCase
     post :change_student_password, { :user => { :password => 'steve_m', 
         :password_confirmation => 'steve_m' }, :student_id => 1 }, user_session(:calvin)
     assert_response :success
-    assert_standard_layout
+
     steve.reload
     assert_equal User.hash_password('steve_m'), steve.password_hash
     assert_equal "Password Changed", flash[:notice]
@@ -396,7 +395,7 @@ class UsersControllerTest < ActionController::TestCase
     post :change_student_password, { :user => { :password => 'buffalo', 
         :password_confirmation => 'prairie cow' }, :student_id => 1 }, user_session(:calvin)
     assert_response :success
-    assert_standard_layout
+    
     steve.reload
     assert_equal User.hash_password("steve_password"), steve.password_hash
     assert_equal "Try Again", flash[:notice]

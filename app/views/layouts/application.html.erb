@@ -1,6 +1,6 @@
-<!DOCTYPE html 
-     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-     "DTD/xhtml1-strict.dtd">
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 
 <head>
@@ -12,48 +12,52 @@
 
 <body>
 
-  <div class="header">
-      <div id="session-info">
-          <% if current_user -%>
-            Logged in as: <%= current_user.username -%><br />
-            <%= link_to "Logout", :controller => 'users', :action => "logout" %>
-          <% else %>
-            <%= link_to "Login", :controller => 'users', :action => "login" %>
-          <% end %> 
-      </div>
-      <img id="logo" src="/images/Beelzebub_icon.png" alt="temp logo" />
-      <h1>YAGS</h1>
+<div class="header">
+  <div id="session-info">
+    <% if current_user -%>
+        Logged in as: <%= current_user.username -%>
+        <br/>
+        <%= link_to "Logout", :controller => 'users', :action => "logout" %>
+    <% else %>
+        <%= link_to "Login", :controller => 'users', :action => "login" %>
+    <% end %>
   </div>
-  
-  <div class="menu-bar">
-  	<ul class="menu">
-  		<% if current_user && current_user.instructor? -%>
-			<li class="first"><strong><%= link_to "Lab", :controller => 'lab', :action => "index" %></strong></li>
-			<li><%= link_to "List Courses", :controller => 'lab', :action => 'list_courses' %></li>
-			<li><%= link_to "Add Scenario", :controller => 'lab', :action => 'add_scenario' %></li>
-			<li><%= link_to "Add Student", :controller => 'users', :action => 'add_student' %></li>
-		<% elsif current_user && current_user.admin? -%>
-	  		<li class="first"><strong><%= link_to "Users", :controller => 'users', :action => "index" %></strong></li>
-			<li><%= link_to "List All Users", :controller => 'users', :action => 'list_users' %></li>
-			<li><%= link_to "Add Instructor", :controller => 'users', :action => 'add_instructor' %></li>
-			<li><%= link_to "Change Student Password", :controller => 'users', :action => 'change_student_password' %></li>
-		<% else -%>
-	  		<li class="first"><strong><%= link_to "Bench", :controller => 'bench', :action => "index" %></strong></li>
-			<li><%= link_to "List Vials", :controller => 'bench', :action => 'list_vials' %></li>
-			<li><%= link_to "Mate Flies", :controller => 'bench', :action => 'mate_flies' %></li>
-			<li><%= link_to "Create New Rack", :controller => 'bench', :action => 'add_shelf' %></li>
-		<% end -%>
-  	</ul>
-  </div>
-  
-  <div class="main">
-    <%= yield :layout %>
-  </div>
-  
-  <div class="footer">
-	 <p>&copy; 2007 Calvin College | All Rights Reserved | Other fine print information </p> 
-  </div>
-  
+  <img id="logo" src="/images/Beelzebub_icon.png" alt="temp logo"/>
+
+  <h1>YAGS</h1>
+</div>
+
+<div class="menu-bar">
+  <% if current_user -%>
+      <ul class="menu">
+        <% if current_user.instructor? -%>
+            <li class="first"><strong><%= link_to "Lab", :controller => 'lab', :action => "index" %></strong></li>
+            <li><%= link_to "List Courses", :controller => 'lab', :action => 'list_courses' %></li>
+            <li><%= link_to "Add Scenario", :controller => 'lab', :action => 'add_scenario' %></li>
+            <li><%= link_to "Add Student", :controller => 'users', :action => 'add_student' %></li>
+        <% elsif current_user.admin? -%>
+            <li class="first"><strong><%= link_to "Users", :controller => 'users', :action => "index" %></strong></li>
+            <li><%= link_to "List All Users", :controller => 'users', :action => 'list_users' %></li>
+            <li><%= link_to "Add Instructor", :controller => 'users', :action => 'add_instructor' %></li>
+            <li><%= link_to "Change Student Password", :controller => 'users', :action => 'change_student_password' %></li>
+        <% else -%>
+            <li class="first"><strong><%= link_to "Bench", :controller => 'bench', :action => "index" %></strong></li>
+            <li><%= link_to "List Vials", :controller => 'bench', :action => 'list_vials' %></li>
+            <li><%= link_to "Mate Flies", :controller => 'bench', :action => 'mate_flies' %></li>
+            <li><%= link_to "Create New Rack", :controller => 'bench', :action => 'add_shelf' %></li>
+        <% end -%>
+      </ul>
+  <% end -%>
+</div>
+
+<div class="main">
+  <%= yield :layout %>
+</div>
+
+<div class="footer">
+  <p>&copy; 2007 Calvin College | All Rights Reserved | Other fine print information </p>
+</div>
+
 </body>
 </html>
 

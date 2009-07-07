@@ -104,7 +104,6 @@ class BenchControllerTest < ActionController::TestCase
   def test_collect_field_vial_page
     post :collect_field_vial, {}, user_session(:steve)
     assert_response :success
-    assert_standard_layout
     
     assert_select "form" do
       assert_select "label", "Label:"
@@ -167,7 +166,6 @@ class BenchControllerTest < ActionController::TestCase
     get :add_shelf, {}, user_session(:steve)
     
     assert_response :success
-    assert_standard_layout
     
     assert_select "form" do
       assert_select "label", "Label:"
@@ -209,7 +207,6 @@ class BenchControllerTest < ActionController::TestCase
     get :view_vial, { :id => vial.id }, user_session(:steve)
     
     assert_response :success
-    assert_standard_layout
     
     assert_select "h1", /Vial #{vial.label}/
     assert_select "span#vial_label_3_in_place_editor", vial.label
@@ -265,7 +262,6 @@ class BenchControllerTest < ActionController::TestCase
     get :view_vial, { :id => vial.id }, user_session(:steve)
     
     assert_response :success
-    assert_standard_layout
     
     assert_select "h1", /Vial #{vial.label}/
     assert_select "span#vial_label_4_in_place_editor", vial.label
@@ -321,7 +317,6 @@ class BenchControllerTest < ActionController::TestCase
     get :view_vial, { :id => vial.id }, user_session(:steve)
     
     assert_response :success
-    assert_standard_layout
     
     assert_select "h1", /Vial #{vial.label}/
     assert_select "span#vial_label_1_in_place_editor", vial.label
@@ -618,7 +613,7 @@ class BenchControllerTest < ActionController::TestCase
     get :index, {}, user_session(:steve)
     
     assert_response :success
-    assert_standard_layout
+
     assert_select "h1", "The Bench"
     assert_select "h2", "Fly and Vial Operations"
     assert_select "ul#fly_and_vial_operations" do
@@ -645,7 +640,7 @@ class BenchControllerTest < ActionController::TestCase
     get :list_vials, {}, user_session(:steve)
     
     assert_response :success
-    assert_standard_layout
+    
     assert_select "h1", "Your Vials"
     assert_select "div#list-vials" do
       assert_select "h2", /Vials on the/
@@ -675,7 +670,7 @@ class BenchControllerTest < ActionController::TestCase
     get :list_vials, {}, user_session(:jeremy)
     
     assert_response :success
-    assert_standard_layout
+
     assert_select "h1", "Your Vials"
     assert_select "div#list-vials" do
       assert_select "h2", /Vials on the/
@@ -698,8 +693,8 @@ class BenchControllerTest < ActionController::TestCase
   
   def test_collect_mate_data
     get :mate_flies, {}, user_session(:steve)
+    
     assert_response :success
-    assert_standard_layout
     
     assert_select "h2", "Cross the Flies"
     assert_select "form[onsubmit*=Ajax.Request]", 3
@@ -874,8 +869,7 @@ class BenchControllerTest < ActionController::TestCase
   def test_mate_flies_page
     get :mate_flies, {}, user_session(:steve)
     
-    assert_response :success
-    assert_standard_layout
+    assert_response :success  
     
     assert_nil flash[:error]
     assert_select "div#vial_selector_1" do
@@ -1055,8 +1049,9 @@ class BenchControllerTest < ActionController::TestCase
       
   def test_preferences_page
     get :preferences, {}, user_session(:steve)
+
     assert_response :success
-    assert_standard_layout
+    
     assert_select "form" do
       assert_select "input[value=sex][checked=checked]"
       assert_select "input[value=eye color][checked=checked]"
@@ -1069,8 +1064,9 @@ class BenchControllerTest < ActionController::TestCase
   
   def test_preferences_page_again
     get :preferences, {}, user_session(:randy)
+
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "input[value=sex][type=checkbox][checked=checked]"
       assert_select "input[value=eye color][type=checkbox][checked=checked]", 0
@@ -1084,8 +1080,9 @@ class BenchControllerTest < ActionController::TestCase
   
   def test_preferences_page_again_with_scenario
     get :preferences, {}, user_session(:jeremy)
+
     assert_response :success
-    assert_standard_layout
+    
     assert_select "form" do
       assert_select "input[value=sex][type=checkbox][checked=checked]"
       assert_select "input[value=eye color][type=checkbox][checked=checked]"
@@ -1124,8 +1121,9 @@ class BenchControllerTest < ActionController::TestCase
   
   def test_choose_scenario_page
     get :choose_scenario, {}, user_session(:randy)
+
     assert_response :success
-    assert_standard_layout
+
     assert_select "form" do
       assert_select "select#basic_preference_scenario_id" do
         assert_select "option[value=1]", "forgetful instructor"

@@ -1,15 +1,22 @@
 <% if flash[:error] -%>
-<div class="error"><%= flash[:error] %></div>
+    <div class="error"><%= flash[:error] %></div>
 <% end -%>
 
 <h1>Log In</h1>
 
 <% form_for :user do |form| %>
-    <p><strong>Username: </strong><%= form.text_field :username, :size => 20 %></p>
-	<%= javascript_tag "$('user_username').focus()" %>
-    <p><strong>Password: </strong><%= form.password_field :password, :size => 20 %></p>
-    <div class="buttons">	
-	<button type="submit" class="positive">
-        <%= image_tag 'door_in.png' %>Login</button>
-	</div>
+    <p>
+      <strong><%= form.label :username %></strong>
+      <%= form.text_field :username, :size => 20 %>
+    </p>
+    <%= javascript_tag "$('user_username').focus()" %>
+    <p>
+      <strong><%= form.label :password %></strong>
+      <%= form.password_field :password, :size => 20 %>
+    </p>
+    <div class="buttons">
+      <button type="submit" class="positive" value="Login">
+        <%= image_tag 'door_in.png' %>Login
+      </button>
+    </div>
 <% end -%>

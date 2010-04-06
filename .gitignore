@@ -1,2 +1,4 @@
+rerun.txt
 .idea
 log/*.log
+tmp/*

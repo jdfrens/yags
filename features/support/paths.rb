@@ -17,6 +17,9 @@ module NavigationHelpers
       when /the lab page/
         "/lab"
 
+      when /the courses page/
+        "/lab/list_courses"
+        
       else
         raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
                 "Now, go and add a mapping in #{__FILE__}"

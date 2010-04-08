@@ -1,14 +1,15 @@
 <% if flash[:notice] -%>
-	<div class="notice"><%= flash[:notice] %></div>
+    <div class="notice"><%= flash[:notice] %></div>
 <% end -%>
 
 <h1>Course: <%= h(@course.name) -%></h1>
-<%= periodically_call_remote :url => { :action => 'update_student_solutions_table', :id => @course.id }, :frequency => 60 %>
+<%= periodically_call_remote :url => { :action => 'update_student_solutions_table', :id => @course.id },
+                             :frequency => 60 %>
 
 <div id="table_of_student_solutions">
-	<%= render :partial => "student_solutions_table" %>
+  <%= render :partial => "student_solutions_table" %>
 </div>
 
 <div id="choose_course_scenarios_link">
-	<p><%= link_to "Choose Scenarios for this course", :action => :choose_course_scenarios, :id => @course.id %></p>
+  <p><%= link_to "Choose Scenarios for this course", :action => :choose_course_scenarios, :id => @course.id %></p>
 </div>

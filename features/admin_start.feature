@@ -25,3 +25,13 @@ Feature: getting started
     Then I should see "BIO 143a"
     And I should see "BIO 143d"
     And I should see "BIO 143q"
+
+  Scenario: delete a course
+    Given an instructor "mendel"
+    And a course "BIO 143a" for "mendel"
+    When I login as "mendel"
+    And I am on the courses page
+    Then I should see "BIO 143a"
+    When I follow "Delete BIO 143a"
+    Then I should be on the courses page
+    And I should not see "BIO 143a"

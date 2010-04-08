@@ -35,3 +35,11 @@ Feature: getting started
     When I follow "Delete BIO 143a"
     Then I should be on the courses page
     And I should not see "BIO 143a"
+
+  Scenario: see students in course
+    Given an instructor "mendel"
+    And a course "BIO 143a" for "mendel"
+    When I login as "mendel"
+    And I am on the courses page
+    And I follow "See BIO 143a"
+    Then I should see "1 2 3 4 5 6 7 8 9"

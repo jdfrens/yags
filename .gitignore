@@ -3,3 +3,4 @@ rerun.txt
 .idea/*
 log/*.log
 tmp/*
+db/yags*.db

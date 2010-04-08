@@ -3,6 +3,9 @@ def create_groups_and_privileges!
   manage_lab = Privilege.find_or_create_by_name("manage_lab")
   instructor.privileges << manage_lab
   instructor.save!
+
+  student = Group.find_or_create_by_name("student")
+  student.save!
 end
 
 Given /^only the following users$/ do |table|
@@ -26,6 +29,25 @@ Given /^an instructor "([^\"]*)"$/ do |username|
   user.group = Group.find_by_name("instructor")
   user.save!
 end
+
+Given /^a student "([^\"]*)"$/ do |student_name|
+  student = User.new(:username => student_name, :email_address => "#{student_name}@example.com",
+                     :password => student_name, :password_confirmation => student_name)
+  student.group = Group.find_by_name("student")
+  student.save!
+end
+
+Given /^a student "([^\"]*)" in "([^\"]*)"$/ do |student_name, course_name|
+  student = User.new(:username => student_name, :email_address => "#{student_name}@example.com",
+                     :password => student_name, :password_confirmation => student_name)
+  student.group = Group.find_by_name("student")
+  student.save!
+
+  course = Course.find_by_name(course_name)
+  course.students << student
+  course.save!
+end
+
 
 When /^I login as "([^\"]*)"$/ do |username|
   When 'I go to the login page'

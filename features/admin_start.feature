@@ -39,7 +39,14 @@ Feature: getting started
   Scenario: see students in course
     Given an instructor "mendel"
     And a course "BIO 143a" for "mendel"
+    And a student "student01" in "BIO 143a"
+    And a student "student02" in "BIO 143a"
+    And a student "student03" in "BIO 143a"
+    And a student "student66"
     When I login as "mendel"
     And I am on the courses page
     And I follow "See BIO 143a"
-    Then I should see "1 2 3 4 5 6 7 8 9"
+    Then I should see "student01"
+    And I should see "student02"
+    And I should see "student03"
+    And I should not see "student66"

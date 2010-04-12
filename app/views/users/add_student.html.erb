@@ -1,40 +1,42 @@
-<%= error_messages_for 'user' %>
-
 <h1>Add Student</h1>
 
 <% form_for :user do |form| %>
     <p>
-        <label for="username"><strong>Username: </strong></label>
-        <%= form.text_field :username, :size => 20 %>
-		<%= javascript_tag "$('user_username').focus()" %>
-    </p>
-	<p>
-        <label for="first_name"><strong>First Name: </strong></label>
-        <%= form.text_field :first_name, :size => 20 %>
-    </p>
-	<p>
-        <label for="last_name"><strong>Last Name: </strong></label>
-        <%= form.text_field :last_name, :size => 20 %>
+      <%= form.error_messages %>
     </p>
     <p>
-        <label for="email address"><strong>Email Address: </strong></label>
-        <%= form.text_field :email_address, :size => 30 %>
+      <%= form.label :username %>
+      <%= form.text_field :username, :size => 20 %>
+      <%= javascript_tag "$('user_username').focus()" %>
     </p>
     <p>
-        <label for="password"><strong>Password: </strong></label>
-        <%= form.password_field :password, :size => 20 %>
+      <%= form.label :first_name %>
+      <%= form.text_field :first_name, :size => 20 %>
     </p>
     <p>
-        <label for="password confirmation"><strong>Password Confirmation: </strong></label>
-        <%= form.password_field :password_confirmation, :size => 20 %>
+      <%= form.label :last_name %>
+      <%= form.text_field :last_name, :size => 20 %>
     </p>
     <p>
-        <label for="course_id"><strong>Course: </strong></label>
-        <%= collection_select :user, :course_id, @courses, :id, :name %>
-	</p>
-    
-    <div class="buttons">	
-	<button type="submit" class="positive">
-        <%= image_tag 'user_add.png' %>Add Student</button>
-</div>
+      <%= form.label :email_address %>
+      <%= form.text_field :email_address, :size => 30 %>
+    </p>
+    <p>
+      <%= form.label :password %>
+      <%= form.password_field :password, :size => 20 %>
+    </p>
+    <p>
+      <%= form.label :password_confirmation %>
+      <%= form.password_field :password_confirmation, :size => 20 %>
+    </p>
+    <p>
+      <%= form.label :course_id, "Course" %>
+      <%= collection_select :user, :course_id, @courses, :id, :name %>
+    </p>
+
+    <div class="buttons">
+      <button type="submit" class="positive">
+        <%= image_tag 'user_add.png' %>Add Student
+      </button>
+    </div>
 <% end %>

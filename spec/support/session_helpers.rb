@@ -2,7 +2,7 @@ module SessionHelpers
 
   def user_session(privilege)
     case privilege
-    when :steve
+    when :steve, :not_manage_student
       { :current_user_id => 1 }
     when :jeremy
       { :current_user_id => 3 }
@@ -19,7 +19,7 @@ module SessionHelpers
     when :keith
       { :current_user_id => 7 }
     else
-      {}
+      raise "#{privilege} is not a recognized privilege"
     end
   end
 

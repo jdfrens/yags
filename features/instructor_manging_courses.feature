@@ -39,3 +39,23 @@ Feature: managing courses
     And I should see "student02"
     And I should see "student03"
     And I should not see "student66"
+
+  Scenario: add a student
+    Given an instructor "mendel"
+    And a course "BIO 143a" for "mendel"
+    And a course "BIO 143b" for "mendel"
+    When I login as "mendel"
+    And I am on the courses page
+    And I follow "Add Student"
+    Then I should see "Add Student"
+    When I fill in the following:
+      | Username              | studentABC             |
+      | First name            | Firsty                 |
+      | Last name             | Lasty                  |
+      | Email address         | studentABC@example.com |
+      | Password              | foobar                 |
+      | Password confirmation | foobar                 |
+    And I select "BIO 143b" from "Course"
+    And I press "Add Student"
+    Then I should see "Listing All Users"
+    And I should see "studentABC (student)"

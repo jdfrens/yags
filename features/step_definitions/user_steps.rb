@@ -1,7 +1,9 @@
 def create_groups_and_privileges!
   instructor = Group.find_or_create_by_name("instructor")
-  manage_lab = Privilege.find_or_create_by_name("manage_lab")
-  instructor.privileges << manage_lab
+  ["manage_lab", "manage_student"].each do |name|
+    privilege = Privilege.find_or_create_by_name(name)
+    instructor.privileges << privilege
+  end
   instructor.save!
 
   student = Group.find_or_create_by_name("student")

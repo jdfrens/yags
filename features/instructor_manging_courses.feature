@@ -1,20 +1,9 @@
-Feature: getting started
-  As an administrator
-  I want to start a YAGS app
-  So that my instructors can teach genetics
+Feature: managing courses
+  As an instructor
+  I want to see the courses I'm teaching
+  So that I can assess my students' work
 
-  Scenario: log in as mendel
-    Given only the following users
-      | username | password | group      |
-      | mendel   | peas     | instructor |
-    When I go to the login page
-    And I fill in "Username" with "mendel"
-    And I fill in "Password" with "peas"
-    And I press "Login"
-    Then I should not see "Invalid login credentials"
-    And I should be on the lab page
-
-  Scenario: list mendel's courses
+  Scenario: listing courses
     Given an instructor "mendel"
     And a course "BIO 143a" for "mendel"
     And a course "BIO 143d" for "mendel"

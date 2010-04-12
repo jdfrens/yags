@@ -8,7 +8,7 @@ Feature: managing courses
     And a course "BIO 143a" for "mendel"
     And a course "BIO 143d" for "mendel"
     And a course "BIO 143q" for "mendel"
-    When I login as "mendel"
+    When I log in as "mendel"
     And I am on the lab page
     And I follow "List Courses"
     Then I should see "BIO 143a"
@@ -18,7 +18,7 @@ Feature: managing courses
   Scenario: delete a course
     Given an instructor "mendel"
     And a course "BIO 143a" for "mendel"
-    When I login as "mendel"
+    When I log in as "mendel"
     And I am on the courses page
     Then I should see "BIO 143a"
     When I follow "Delete BIO 143a"
@@ -32,7 +32,7 @@ Feature: managing courses
     And a student "student02" in "BIO 143a"
     And a student "student03" in "BIO 143a"
     And a student "student66"
-    When I login as "mendel"
+    When I log in as "mendel"
     And I am on the courses page
     And I follow "See BIO 143a"
     Then I should see "student01"
@@ -44,7 +44,7 @@ Feature: managing courses
     Given an instructor "mendel"
     And a course "BIO 143a" for "mendel"
     And a course "BIO 143b" for "mendel"
-    When I login as "mendel"
+    When I log in as "mendel"
     And I am on the courses page
     And I follow "Add Student"
     Then I should see "Add Student"

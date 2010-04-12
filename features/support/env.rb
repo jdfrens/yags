@@ -55,3 +55,7 @@ if defined?(ActiveRecord::Base)
   rescue LoadError => ignore_if_database_cleaner_not_present
   end
 end
+
+Before do
+  User.all.each { |u| u.destroy }
+end

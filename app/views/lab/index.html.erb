@@ -1,22 +1,23 @@
-<p>Welcome <%= h(current_user.username) -%></p>
-<h2>Lab Functionality</h2>
 <ul class="list">
-  <li><%= link_to "List Courses", :action => :list_courses %></li>
-  <li><%= link_to "Add Course", :action => :add_course %></li>
-  <li><%= link_to "List All Scenarios", :action => :list_scenarios, :id => "all" %></li>
-  <li><%= link_to "List Your Scenarios", :action => :list_scenarios, :id => "your" %></li>
-  <li><%= link_to "Add Scenario", :action => :add_scenario %></li>
-  <li><%= link_to "View Cheat Sheet", :action => :view_cheat_sheet %></li>
-  <li><%= link_to "List All Users", :controller => :users, :action => :list_users %></li>
-  <li><%= link_to "Add a Student", :controller => :users, :action => :add_student %></li>
-  <li><%= link_to "Batch Add Students", :controller => :users, :action => :batch_add_students %></li>
-  <li><%= link_to "Change Your Password", :controller => :users, :action => :change_password %></li>
-  <li><%= link_to "Change Student Password", :controller => :users, :action => :change_student_password %></li>
-</ul>
-<br />
-<h3>The following can be done when viewing a course:</h3>
-<ul>
-  <li>View a table of solutions that students have submitted</li>
-  <li>View a student's submitted vial</li>
-  <li>Choose a scenario for that course</li>
+  <li>Courses
+    <ul>
+      <li><%= link_to "List courses", :action => :list_courses %></li>
+      <li><%= link_to "Add course", :action => :add_course %></li>
+    </ul>
+  </li>
+  <li>Scenarios
+    <ul>
+      <li><%= link_to "List all scenarios", :action => :list_scenarios, :id => "all" %></li>
+      <li><%= link_to "List your scenarios", :action => :list_scenarios, :id => "your" %></li>
+      <li><%= link_to "Add scenario", :action => :add_scenario %></li>
+    </ul>
+  </li>
+  <li>Students
+    <ul>
+      <li><%= link_to "Add a student", :controller => :users, :action => :add_student %></li>
+      <li><%= link_to "Batch add students", :controller => :users, :action => :batch_add_students %></li>
+      <li><%= link_to "Change student password", :controller => :users, :action => :change_student_password %></li>
+    </ul>
+  </li>
+  <li><%= link_to "Change your password", :controller => :users, :action => :change_password %></li>
 </ul>

@@ -1,10 +1,16 @@
-<p>Welcome <%= h(@username) -%></p>
-<h2>Current Users Functionality</h2>
 <ul class="list">
   <li><%= link_to "List Users", :action => :list_users %></li>
-  <li><%= link_to "Add a Student", :action => :add_student %></li>
-  <li><%= link_to "Batch Add Students", :action => :batch_add_students %></li>
-  <li><%= link_to "Add an Instructor", :action => :add_instructor %></li>
+  <li>Students
+    <ul>
+      <li><%= link_to "Add a Student", :action => :add_student %></li>
+      <li><%= link_to "Batch Add Students", :action => :batch_add_students %></li>
+      <li><%= link_to "Change Student Password", :action => :change_student_password %></li>
+    </ul>
+  </li>
+  <li>Instructors
+    <ul>
+      <li><%= link_to "Add an Instructor", :action => :add_instructor %></li>
+    </ul>
+  </li>
   <li><%= link_to "Change Your Password", :action => :change_password %></li>
-  <li><%= link_to "Change Student Password", :action => :change_student_password %></li>
 </ul>

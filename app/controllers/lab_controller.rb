@@ -1,16 +1,19 @@
 class LabController < ApplicationController
-  restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course, 
-  :delete_course, :list_scenarios, :add_scenario, :delete_scenario, 
-  :view_scenario, :view_cheat_sheet, :choose_course_scenarios, :view_student_vial, 
-  :update_student_solutions_table, :update_student_table ]
-  
+  restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course,
+                                      :delete_course, :list_scenarios, :add_scenario, :delete_scenario,
+                                      :view_scenario, :view_cheat_sheet, :choose_course_scenarios, :view_student_vial,
+                                      :update_student_solutions_table, :update_student_table ]
+
   def index
   end
-  
+
+  #
+  # Courses
+  #
   def list_courses
     @courses = current_user.instructs
   end
-  
+
   def add_course
     if params[:course]
       params[:course][:instructor_id] = current_user.id
@@ -20,33 +23,46 @@ class LabController < ApplicationController
     else
       render
     end
-    rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid
     render
   end
-  
+
   def view_course
-    if params[:id] and Course.find_by_id(params[:id]) and 
-      Course.find(params[:id]).instructor == current_user
-      @course = Course.find(params[:id])
+    @course = Course.find(params[:id])
+    if @course && @course.instructor == current_user
       @students = @course.students
     else
       redirect_to :action => "list_courses"
     end
   end
-  
+
+  def delete_course
+    if params[:id] && Course.find_by_id(params[:id]) &&
+            Course.find(params[:id]).instructor == current_user
+      Course.find(params[:id]).destroy
+    end
+    redirect_to :action => "list_courses"
+  end
+
+  #
+  # Vials? Courses?
+  #
   def update_student_solutions_table
-    if params[:id] && Course.find_by_id(params[:id]) && 
-      Course.find(params[:id]).instructor == current_user
+    if params[:id] && Course.find_by_id(params[:id]) &&
+            Course.find(params[:id]).instructor == current_user
       course = Course.find(params[:id])
       @students = course.students
       render :update do |page|
         page.replace_html 'table_of_student_solutions', :partial => 'student_solutions_table'
       end
-    else 
+    else
       redirect_to :action => 'list_courses'
     end
   end
-  
+
+  #
+  # Scenarios
+  #
   def choose_course_scenarios
     if params[:id] and @course = Course.find_by_id(params[:id]) and current_user == @course.instructor
       @scenarios = Scenario.find(:all)
@@ -61,28 +77,20 @@ class LabController < ApplicationController
       redirect_to :action => "index"
     end
   end
-  
-  def delete_course
-    if params[:id] && Course.find_by_id(params[:id]) &&
-        Course.find(params[:id]).instructor == current_user
-      Course.find(params[:id]).destroy
-    end
-    redirect_to :action => "list_courses"
-  end
-  
+
   def list_scenarios
     case params[:id]
-    when "your"
-      @scenarios = current_user.owned_scenarios
-      @howmany = "your"
-    when "all"
-      @scenarios = Scenario.find(:all)
-      @howmany = "all"
-    else
-      redirect_to :action => "list_scenarios", :id => "all"
+      when "your"
+        @scenarios = current_user.owned_scenarios
+        @howmany = "your"
+      when "all"
+        @scenarios = Scenario.find(:all)
+        @howmany = "all"
+      else
+        redirect_to :action => "list_scenarios", :id => "all"
     end
   end
-  
+
   def add_scenario
     @species = Species.singleton
     @characters = @species.characters
@@ -107,10 +115,10 @@ class LabController < ApplicationController
     else
       render
     end
-    rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid
     render
   end
-  
+
   def view_scenario
     if params[:id] and Scenario.find_by_id(params[:id])
       @scenario = Scenario.find(params[:id])
@@ -118,34 +126,40 @@ class LabController < ApplicationController
       redirect_to :action => "list_scenarios"
     end
   end
-  
+
   def delete_scenario
     if params[:id] && Scenario.find_by_id(params[:id]) &&
-        Scenario.find(params[:id]).owner == current_user
+            Scenario.find(params[:id]).owner == current_user
       Scenario.find(params[:id]).destroy
     end
     redirect_to :action => "list_scenarios"
   end
-  
+
+  #
+  # ?????
+  #
   def view_cheat_sheet
     @species = Species.singleton
     @species_name = "YAGS Fruit Fly"
-    @characters = [] 
+    @characters = []
     @species.characters.each do |character|
       @characters << {
-        :name => character.to_s, 
-        :hom_dom => @species.phenotype_from(character, 1,1).to_s, 
-        :het => @species.phenotype_from(character, 1,0).to_s, 
-        :rec => @species.phenotype_from(character, 0,0).to_s,
-        :location => @species.position_of(@species.gene_number_of(character)), 
-        :sex_linked => @species.sex_linked?(character) ? "yes" : "no",
-        :randomizable => @species.alternate_phenotypes(character) != [] ? "yes" : "no" }
+              :name => character.to_s,
+              :hom_dom => @species.phenotype_from(character, 1, 1).to_s,
+              :het => @species.phenotype_from(character, 1, 0).to_s,
+              :rec => @species.phenotype_from(character, 0, 0).to_s,
+              :location => @species.position_of(@species.gene_number_of(character)),
+              :sex_linked => @species.sex_linked?(character) ? "yes" : "no",
+              :randomizable => @species.alternate_phenotypes(character) != [] ? "yes" : "no" }
     end
   end
-  
+
+  #
+  # Vials
+  #
   def view_student_vial
     if (params[:id] && @vial = Vial.find_by_id(params[:id])) &&
-        (current_user.instructs.include?(@vial.owner.enrolled_in))
+            (current_user.instructs.include?(@vial.owner.enrolled_in))
       @visible_characters = @vial.owner.current_scenario.visible_characters
       @parents = [@vial.mom, @vial.dad]
       @table = @vial.owner.row && @vial.owner.column
@@ -160,7 +174,7 @@ class LabController < ApplicationController
       redirect_to :action => 'list_courses'
     end
   end
-  
+
   def update_student_table
     must_use_xhr_post
     @vial = Vial.find(params[:vial_id])
@@ -176,5 +190,5 @@ class LabController < ApplicationController
   rescue InvalidHttpMethod, InvalidOwner
     render :nothing => true, :status => 401
   end
-  
+
 end

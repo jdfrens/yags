@@ -113,15 +113,6 @@ class LabControllerTest < ActionController::TestCase
     assert_response 401 # access denied
   end
 
-  def test_view_course_fails_when_NOT_instructors_course
-    get :view_course, {:id => 3 }, user_session(:mendel)
-    assert_redirected_to :action => "list_courses"
-    # or should this lead to a 401 access denied?
-
-    get :view_course, {:id => 1000 }, user_session(:darwin)
-    assert_redirected_to :action => "list_courses"
-  end
-
   def test_update_student_solutions_table
     xhr :post, :update_student_solutions_table, { :id => courses(:mendels_course).id }, user_session(:mendel)
     assert_response :success
@@ -536,6 +527,13 @@ describe LabController do
 
       response.should be_success
       response.should render_template("lab/index")
+    end
+  end
+
+  describe "GET view_courses" do
+    it "should redirect when user does not own the course" do
+      get :view_course, { :id => 3 }, user_session(:mendel)
+      response.should redirect_to(:action => "list_courses")
     end
   end
 end

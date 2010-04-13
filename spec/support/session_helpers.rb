@@ -14,7 +14,7 @@ module SessionHelpers
       { :current_user_id => 6 }
     when :manage_student
       { :current_user_id => 5 }
-    when :calvin
+    when :calvin, :manage_instructor
       { :current_user_id => 2 }
     when :keith
       { :current_user_id => 7 }

@@ -119,20 +119,6 @@ class UsersControllerTest < ActionController::TestCase
     assert_equal [], new_student.shelves
   end
 
-  def test_add_instructor_form
-    get :add_instructor, {}, user_session(:calvin)
-    assert_response :success
-
-    assert_select "form" do
-      assert_select "label", "Username:"
-      assert_select "script[type=text/javascript]"
-      assert_select "label", "Email Address:"
-      assert_select "label", "Password:"
-      assert_select "label", "Password Confirmation:"
-      assert_select "label", 4
-    end
-  end
-
   def test_add_instructor
     number_of_old_users =  User.find(:all).size
     post :add_instructor, {
@@ -157,10 +143,6 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   def test_add_instructor_fails_when_NOT_logged_as_admin
-    post :add_instructor, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals',
-                                       :password => 'rails', :password_confirmation => 'rails' } }
-    assert_redirected_to_login
-
     post :add_instructor, { :user => { :username => "david hansson", :email_address => 'hansson@37.signals',
                                        :password => 'rails', :password_confirmation => 'rails' } }, user_session(:steve)
     assert_nil User.find_by_username("david hansson")
@@ -475,6 +457,20 @@ describe UsersController do
 
     it "should redirect when not logged in" do
       get :add_student
+
+      response.should redirect_to(login_path)
+    end
+  end
+
+  describe "GET add instructor" do
+    it "should render view" do
+      get :add_instructor, {}, user_session(:manage_instructor)
+
+      response.should render_template("users/add_instructor")
+    end
+
+    it "should redirect when not logged in" do
+      get :add_instructor
 
       response.should redirect_to(login_path)
     end

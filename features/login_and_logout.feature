@@ -13,3 +13,14 @@ Feature: Logging in and out of the app
     And I press "Login"
     Then I should not see "Invalid login credentials"
     And I should be on the lab page
+
+  Scenario: log in as an admin
+    Given only the following users
+      | username | password | group |
+      | darwin   | finches  | admin |
+    When I go to the login page
+    And I fill in "Username" with "darwin"
+    And I fill in "Password" with "finches"
+    And I press "Login"
+    Then I should not see "Invalid login credentials"
+    And I should be on the users page

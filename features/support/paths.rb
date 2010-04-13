@@ -19,6 +19,9 @@ module NavigationHelpers
 
       when /the courses page/
         "/lab/list_courses"
+
+      when /the users page/
+        "/users"
         
       else
         raise "Can't find mapping from \"#{page_name}\" to a path.\n" +

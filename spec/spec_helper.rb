@@ -16,9 +16,28 @@ Spec::Runner.configure do |config|
   config.fixture_path = RAILS_ROOT + '/spec/fixtures/'
 
   config.include Webrat::Matchers, :type => :views
-  
+
   config.include ModelHelpers
   config.extend UserMacros
   config.include SessionHelpers
   config.include HttpMethodsHelpers
+end
+
+Spec::Matchers.define :be_authorized do
+
+  match do |response|
+    response.response_code != 401
+  end
+
+  failure_message_for_should do |response|
+    "expected the response to not be 401 but was #{response.response_code}"
+  end
+
+  failure_message_for_should_not do |response|
+    "expected the response code to be 401 but was #{response.response_code}"
+  end
+
+  description do
+    "expected response code to be 401"
+  end
 end

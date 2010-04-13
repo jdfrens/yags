@@ -4,13 +4,13 @@ module SessionHelpers
     case privilege
     when :steve, :not_manage_student
       { :current_user_id => 1 }
-    when :jeremy
+    when :jeremy, :student
       { :current_user_id => 3 }
     when :randy
       { :current_user_id => 4 }
     when :mendel
       { :current_user_id => 5 }
-    when :darwin
+    when :darwin, :instructor
       { :current_user_id => 6 }
     when :manage_student
       { :current_user_id => 5 }

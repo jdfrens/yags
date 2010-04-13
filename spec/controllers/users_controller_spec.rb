@@ -406,25 +406,6 @@ class UsersControllerTest < ActionController::TestCase
     assert_equal "Try Again", flash[:notice]
   end
 
-  def test_index
-    post :index, {}, user_session(:calvin)
-    assert_response :success
-    assert_select "ul.list" do
-      assert_select "li", 6
-    end
-  end
-
-  def test_index_fails_when_NOT_logged_in_as_admin
-    post :index
-    assert_redirected_to_login
-
-    post :index, {}, user_session(:steve)
-    assert_response 401 # access denied
-
-    post :index, {}, user_session(:mendel)
-    assert_response 401 # access denied
-  end
-
   def test_redirect_user
     get :redirect_user, {}, user_session(:steve)
     assert_redirected_to :controller => "bench", :action => "index"
@@ -446,6 +427,33 @@ end
 describe UsersController do
 
   user_fixtures
+
+  describe "GET index" do
+    it "should successfully render template" do
+      get :index, {}, user_session(:calvin)
+
+      response.should be_success
+      response.should render_template("users/index")
+    end
+
+    it "should redirect when not logged in" do
+      get :index
+
+      response.should redirect_to(login_path)
+    end
+
+    it "should redirect when logged in as instructor" do
+      get :index, {}, user_session(:instructor)
+
+      response.should_not be_authorized
+    end
+
+    it "should redirect when logged in as student" do
+      get :index, {}, user_session(:student)
+
+      response.should_not be_authorized
+    end
+  end
 
   describe "GET add student" do
     it "should supply courses and render view" do

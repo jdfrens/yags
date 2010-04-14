@@ -9,7 +9,7 @@ describe "/layouts/_menu_bar.html.erb" do
 
     assert_select "div.menu-bar" do
       assert_select "a[href=/lab]", /lab/i
-      assert_select "a[href=/lab/list_courses]", /list\scourses/i
+      assert_select "a[href=/instructor/courses]", /list\scourses/i
       assert_select "a[href=/lab/add_scenario]", /add\sscenario/i
       assert_select "a[href=/users/add_student]", /add\sstudent/i
     end

@@ -28,7 +28,7 @@ module SessionHelpers
   end
 
   def assert_redirected_to_login
-    assert_redirected_to :controller => 'users', :action => 'login'
+    assert_redirected_to :controller => '/users', :action => 'login'
   end
 
 end

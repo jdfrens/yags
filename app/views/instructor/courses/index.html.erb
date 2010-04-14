@@ -18,6 +18,6 @@
 <% if @courses.empty? -%>
     <p>
       You do not have any courses at the moment!
-      <%= link_to "Create a new course.", :action => :add_course %>
+      <%= link_to "Create a new course.", new_instructor_course_path %>
     </p>
 <% end -%>

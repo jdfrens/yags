@@ -15,6 +15,23 @@ Feature: managing courses
     And I should see "BIO 143d"
     And I should see "BIO 143q"
 
+  Scenario: listing no courses and starting a new course
+    Given an instructor "mendel"
+    When I log in as "mendel"
+    And I am on the courses page
+    And I follow "Create a new course"
+    Then I should see "Add Course"
+
+  Scenario: add a course
+    Given an instructor "mendel"
+    When I log in as "mendel"
+    And I am on the lab page
+    And I follow "Add a course"
+    And I fill in "Name" with "BIO 338"
+    And I press "Add Course"
+    Then I should be on the courses page
+    And I should see "BIO 338"
+
   Scenario: delete a course
     Given an instructor "mendel"
     And a course "BIO 143a" for "mendel"

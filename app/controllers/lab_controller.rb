@@ -1,8 +1,5 @@
 class LabController < ApplicationController
-  restrict_to :manage_lab, :only => [ :index, :list_courses, :add_course, :view_course,
-                                      :delete_course, :list_scenarios, :add_scenario, :delete_scenario,
-                                      :view_scenario, :view_cheat_sheet, :choose_course_scenarios, :view_student_vial,
-                                      :update_student_solutions_table, :update_student_table ]
+  restrict_to :manage_lab
 
   def index
   end
@@ -10,27 +7,12 @@ class LabController < ApplicationController
   #
   # Courses
   #
-
-  # FIXME: this should be removed
-  def add_course
-    if params[:course]
-      params[:course][:instructor_id] = current_user.id
-      @course = Course.new params[:course]
-      @course.save!
-      redirect_to :action => "list_courses"
-    else
-      render
-    end
-  rescue ActiveRecord::RecordInvalid
-    render
-  end
-
   def view_course
     @course = Course.find(params[:id])
     if @course && @course.instructor == current_user
       @students = @course.students
     else
-      redirect_to :action => "list_courses"
+      redirect_to(instructor_courses_path)
     end
   end
 
@@ -54,7 +36,7 @@ class LabController < ApplicationController
         page.replace_html 'table_of_student_solutions', :partial => 'student_solutions_table'
       end
     else
-      redirect_to :action => 'list_courses'
+      redirect_to(instructor_courses_path)
     end
   end
 
@@ -169,7 +151,7 @@ class LabController < ApplicationController
         @counts = @vial.counts_for_table(@row_character, @column_character)
       end
     else
-      redirect_to :action => 'list_courses'
+      redirect_to(instructor_courses_path)
     end
   end
 

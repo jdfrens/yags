@@ -28,36 +28,6 @@ class LabControllerTest < ActionController::TestCase
     assert_response 401 # access denied
   end
 
-  def test_add_course
-    get :add_course, {}, user_session(:mendel)
-    assert_response :success
-
-    assert_select "form" do
-      assert_select "label", "Course Name:"
-      assert_select "script[type=text/javascript]"
-      assert_select "label[for=name]"
-    end
-  end
-
-  def test_add_course_works
-    number_of_old_courses = Course.find(:all).size
-    post :add_course, { :course => { :name => "From Muck to Mammals" } }, user_session(:darwin)
-    assert_redirected_to :action => "list_courses"
-    assert_not_nil Course.find_by_name("From Muck to Mammals")
-    assert_equal number_of_old_courses + 1, Course.find(:all).size
-  end
-
-  def test_add_course_fails_when_NOT_logged_in_as_instructor
-    post :add_course, { :course => { :name => "Why Aliens are afraid to visit earth" } }
-    assert_redirected_to_login
-
-    post :add_course, { :course => { :name => "Byker's Bio Course" } }, user_session(:calvin)
-    assert_response 401 # access denied
-
-    post :add_course, { :course => { :name => "The art of jean selection" } }, user_session(:steve)
-    assert_response 401 # access denied
-  end
-
   def test_view_course
     get :view_course, {:id => 1 }, user_session(:mendel)
     assert_response :success
@@ -99,7 +69,7 @@ class LabControllerTest < ActionController::TestCase
 
   def test_update_student_solutions_table_fails_when_NOT_instructors_course
     xhr :post, :update_student_solutions_table, { :id => courses(:darwins_first_course).id }, user_session(:mendel)
-    assert_redirected_to :action => 'list_courses'
+    assert_redirected_to(instructor_courses_path)
   end
 
   def test_update_student_solutions_table_fails_when_NOT_logged_in
@@ -229,7 +199,7 @@ class LabControllerTest < ActionController::TestCase
 
   def test_view_student_vial_fails_when_NOT_instructors_students_vial
     get :view_student_vial, {:id => vials(:random_vial).id }, user_session(:darwin)
-    assert_redirected_to :action => :list_courses # is that what we want?
+    assert_redirected_to(instructor_courses_path)
   end
 
   def test_update_student_table
@@ -486,7 +456,7 @@ describe LabController do
   describe "GET view_courses" do
     it "should redirect when user does not own the course" do
       get :view_course, { :id => 3 }, user_session(:mendel)
-      response.should redirect_to(:action => "list_courses")
+      response.should redirect_to(instructor_courses_path)
     end
   end
 

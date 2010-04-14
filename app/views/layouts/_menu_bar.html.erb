@@ -3,7 +3,7 @@
       <ul class="menu">
         <% if current_user.instructor? -%>
             <li class="first"><strong><%= link_to "Lab", :controller => 'lab', :action => "index" %></strong></li>
-            <li><%= link_to "List Courses", :controller => 'lab', :action => 'list_courses' %></li>
+            <li><%= link_to "List Courses", instructor_courses_path %></li>
             <li><%= link_to "Add Scenario", :controller => 'lab', :action => 'add_scenario' %></li>
             <li><%= link_to "Add Student", :controller => 'users', :action => 'add_student' %></li>
         <% elsif current_user.admin? -%>

@@ -1,16 +1,12 @@
-<% if flash[:notice] -%>
-    <div class="notice"><%= flash[:notice] %></div>
-<% end -%>
-
 <h1>Your Courses</h1>
 
 <div id="list-courses">
   <ul>
     <% for course in @courses -%>
         <li id=<%= course.id %>>
-          <%= link_to course.name, { :action => :view_course, :id => course }, :title => "See #{course.name}" %>
+          <%= link_to course.name, { :controller => "/lab", :action => :view_course, :id => course }, :title => "See #{course.name}" %>
           <%= link_to image_tag("cross.png"),
-                      { :action => "delete_course", :id => course.id },
+                      { :controller => "/lab", :action => "delete_course", :id => course.id },
                       :title => "Delete #{course.name}",
                       :confirm => "Delete the \"#{course.name}\" course?",
                       :method => :post -%>

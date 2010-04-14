@@ -18,7 +18,7 @@ module NavigationHelpers
         "/lab"
 
       when /the courses page/
-        "/lab/list_courses"
+        instructor_courses_path
 
       when /the users page/
         "/users"

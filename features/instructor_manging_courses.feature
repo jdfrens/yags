@@ -45,8 +45,8 @@ Feature: managing courses
     And a course "BIO 143a" for "mendel"
     And a course "BIO 143b" for "mendel"
     When I log in as "mendel"
-    And I am on the courses page
-    And I follow "Add Student"
+    And I am on the lab page
+    And I follow "Add a student"
     Then I should see "Add Student"
     When I fill in the following:
       | Username              | studentABC             |

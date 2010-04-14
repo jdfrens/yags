@@ -10,3 +10,12 @@ describe UsersController do
   end
 end
 
+describe Instructor::CoursesController do
+  it "should have index path" do
+    instructor_courses_path.should == "/instructor/courses"
+  end
+
+  it "should have path to create a new course" do
+    new_instructor_course_path.should == "/instructor/courses/new"
+  end
+end

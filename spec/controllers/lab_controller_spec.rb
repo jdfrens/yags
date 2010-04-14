@@ -28,36 +28,6 @@ class LabControllerTest < ActionController::TestCase
     assert_response 401 # access denied
   end
 
-  def test_list_courses
-    get :list_courses, {}, user_session(:mendel)
-    assert_response :success
-
-    assert_select "ul" do
-      assert_select "li", "Peas pay attention"
-    end
-  end
-
-  def test_list_courses_as_darwin
-    get :list_courses, {}, user_session(:darwin)
-    assert_response :success
-
-    assert_select "ul" do
-      assert_select "li", "Natural selection"
-      assert_select "li", "Interim to the Galapagos Islands"
-    end
-  end
-
-  def test_list_courses_fails_when_NOT_logged_in_as_instructor
-    get :list_courses
-    assert_redirected_to_login
-
-    get :list_courses, {}, user_session(:calvin)
-    assert_response 401 # access denied
-
-    get :list_courses, {}, user_session(:steve)
-    assert_response 401 # access denied
-  end
-
   def test_add_course
     get :add_course, {}, user_session(:mendel)
     assert_response :success
@@ -295,13 +265,6 @@ class LabControllerTest < ActionController::TestCase
                          user_session(:mendel)
   end
 
-  def test_delete_course
-    assert_not_nil Course.find_by_id(2) # "Natural selection"
-    post :delete_course, { :id => 2 }, user_session(:darwin)
-    assert_redirected_to :action => :list_courses
-    assert_nil Course.find_by_id(2)
-  end
-
   def test_delete_course_fails_when_NOT_logged_in_as_instructor
     post :delete_course, { :id => 1 }
     assert_redirected_to_login
@@ -314,16 +277,6 @@ class LabControllerTest < ActionController::TestCase
 
     assert_not_nil Course.find_by_id(1) # "Peas pay attention"
     assert_not_nil Course.find_by_id(3) # "Interim to the Galapagos Islands"
-  end
-
-  def test_delete_course_fails_when_NOT_instructors_course
-    post :delete_course, {:id => 3 }, user_session(:mendel)
-    assert_redirected_to :action => "list_courses"
-    # or should this lead to a 401 access denied?
-    assert_not_nil Course.find_by_id(3)
-
-    post :delete_course, {:id => 1234 }, user_session(:darwin)
-    assert_redirected_to :action => "list_courses"
   end
 
   def test_list_scenarios_redirects_to_list_all
@@ -534,6 +487,23 @@ describe LabController do
     it "should redirect when user does not own the course" do
       get :view_course, { :id => 3 }, user_session(:mendel)
       response.should redirect_to(:action => "list_courses")
+    end
+  end
+
+  describe "delete_course" do
+    it "should delete a course and redirect to list of courses" do
+      assert_not_nil Course.find_by_id(2)
+      
+      post :delete_course, { :id => 2 }, user_session(:darwin)
+
+      response.should redirect_to(instructor_courses_path)
+      assert_nil Course.find_by_id(2)
+    end
+
+    it "should just redirect and not delete if not the owner" do
+      post :delete_course, { :id => 3 }, user_session(:mendel)
+      response.should redirect_to(instructor_courses_path)
+      assert_not_nil Course.find_by_id(3)
     end
   end
 end

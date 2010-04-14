@@ -34,12 +34,6 @@ describe "/layouts/application.html.erb" do
         assert_select "a[href=/users/logout]", /logout/i
       end
     end
-    assert_select "div.menu-bar" do
-      assert_select "a[href=/lab]", /lab/i
-      assert_select "a[href=/lab/list_courses]", /list\scourses/i
-      assert_select "a[href=/lab/add_scenario]", /add\sscenario/i
-      assert_select "a[href=/users/add_student]", /add\sstudent/i
-    end
   end
 
   it "should render a bunch of stuff for an admin" do
@@ -54,12 +48,6 @@ describe "/layouts/application.html.erb" do
         assert_select "a[href=/users/logout]", /logout/i
       end
     end
-    assert_select "div.menu-bar" do
-      assert_select "a[href=/users]", /users/i
-      assert_select "a[href=/users/list_users]", /list\s.*users/i
-      assert_select "a[href=/users/add_instructor]", /add\sinstructor/i
-      assert_select "a[href=/users/change_student_password]", /change\sstudent\spassword/i
-    end
   end
 
   it "should render a bunch of stuff for a student" do
@@ -73,12 +61,6 @@ describe "/layouts/application.html.erb" do
       assert_select "div#session-info" do
         assert_select "a[href=/users/logout]", /logout/i
       end
-    end
-    assert_select "div.menu-bar" do
-      assert_select "a[href=/bench]", /bench/i
-      assert_select "a[href=/bench/list_vials]", /list\svials/i
-      assert_select "a[href=/bench/mate_flies]", /mate\sflies/i
-      assert_select "a[href=/bench/add_shelf]", /.*rack/i
     end
   end
 

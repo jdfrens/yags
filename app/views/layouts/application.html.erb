@@ -27,30 +27,11 @@
   <h1>YAGS</h1>
 </div>
 
-<div class="menu-bar">
-  <% if current_user -%>
-      <ul class="menu">
-        <% if current_user.instructor? -%>
-            <li class="first"><strong><%= link_to "Lab", :controller => 'lab', :action => "index" %></strong></li>
-            <li><%= link_to "List Courses", :controller => 'lab', :action => 'list_courses' %></li>
-            <li><%= link_to "Add Scenario", :controller => 'lab', :action => 'add_scenario' %></li>
-            <li><%= link_to "Add Student", :controller => 'users', :action => 'add_student' %></li>
-        <% elsif current_user.admin? -%>
-            <li class="first"><strong><%= link_to "Users", :controller => 'users', :action => "index" %></strong></li>
-            <li><%= link_to "List All Users", :controller => 'users', :action => 'list_users' %></li>
-            <li><%= link_to "Add Instructor", :controller => 'users', :action => 'add_instructor' %></li>
-            <li><%= link_to "Change Student Password", :controller => 'users', :action => 'change_student_password' %></li>
-        <% else -%>
-            <li class="first"><strong><%= link_to "Bench", :controller => 'bench', :action => "index" %></strong></li>
-            <li><%= link_to "List Vials", :controller => 'bench', :action => 'list_vials' %></li>
-            <li><%= link_to "Mate Flies", :controller => 'bench', :action => 'mate_flies' %></li>
-            <li><%= link_to "Create New Rack", :controller => 'bench', :action => 'add_shelf' %></li>
-        <% end -%>
-      </ul>
-  <% end -%>
-</div>
-
 <div class="main">
+  <% flash.each do |key, value| %>
+      <div class="flash <%= key %>"><%= value %></div>
+  <% end %>
+
   <%= yield :layout %>
 </div>
 

@@ -10,9 +10,6 @@ class LabController < ApplicationController
   #
   # Courses
   #
-  def list_courses
-    @courses = current_user.instructs
-  end
 
   def add_course
     if params[:course]
@@ -41,7 +38,7 @@ class LabController < ApplicationController
             Course.find(params[:id]).instructor == current_user
       Course.find(params[:id]).destroy
     end
-    redirect_to :action => "list_courses"
+    redirect_to(instructor_courses_path)
   end
 
   #

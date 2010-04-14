@@ -2,8 +2,6 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe "/users/add_student.html.erb" do
 
-  user_fixtures
-
   it "should render a form" do
     assigns[:courses] = courses = []
 

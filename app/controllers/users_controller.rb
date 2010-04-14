@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   acts_as_login_controller
   
   restrict_to :manage_student, :only => [ :list_users, :add_student, :delete_user, 
-      :change_student_password, :batch_add_students ]
+      :change_student_password, :create_students, :new_students ]
   restrict_to :manage_instructor, :only => [ :add_instructor, :index ]
   
   redirect_after_login do |controller|
@@ -44,11 +44,20 @@ class UsersController < ApplicationController
   rescue ActiveRecord::RecordInvalid
     render
   end
+
+  def new_students
+    @courses = current_user.instructor? ? current_user.instructs : Course.all
+  end
   
-  def batch_add_students
-    if request.post? && params[:student_csv] && params[:course_id] && params[:password]
-      if current_user.admin? || 
-          current_user.instructs.include?(Course.find_by_id(params[:course_id]))
+  def create_students
+    if params[:password].blank?
+      flash[:error] = "A password must be specified."
+      render "new_students"
+    elsif params[:student_csv].blank?
+      flash[:error] = "No students were specified."
+      render "new_students"
+    else
+      if current_user.admin? || current_user.instructs.include?(Course.find_by_id(params[:course_id]))
         number_added = 0
         FasterCSV.parse(params[:student_csv]) do |row|
           student = User.new(:course_id => params[:course_id])
@@ -72,12 +81,7 @@ class UsersController < ApplicationController
       else # if instructor
         redirect_to :controller => "lab", :action => "view_course", :id => params[:course_id]
       end
-    else
-      @courses = (current_user.instructor? ? current_user.instructs : Course.find(:all))
-      render
     end
-  rescue ActiveRecord::RecordInvalid
-    render
   end
   
   def delete_user

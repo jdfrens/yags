@@ -470,6 +470,10 @@ describe UsersController do
     end
   end
 
+  describe "batch adding students" do
+    it "should complain if the password is blank"
+  end
+  
   describe "GET add instructor" do
     it "should render view" do
       get :add_instructor, {}, user_session(:manage_instructor)

@@ -58,14 +58,14 @@ class UsersController < ApplicationController
           student.email_address = row.shift
           student.username      = student.email_address.split('@').first if student.email_address
           student.group         = Group.find_by_name "student"
-          student.password_hash = User.hash_password(params[:password])
-          # TODO handle a blank password correctly! (right now it doesn't care if the password is blank!)
+          student.password      = params[:password]
+          student.password_confirmation = params[:password]
           student.save
           number_added += 1 if student.save
         end
         flash[:notice] = "#{number_added} students added!"
       else
-        flash[:notice] = "Permission denied!" # TODO should that be a flash[:error] ? (not tested now)
+        flash[:error] = "Permission denied!"
       end
       if current_user.admin?
         redirect_to :action => "list_users"

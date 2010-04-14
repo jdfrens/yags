@@ -11,6 +11,7 @@ class LabController < ApplicationController
   # Courses
   #
 
+  # FIXME: this should be removed
   def add_course
     if params[:course]
       params[:course][:instructor_id] = current_user.id

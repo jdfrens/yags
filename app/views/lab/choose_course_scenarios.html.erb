@@ -1,21 +1,23 @@
 <h2>Scenarios for <%= h(@course.name) -%></h2>
 
-<em class="instruction">Select which scenarios may be used in this course:</em>
-<br /><br />
+<p class="instruction">Select which scenarios may be used in this course:</p>
 
 <% form_tag :url => { :action => :view_course, :id => @course.id } do %>
-  <label for="your_scenarios"><strong>Your Scenarios: </strong></label><br />
-  <% current_user.owned_scenarios.each do |scenario| -%>
-    <%= check_box_tag "scenario_ids[]", scenario.id, @course.scenarios.include?(scenario) -%>
-    <%= scenario.title.to_s %> <br />
-  <% end -%>
-  <label for="other_scenarios"><strong>Other Scenarios: </strong></label><br />
-  <% (@scenarios - current_user.owned_scenarios).each do |scenario| -%>
-    <%= check_box_tag "scenario_ids[]", scenario.id, @course.scenarios.include?(scenario) -%>
-    <%= scenario.title.to_s %> <br />
-  <% end -%>
-  <div class="buttons">	
-	<button type="submit" class="positive">
-        <%= image_tag 'tick.png' %>Save</button>
-</div>
+    <label for="your_scenarios"><strong>Your Scenarios: </strong></label><br/>
+    <% current_user.owned_scenarios.each do |scenario| -%>
+        <%= check_box_tag "scenario_ids[]", scenario.id, @course.scenarios.include?(scenario) -%>
+        <%= scenario.title.to_s %> <br/>
+    <% end -%>
+
+    <label for="other_scenarios"><strong>Other Scenarios: </strong></label><br/>
+    <% (@scenarios - current_user.owned_scenarios).each do |scenario| -%>
+        <%= check_box_tag "scenario_ids[]", scenario.id, @course.scenarios.include?(scenario) -%>
+        <%= scenario.title.to_s %> <br/>
+    <% end -%>
+
+    <div class="buttons">
+      <button type="submit" class="positive">
+        <%= image_tag 'tick.png' %>Save
+      </button>
+    </div>
 <% end -%>

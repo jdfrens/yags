@@ -32,8 +32,10 @@ class LabControllerTest < ActionController::TestCase
 
   def test_choose_course_scenarios_works
     assert_equal [1, 2, 4].sort, courses(:mendels_course).scenarios.map { |s| s.id }.sort
+
     post :choose_course_scenarios, { :id => 1, :scenario_ids => [2, 3] }, user_session(:mendel)
-    assert_redirected_to :action => :view_course, :id => 1
+
+    assert_redirected_to(instructor_course_path(:id => 1))
     courses(:mendels_course).reload
     assert_equal [2, 3], courses(:mendels_course).scenarios.map { |s| s.id }
   end

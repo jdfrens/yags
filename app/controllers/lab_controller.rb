@@ -26,7 +26,7 @@ class LabController < ApplicationController
         params[:scenario_ids].each do |scenario_id|
           @course.scenarios << Scenario.find_by_id(scenario_id)
         end
-        redirect_to :action => :view_course, :id => @course.id
+        redirect_to [:instructor, @course]
       end
     else
       redirect_to :action => "index"

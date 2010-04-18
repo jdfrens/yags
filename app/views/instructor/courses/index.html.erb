@@ -6,10 +6,10 @@
         <li id=<%= course.id %>>
           <%= link_to course.name, [:instructor, course], :title => "See #{course.name}" %>
           <%= link_to image_tag("cross.png"),
-                      { :controller => "/lab", :action => "delete_course", :id => course.id },
+                      [:instructor, course],
                       :title => "Delete #{course.name}",
                       :confirm => "Delete the \"#{course.name}\" course?",
-                      :method => :post -%>
+                      :method => :delete -%>
         </li>
     <% end -%>
   </ul>

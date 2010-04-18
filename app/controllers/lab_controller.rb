@@ -5,17 +5,6 @@ class LabController < ApplicationController
   end
 
   #
-  # Courses
-  #
-  def delete_course
-    if params[:id] && Course.find_by_id(params[:id]) &&
-            Course.find(params[:id]).instructor == current_user
-      Course.find(params[:id]).destroy
-    end
-    redirect_to(instructor_courses_path)
-  end
-
-  #
   # Scenarios
   #
   def choose_course_scenarios

@@ -40,5 +40,13 @@ class Instructor::CoursesController < ApplicationController
     params[:course][:instructor_id] = current_user.id
     @course = Course.create!(params[:course])
     redirect_to(instructor_courses_path)
+  end
+
+  def destroy
+    if params[:id] && Course.find_by_id(params[:id]) &&
+            Course.find(params[:id]).instructor == current_user
+      Course.find(params[:id]).destroy
+    end
+    redirect_to(instructor_courses_path)
   end  
 end

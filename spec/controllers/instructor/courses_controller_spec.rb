@@ -150,4 +150,28 @@ describe Instructor::CoursesController do
       response.should_not be_authorized
     end
   end
+
+  describe "DELETE destroy" do
+    it "should delete a course and redirect to list of courses" do
+      Course.find_by_id(2).should_not be_nil
+
+      delete :destroy, { :id => 2 }, user_session(:darwin)
+
+      response.should redirect_to(instructor_courses_path)
+      Course.find_by_id(2).should be_nil
+    end
+
+    it "should redirect if not logged in" do
+      delete :destroy
+
+      response.should redirect_to(login_path)
+    end
+
+    it "should just redirect and not delete if not the owner" do
+      delete :destroy, { :id => 3 }, user_session(:mendel)
+      
+      response.should redirect_to(instructor_courses_path)
+      assert_not_nil Course.find_by_id(3)
+    end
+  end  
 end

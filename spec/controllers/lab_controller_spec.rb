@@ -180,20 +180,6 @@ class LabControllerTest < ActionController::TestCase
                          user_session(:mendel)
   end
 
-  def test_delete_course_fails_when_NOT_logged_in_as_instructor
-    post :delete_course, { :id => 1 }
-    assert_redirected_to_login
-
-    post :delete_course, { :id => 3 }, user_session(:calvin)
-    assert_response 401 # access denied
-
-    post :delete_course, { :id => 3 }, user_session(:steve)
-    assert_response 401 # access denied
-
-    assert_not_nil Course.find_by_id(1) # "Peas pay attention"
-    assert_not_nil Course.find_by_id(3) # "Interim to the Galapagos Islands"
-  end
-
   def test_list_scenarios_redirects_to_list_all
     get :list_scenarios, {}, user_session(:mendel)
     assert_redirected_to :action => "list_scenarios", :id => "all"
@@ -407,23 +393,6 @@ describe LabController do
       get :index, {}, user_session(:student)
 
       response.should_not be_authorized
-    end
-  end
-
-  describe "delete_course" do
-    it "should delete a course and redirect to list of courses" do
-      assert_not_nil Course.find_by_id(2)
-      
-      post :delete_course, { :id => 2 }, user_session(:darwin)
-
-      response.should redirect_to(instructor_courses_path)
-      assert_nil Course.find_by_id(2)
-    end
-
-    it "should just redirect and not delete if not the owner" do
-      post :delete_course, { :id => 3 }, user_session(:mendel)
-      response.should redirect_to(instructor_courses_path)
-      assert_not_nil Course.find_by_id(3)
     end
   end
 end

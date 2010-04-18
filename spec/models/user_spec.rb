@@ -11,6 +11,45 @@ describe User do
   it { should have_many(:owned_scenarios).dependent(:destroy) }
   it { should belong_to(:enrolled_in) }
 
+  describe "batch creating students" do
+    it "should create a student" do
+      student_csv = "last, first, email@web.site"
+
+      count = User.batch_create!(student_csv, "password", stub_model(Course))
+
+      count.should == 1
+      user = User.find_by_username("email")
+      user.first_name.should == "first"
+      user.last_name.should == "last"
+      user.password_hash.should == User.hash_password("password")
+    end
+
+    it "should trim off whitespace" do
+      student_csv = %q{
+        last, first, email@web.site
+      }
+
+      count = User.batch_create!(student_csv, "password", stub_model(Course))
+
+      count.should == 1
+      User.find_by_username("email").should_not be_nil
+    end
+
+    it "should create a lot of students" do
+      student_csv = %Q{last, first, email@web.site
+        VanderName, John, jov31@calvin.foo
+        A, B, C123@somewhere.edu
+        another, new, student@calvin.foo}
+
+      count = User.batch_create!(student_csv, "password", stub_model(Course))
+
+      count.should == 4
+      User.find_by_username("email").should_not be_nil
+      User.find_by_username("jov31").should_not be_nil
+      User.find_by_username("C123").should_not be_nil
+      User.find_by_username("student").should_not be_nil
+    end
+  end
 end
 
 class UserTest < ActiveSupport::TestCase

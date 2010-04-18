@@ -76,3 +76,14 @@ Feature: managing courses
     And I press "Add Student"
     Then I should see "Listing All Users"
     And I should see "studentABC (student)"
+
+  Scenario: add mutliple students
+    Given an instructor "mendel"
+    And a course "BIO 143" for "mendel"
+    When I log in as "mendel"
+    And I am on the lab page
+    And I follow "Batch add students"
+    And I select "BIO 143" from "Course"
+    And I fill in "Password" with "secret"
+    And I fill in "Student Information" with "Darwin,Charles,cdarwin@example.com"
+    And I press "Add Students"

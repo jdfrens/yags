@@ -13,6 +13,7 @@ end
 class UsersControllerTest < ActionController::TestCase
 
   user_fixtures
+  fixtures :courses
 
   def setup
     @controller = UsersController.new
@@ -397,6 +398,34 @@ describe UsersController do
     end
   end
 
+  describe "GET new students" do
+    it "should display a form with instructor's courses" do
+      get :new_students, {}, user_session(:darwin)
+
+      response.should render_template("users/new_students")
+      assigns[:courses].should == users(:darwin).instructs
+    end
+
+    it "should display a form with all courses for admin" do
+      get :new_students, {}, user_session(:calvin)
+
+      response.should render_template("users/new_students")
+      assigns[:courses].should == Course.all
+    end
+
+    it "should redirect if not logged in" do
+      get :new_students
+
+      response.should redirect_to(login_path)
+    end
+
+    it "should be unauthorized if a student" do
+      get :new_students, {}, user_session(:student)
+
+      response.should_not be_authorized
+    end
+  end
+
   describe "POST create_students" do
     it "should add a student" do
       number_of_old_users = User.find(:all).size
@@ -412,29 +441,13 @@ describe UsersController do
     end
 
     it "should add many students" do
-      student_csv = %Q{
-        last, first, email@web.site,,
-        VanderName, John, jov31@calvin.foo
-        A, B, C123@somewhere.edu
-        another, new, student@calvin.foo
-        this one shouldn't count., ,
-        , , ,
-      }
-      number_of_old_users = User.find(:all).size
-      post :create_students, { :student_csv => student_csv, :password => "biolab2",
-                               :course_id => 1 }, user_session(:mendel)
-      assert_redirected_to :controller => "lab", :action => "view_course", :id => 1
+      User.should_receive(:batch_create!).with("fake csv data", "biolab2", Course.find(1)).and_return(42)
 
-      assert User.find_by_username("email")
-      assert User.find_by_username("jov31")
-      assert User.find_by_username("C123")
-      assert User.find_by_username("student")
-      assert User.find_by_username("email").password_hash == User.hash_password("biolab2")
-      assert User.find_by_username("jov31").first_name == "John"
-      assert User.find_by_username("C123").last_name == "A"
-      assert User.find_by_username("student").email_address == "student@calvin.foo"
-      assert_equal number_of_old_users + 4, User.find(:all).size
-      assert_equal flash[:notice], "4 students added!"
+      post :create_students, { :student_csv => "fake csv data", :password => "biolab2",
+                               :course_id => 1 }, user_session(:mendel)
+
+      response.should redirect_to(:controller => "lab", :action => "view_course", :id => 1)
+      flash[:notice].should == "42 students added!"
     end
 
     it "should allow admin to add students" do
@@ -454,6 +467,7 @@ describe UsersController do
 
       flash[:error].should == "A password must be specified."
       response.should render_template("users/new_students")
+      assigns[:courses].should == Course.all
     end
 
     it "should complain if the csv is blank" do
@@ -462,35 +476,29 @@ describe UsersController do
 
       flash[:error].should == "No students were specified."
       response.should render_template("users/new_students")
+      assigns[:courses].should == Course.all
     end
 
     it "should redirect when not logged in" do
-      number_of_old_users = User.find(:all).size
-      post :create_students, { :student_csv => "A., Newt, student@calvin.foo", :password => "whoami?",
-                               :course_id => 1 }
-      assert_redirected_to_login
+      post :create_students
+
+      response.should redirect_to(login_path)
     end
 
     it "should deny access if a student" do
-      number_of_old_users = User.find(:all).size
-
       post :create_students, { :student_csv => "A., Newt, student@calvin.foo", :password => "hackzor",
                                :course_id => 1 }, user_session(:steve)
 
       assert_nil User.find_by_username("student")
-      assert_response 401 # access denied
-      assert number_of_old_users == User.find(:all).size
+      response.should_not be_authorized
     end
 
     it "should deny access if not instructor's course" do
-      number_of_old_users = User.find(:all).size
-
       post :create_students, { :student_csv => "A., switcher, sea4@calvin.foo", :password => "sandwich",
                                :course_id => 1 }, user_session(:darwin)
-      
+
       assert_nil User.find_by_username("sea4")
-      assert_redirected_to :controller => "lab", :action => "view_course", :id => 1
-      assert number_of_old_users == User.find(:all).size
+      response.should_not be_authorized
     end
   end
 end

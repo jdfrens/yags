@@ -1,38 +1,37 @@
 <h1>Batch Add Student</h1>
 
-<p>
-	Add multiple students with this form by entering their information as comma separated values (.csv).  
-	On each line, include the last name, first name, and email address for a single student.  The part
-	of the email address before the '@' will be used as the student's username.  Don't forget to 
-	include a password and select which course to add these students to.
-</p>
+<% form_tag("/users/create_students") do %>
+    <p>
+      <label for="user_course_id">Course:</label>
+      <%= collection_select :user, :course_id, @courses, :id, :name %>
+    </p>
 
-<% form_for :user do |form| %>
     <p>
-        <label for="course_id"><strong>Course: </strong></label>
-        <%= collection_select :user, :course_id, @courses, :id, :name %>
-	</p>
-	<em id="instruction">
-		This password will be used for all students created with this form.
-	</em>
-	<p>
-        <label for="password"><strong>Password: </strong></label>
-        <%= text_field_tag :password %>
-	</p>
-    <em id="instruction">
-		Example:<br />
-		Calvin, John, jc2@calvin.foo<br />
-		Luther, Martin, ml1@calvin.foo
-    </em>
+      <label for="password">Password:</label>
+      <%= text_field_tag :password %>
+      <em id="instruction">
+        used for all students
+      </em>
+    </p>
+    
     <p>
-        <label for="student_csv"><strong>Student Information: </strong></label><br />
-        <%= text_area_tag :student_csv, nil, :size => "80x15" %>
+      <label for="student_csv">Student Information:</label><br/>
+      <%= text_area_tag :student_csv, nil, :size => "80x15" %>
+    </p>
+    <p>
+      Example:<br/>
+      <em id="instruction">
+        Calvin, John, jc2@calvin.foo<br/>
+        Luther, Martin, ml1@calvin.foo<br />
+      </em>
+      Creates accounts <code>jc2</code> and <code>ml1</code>.
     </p>
 
 
-    
-    <div class="buttons">	
-	<button type="submit" class="positive">
-        <%= image_tag 'group_add.png' %>Add Students</button>
-</div>
+
+    <div class="buttons">
+      <button type="submit" class="positive">
+        <%= image_tag 'group_add.png' %>Add Students
+      </button>
+    </div>
 <% end %>

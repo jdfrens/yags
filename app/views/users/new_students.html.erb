@@ -2,8 +2,8 @@
 
 <% form_tag("/users/create_students") do %>
     <p>
-      <label for="user_course_id">Course:</label>
-      <%= collection_select :user, :course_id, @courses, :id, :name %>
+      <label for="course_id">Course:</label>
+      <%= select_tag(:course_id, options_from_collection_for_select(@courses, "id", "name")) %>
     </p>
 
     <p>

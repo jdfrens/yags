@@ -12,8 +12,8 @@ describe "/users/new_students.html.erb" do
       assert_select "textarea#student_csv"
       assert_select "label[for=password]"
       assert_select "input#password"
-      assert_select "label[for=user_course_id]"
-      assert_select "select#user_course_id" do
+      assert_select "label[for=course_id]"
+      assert_select "select#course_id" do
         assert_select "option", 1
       end
       assert_select "label", 3

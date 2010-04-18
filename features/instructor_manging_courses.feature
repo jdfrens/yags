@@ -77,7 +77,7 @@ Feature: managing courses
     Then I should see "Listing All Users"
     And I should see "studentABC (student)"
 
-  Scenario: add mutliple students
+  Scenario: add multiple students
     Given an instructor "mendel"
     And a course "BIO 143" for "mendel"
     When I log in as "mendel"
@@ -87,3 +87,5 @@ Feature: managing courses
     And I fill in "Password" with "secret"
     And I fill in "Student Information" with "Darwin,Charles,cdarwin@example.com"
     And I press "Add Students"
+    Then I should see "1 students added!"
+    And I should see "cdarwin"

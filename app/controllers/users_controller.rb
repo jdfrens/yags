@@ -59,6 +59,7 @@ class UsersController < ApplicationController
       @courses = current_user.instructor? ? current_user.instructs : Course.all
       render "new_students"
     elsif not (current_user.admin? || current_user.instructs.include?(Course.find_by_id(params[:course_id])))
+      puts "Yo yo yo #{params().inspect}"
       render :text => "You do not have the proper privileges to access this page.", :status => 401
     else
       number_added = User.batch_create!(params[:student_csv], params[:password], Course.find(params[:course_id]))

@@ -62,12 +62,13 @@ class UsersController < ApplicationController
       puts "Yo yo yo #{params().inspect}"
       render :text => "You do not have the proper privileges to access this page.", :status => 401
     else
-      number_added = User.batch_create!(params[:student_csv], params[:password], Course.find(params[:course_id]))
+      course = Course.find(params[:course_id])
+      number_added = User.batch_create!(params[:student_csv], params[:password], course)
       flash[:notice] = "#{number_added} students added!"
       if current_user.admin?
         redirect_to :action => "list_users"
       else # if instructor
-        redirect_to :controller => "lab", :action => "view_course", :id => params[:course_id]
+        redirect_to [:instructor, course]
       end
     end
   end

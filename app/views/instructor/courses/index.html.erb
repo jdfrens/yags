@@ -4,7 +4,7 @@
   <ul>
     <% for course in @courses -%>
         <li id=<%= course.id %>>
-          <%= link_to course.name, { :controller => "/lab", :action => :view_course, :id => course }, :title => "See #{course.name}" %>
+          <%= link_to course.name, [:instructor, course], :title => "See #{course.name}" %>
           <%= link_to image_tag("cross.png"),
                       { :controller => "/lab", :action => "delete_course", :id => course.id },
                       :title => "Delete #{course.name}",

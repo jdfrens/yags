@@ -18,4 +18,9 @@ describe Instructor::CoursesController do
   it "should have path to create a new course" do
     new_instructor_course_path.should == "/instructor/courses/new"
   end
+
+  it "should have path to show a course" do
+    course = mock_model(Course)
+    instructor_course_path(course).should == "/instructor/courses/#{course.id}"
+  end
 end

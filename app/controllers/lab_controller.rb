@@ -7,37 +7,12 @@ class LabController < ApplicationController
   #
   # Courses
   #
-  def view_course
-    @course = Course.find(params[:id])
-    if @course && @course.instructor == current_user
-      @students = @course.students
-    else
-      redirect_to(instructor_courses_path)
-    end
-  end
-
   def delete_course
     if params[:id] && Course.find_by_id(params[:id]) &&
             Course.find(params[:id]).instructor == current_user
       Course.find(params[:id]).destroy
     end
     redirect_to(instructor_courses_path)
-  end
-
-  #
-  # Vials? Courses?
-  #
-  def update_student_solutions_table
-    if params[:id] && Course.find_by_id(params[:id]) &&
-            Course.find(params[:id]).instructor == current_user
-      course = Course.find(params[:id])
-      @students = course.students
-      render :update do |page|
-        page.replace_html 'table_of_student_solutions', :partial => 'student_solutions_table'
-      end
-    else
-      redirect_to(instructor_courses_path)
-    end
   end
 
   #

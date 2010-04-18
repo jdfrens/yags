@@ -20,63 +20,6 @@ class LabControllerTest < ActionController::TestCase
     @response   = ActionController::TestResponse.new
   end
 
-  def test_index_fails_when_NOT_logged_in_as_instructor
-    post :index
-    assert_redirected_to_login
-
-    post :index, {}, user_session(:calvin)
-    assert_response 401 # access denied
-  end
-
-  def test_view_course
-    get :view_course, {:id => 1 }, user_session(:mendel)
-    assert_response :success
-    assert_select "h1", "Course: Peas pay attention"
-    assert_select "script[type=text/javascript]"
-    assert_select "div#table_of_student_solutions"
-    assert_select "table" do
-      assert_select "tr th", ""
-      assert_select "tr:nth-child(2) th", "jeremy"
-      assert_select "tr:nth-child(2) td:nth-child(3)", "X"
-      assert_select "tr:nth-child(3) th", "randy"
-    end
-  end
-
-  def test_view_course_fails_when_NOT_logged_in_as_instructor
-    get :view_course, {:id => 1 }
-    assert_redirected_to_login
-
-    get :view_course, {:id => 1 }, user_session(:calvin)
-    assert_response 401 # access denied
-
-    get :view_course, {:id => 1 }, user_session(:steve)
-    assert_response 401 # access denied
-  end
-
-  def test_update_student_solutions_table
-    xhr :post, :update_student_solutions_table, { :id => courses(:mendels_course).id }, user_session(:mendel)
-    assert_response :success
-
-    assert_select_rjs :replace_html, "table_of_student_solutions" do
-      assert_select "table" do
-        assert_select "tr th", ""
-        assert_select "tr:nth-child(2) th", "jeremy"
-        assert_select "tr:nth-child(2) td:nth-child(3)", /X/
-        assert_select "tr:nth-child(3) th", "randy"
-      end
-    end
-  end
-
-  def test_update_student_solutions_table_fails_when_NOT_instructors_course
-    xhr :post, :update_student_solutions_table, { :id => courses(:darwins_first_course).id }, user_session(:mendel)
-    assert_redirected_to(instructor_courses_path)
-  end
-
-  def test_update_student_solutions_table_fails_when_NOT_logged_in
-    xhr :post, :update_student_solutions_table, { :id => courses(:mendels_course).id }
-    assert_redirected_to_login
-  end
-
   def test_choose_course_scenarios_page
     get :choose_course_scenarios, { :id => 3 }, user_session(:darwin)
     assert_response :success
@@ -451,12 +394,17 @@ describe LabController do
       response.should be_success
       response.should render_template("lab/index")
     end
-  end
 
-  describe "GET view_courses" do
-    it "should redirect when user does not own the course" do
-      get :view_course, { :id => 3 }, user_session(:mendel)
-      response.should redirect_to(instructor_courses_path)
+    it "should redirect if not logged in" do
+      get :index
+
+      response.should redirect_to(login_path)
+    end
+
+    it "should be authorized if not an instructor" do
+      get :index, {}, user_session(:student)
+
+      response.should_not be_authorized
     end
   end
 

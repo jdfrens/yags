@@ -10,6 +10,28 @@ class Instructor::CoursesController < ApplicationController
     @courses = current_user.instructs
   end
 
+  def show
+    @course = Course.find(params[:id])
+    if @course && @course.instructor == current_user
+      @students = @course.students
+    else
+      redirect_to(instructor_courses_path)
+    end
+  end
+
+  def update_student_solutions_table
+    if params[:id] && Course.find_by_id(params[:id]) &&
+            Course.find(params[:id]).instructor == current_user
+      course = Course.find(params[:id])
+      @students = course.students
+      render :update do |page|
+        page.replace_html 'table_of_student_solutions', :partial => 'student_solutions_table'
+      end
+    else
+      redirect_to(instructor_courses_path)
+    end
+  end  
+
   def new
     @course = Course.new
   end

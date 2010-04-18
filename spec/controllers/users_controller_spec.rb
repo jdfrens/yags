@@ -433,7 +433,7 @@ describe UsersController do
       post :create_students, { :student_csv => "Billy, Z., wyz1@calvin.foo", :password => "biolab",
                                :course_id => 1 }, user_session(:mendel)
 
-      assert_redirected_to :controller => "lab", :action => "view_course", :id => 1
+      response.should redirect_to(instructor_course_path(:id => 1))
       assert User.find_by_username("wyz1")
       assert User.find_by_username("wyz1").password_hash == User.hash_password("biolab")
       assert_equal number_of_old_users + 1, User.find(:all).size
@@ -446,7 +446,7 @@ describe UsersController do
       post :create_students, { :student_csv => "fake csv data", :password => "biolab2",
                                :course_id => 1 }, user_session(:mendel)
 
-      response.should redirect_to(:controller => "lab", :action => "view_course", :id => 1)
+      response.should redirect_to(instructor_course_path(:id => 1))
       flash[:notice].should == "42 students added!"
     end
 

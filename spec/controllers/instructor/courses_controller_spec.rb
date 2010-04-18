@@ -29,7 +29,7 @@ describe Instructor::CoursesController do
 
     it "should redirect when not logged in" do
       get :index
-      
+
       assert_redirected_to_login
     end
 
@@ -42,6 +42,56 @@ describe Instructor::CoursesController do
     it "should deny access if a student" do
       get :index, {}, user_session(:steve)
       assert_response 401 # access denied
+    end
+  end
+
+  describe "GET show" do
+    it "should render course when logged in" do
+      get :show, { :id => 1 }, user_session(:mendel)
+
+      response.should be_success
+      response.should render_template("instructor/courses/show")
+      assigns[:course].should == Course.find_by_id(1)
+    end
+
+    it "should redirect when not logged in" do
+      get :show
+
+      response.should redirect_to(login_path)
+    end
+
+    it "should redirect when user does not own the course" do
+      get :show, { :id => 3 }, user_session(:mendel)
+
+      response.should redirect_to(instructor_courses_path)
+    end
+  end
+
+  describe "xhr GET update student solutions table" do
+    it "should update the solutions table" do
+      xhr :post, :update_student_solutions_table, { :id => courses(:mendels_course).id }, user_session(:mendel)
+
+      assert_response :success
+      assert_select_rjs :replace_html, "table_of_student_solutions" do
+        assert_select "table" do
+          assert_select "tr th", ""
+          assert_select "tr:nth-child(2) th", "jeremy"
+          assert_select "tr:nth-child(2) td:nth-child(3)", /X/
+          assert_select "tr:nth-child(3) th", "randy"
+        end
+      end
+    end
+
+    it "should fail when not the right instructor" do
+      xhr :post, :update_student_solutions_table, { :id => courses(:darwins_first_course).id }, user_session(:mendel)
+
+      response.should redirect_to(instructor_courses_path)
+    end
+
+    it "should fail when not logged in" do
+      xhr :post, :update_student_solutions_table, { :id => courses(:mendels_course).id }
+
+      response.should redirect_to(login_path)
     end
   end
 
